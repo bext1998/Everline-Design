@@ -37,9 +37,9 @@
 
 ### 第一批：高頻基礎元件
 
-- [ ] Checkbox
-- [ ] Radio button
-- [ ] Textarea
+- [x] Checkbox
+- [x] Radio button
+- [x] Textarea
 - [ ] Select / Combobox
 - [ ] Menu / Context menu
 - [ ] Tabs
