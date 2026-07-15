@@ -1,6 +1,6 @@
 # Everline 下一步
 
-最後更新：2026-07-13
+最後更新：2026-07-15
 
 ## 下一個 Session 的目標
 
@@ -18,6 +18,7 @@
 
 - Everline v0.1 要先做「元件規格文件」，還是先做「design token 文件」？
 - 今天畫出的按鈕與輸入框是否作為正式 v0.1 起點，或先標記為草稿候選？
+- Split button opened variant 是否採用此候選：關閉時為完整膠囊；開啟時按鈕保留上方大圓角、下緣變直，選單面板上緣接齊、底部保留圓角，高度依選項內容決定？
 - 是否要從 `works/everline_p1.ai` 匯出一張參考 PNG 放入 `exports/`，方便未來不用開 Illustrator 也能快速確認畫面？
 - 目前 `works/72ppi/eve工作區域 1.png` 是否要在確認輸出來源、格式與用途後，再整理到正式 `exports/`？
 
