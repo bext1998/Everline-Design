@@ -1,0 +1,3 @@
+01:50:09:871 [CRITICAL]	SharedConnection - Failed to open WinHTTP Session. 參數錯誤。
+, last error code = 87 
+01:50:09:871 [ERROR]	Failed to Configure Secure Protocols. WinHTTP Incorrect Handle Type. last error code = 12018 

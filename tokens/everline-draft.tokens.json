@@ -1,0 +1,169 @@
+{
+  "$schema": "https://design-tokens.github.io/community-group/format/",
+  "$description": "Everline v0.1 candidate tokens derived from works/72ppi/everline_p1.svg. These values are drafts, not frozen decisions.",
+  "$extensions": {
+    "everline": {
+      "status": "candidate",
+      "source": "works/72ppi/everline_p1.svg",
+      "reviewRequired": true,
+      "confirmedRules": [
+        "Component sizes scale in 8 px steps while preserving internal proportions."
+      ]
+    }
+  },
+  "color": {
+    "base": {
+      "canvas": { "$type": "color", "$value": "#1A1A1A", "$description": "Observed artboard background." },
+      "gray-900": { "$type": "color", "$value": "#333333", "$description": "Observed neutral control surface." },
+      "gray-800": { "$type": "color", "$value": "#444444", "$description": "Observed subdued foreground and border candidate." },
+      "gray-700": { "$type": "color", "$value": "#4D4D4D", "$description": "Observed gray swatch." },
+      "gray-600": { "$type": "color", "$value": "#666666", "$description": "Observed disabled and input surface." },
+      "white": { "$type": "color", "$value": "#FFFFFF", "$description": "Observed high-emphasis foreground." },
+      "off-white": { "$type": "color", "$value": "#F2F2F2", "$description": "Observed switch thumb and light foreground." },
+      "blue": { "$type": "color", "$value": "#598AE8", "$description": "Observed primary and focus color." },
+      "red": { "$type": "color", "$value": "#C1272D", "$description": "Observed danger color." }
+    },
+    "semantic": {
+      "background-canvas": { "$type": "color", "$value": "{color.base.canvas}" },
+      "background-surface": { "$type": "color", "$value": "{color.base.gray-900}" },
+      "background-subdued": { "$type": "color", "$value": "{color.base.gray-600}" },
+      "foreground-primary": { "$type": "color", "$value": "{color.base.off-white}" },
+      "foreground-inverse": { "$type": "color", "$value": "{color.base.white}" },
+      "foreground-disabled": { "$type": "color", "$value": "{color.base.gray-800}" },
+      "action-primary": { "$type": "color", "$value": "{color.base.blue}" },
+      "action-danger": { "$type": "color", "$value": "{color.base.red}" },
+      "border-default": { "$type": "color", "$value": "{color.base.gray-800}" },
+      "border-focus": { "$type": "color", "$value": "{color.base.blue}" }
+    }
+  },
+  "space": {
+    "1": { "$type": "dimension", "$value": { "value": 8, "unit": "px" } },
+    "2": { "$type": "dimension", "$value": { "value": 16, "unit": "px" } },
+    "3": { "$type": "dimension", "$value": { "value": 24, "unit": "px" } },
+    "4": { "$type": "dimension", "$value": { "value": 32, "unit": "px" } },
+    "5": { "$type": "dimension", "$value": { "value": 40, "unit": "px" } },
+    "6": { "$type": "dimension", "$value": { "value": 48, "unit": "px" } }
+  },
+  "radius": {
+    "sm": { "$type": "dimension", "$value": { "value": 8, "unit": "px" } },
+    "md": { "$type": "dimension", "$value": { "value": 12, "unit": "px" } },
+    "lg": { "$type": "dimension", "$value": { "value": 16, "unit": "px" } },
+    "control": { "$type": "dimension", "$value": { "value": 24, "unit": "px" }, "$description": "Observed 48 px control radius." },
+    "pill": { "$type": "dimension", "$value": { "value": 999, "unit": "px" } }
+  },
+  "border": {
+    "width-default": { "$type": "dimension", "$value": { "value": 1, "unit": "px" } },
+    "width-focus": { "$type": "dimension", "$value": { "value": 2, "unit": "px" } }
+  },
+  "size": {
+    "control-md": { "$type": "dimension", "$value": { "value": 48, "unit": "px" }, "$description": "Observed standard button and switch height." },
+    "tag-md": { "$type": "dimension", "$value": { "value": 40, "unit": "px" }, "$description": "Candidate compact component height snapped to the confirmed 8 px scale grid." },
+    "icon-sm": { "$type": "dimension", "$value": { "value": 16, "unit": "px" } },
+    "icon-md": { "$type": "dimension", "$value": { "value": 24, "unit": "px" } }
+  },
+  "scale": {
+    "step": { "$type": "dimension", "$value": { "value": 8, "unit": "px" }, "$description": "Confirmed component enlargement and reduction step." },
+    "component-heights": {
+      "xs": { "$type": "dimension", "$value": { "value": 32, "unit": "px" } },
+      "sm": { "$type": "dimension", "$value": { "value": 40, "unit": "px" } },
+      "md": { "$type": "dimension", "$value": { "value": 48, "unit": "px" } },
+      "lg": { "$type": "dimension", "$value": { "value": 56, "unit": "px" } },
+      "xl": { "$type": "dimension", "$value": { "value": 64, "unit": "px" } }
+    }
+  },
+  "component": {
+    "button": {
+      "$description": "Observed from the primary button family in works/72ppi/everline_p1.svg.",
+      "height": { "$type": "dimension", "$value": "{size.control-md}" },
+      "width-reference": { "$type": "dimension", "$value": { "value": 128, "unit": "px" }, "$description": "Observed reference width; production width may grow with content." },
+      "padding-inline": { "$type": "dimension", "$value": "{space.3}" },
+      "gap": { "$type": "dimension", "$value": "{space.1}" },
+      "radius": { "$type": "dimension", "$value": "{radius.control}" },
+      "border-width": { "$type": "dimension", "$value": "{border.width-focus}" },
+      "background-primary": { "$type": "color", "$value": "{color.semantic.action-primary}" },
+      "background-neutral": { "$type": "color", "$value": "{color.semantic.background-surface}" },
+      "background-disabled": { "$type": "color", "$value": "{color.semantic.background-subdued}" },
+      "background-danger": { "$type": "color", "$value": "{color.semantic.action-danger}" },
+      "foreground": { "$type": "color", "$value": "{color.semantic.foreground-inverse}" },
+      "foreground-disabled": { "$type": "color", "$value": "{color.semantic.foreground-disabled}" },
+      "border-focus": { "$type": "color", "$value": "{color.semantic.border-focus}" }
+    },
+    "icon-button": {
+      "size": { "$type": "dimension", "$value": "{size.control-md}" },
+      "icon-size": { "$type": "dimension", "$value": "{size.icon-md}" },
+      "radius": { "$type": "dimension", "$value": "{radius.control}" },
+      "background-primary": { "$type": "color", "$value": "{color.semantic.action-primary}" },
+      "background-neutral": { "$type": "color", "$value": "{color.semantic.background-surface}" },
+      "background-disabled": { "$type": "color", "$value": "{color.semantic.background-subdued}" },
+      "background-danger": { "$type": "color", "$value": "{color.semantic.action-danger}" }
+    },
+    "switch": {
+      "width": { "$type": "dimension", "$value": { "value": 96, "unit": "px" } },
+      "height": { "$type": "dimension", "$value": "{size.control-md}" },
+      "radius": { "$type": "dimension", "$value": "{radius.control}" },
+      "thumb-size": { "$type": "dimension", "$value": { "value": 40, "unit": "px" } },
+      "thumb-inset": { "$type": "dimension", "$value": { "value": 4, "unit": "px" }, "$description": "Observed optical inset; not a component scale step." },
+      "track-on": { "$type": "color", "$value": "{color.semantic.action-primary}" },
+      "track-off": { "$type": "color", "$value": "{color.semantic.background-surface}" },
+      "track-disabled": { "$type": "color", "$value": "{color.semantic.background-surface}" },
+      "track-danger": { "$type": "color", "$value": "{color.semantic.action-danger}" },
+      "thumb": { "$type": "color", "$value": "{color.base.off-white}" },
+      "thumb-disabled": { "$type": "color", "$value": "{color.base.gray-600}" }
+    },
+    "checkbox": {
+      "size": { "$type": "dimension", "$value": { "value": 32, "unit": "px" } },
+      "radius": { "$type": "dimension", "$value": "{radius.sm}" },
+      "indicator-size": { "$type": "dimension", "$value": { "value": 20, "unit": "px" } },
+      "background": { "$type": "color", "$value": "{color.semantic.background-surface}" },
+      "indicator": { "$type": "color", "$value": "{color.semantic.action-primary}" },
+      "disabled": { "$type": "color", "$value": "{color.semantic.background-subdued}" }
+    },
+    "radio": {
+      "size": { "$type": "dimension", "$value": { "value": 32, "unit": "px" } },
+      "indicator-size": { "$type": "dimension", "$value": { "value": 20, "unit": "px" } },
+      "background": { "$type": "color", "$value": "{color.semantic.background-surface}" },
+      "indicator": { "$type": "color", "$value": "{color.semantic.action-primary}" },
+      "disabled": { "$type": "color", "$value": "{color.semantic.background-subdued}" }
+    },
+    "split-button": {
+      "width-reference": { "$type": "dimension", "$value": { "value": 180, "unit": "px" }, "$description": "Observed source width; scaling changes this baseline in 8 px steps." },
+      "height": { "$type": "dimension", "$value": "{size.control-md}" },
+      "radius": { "$type": "dimension", "$value": "{radius.control}" },
+      "disclosure-width": { "$type": "dimension", "$value": "{size.control-md}" },
+      "divider-width": { "$type": "dimension", "$value": "{border.width-default}" },
+      "menu-row-height": { "$type": "dimension", "$value": "{size.control-md}" },
+      "menu-radius": { "$type": "dimension", "$value": "{radius.control}" },
+      "background": { "$type": "color", "$value": "{color.semantic.action-primary}" },
+      "menu-background": { "$type": "color", "$value": "{color.semantic.background-subdued}" }
+    },
+    "text-input": {
+      "height": { "$type": "dimension", "$value": "{size.control-md}" },
+      "padding-inline": { "$type": "dimension", "$value": "{space.3}" },
+      "radius": { "$type": "dimension", "$value": "{radius.control}" },
+      "border-width-focus": { "$type": "dimension", "$value": "{border.width-focus}" },
+      "background": { "$type": "color", "$value": "{color.semantic.background-subdued}" },
+      "placeholder": { "$type": "color", "$value": "{color.base.gray-700}" },
+      "foreground": { "$type": "color", "$value": "{color.semantic.foreground-primary}" },
+      "border-focus": { "$type": "color", "$value": "{color.semantic.border-focus}" }
+    },
+    "textarea": {
+      "width-reference": { "$type": "dimension", "$value": { "value": 256, "unit": "px" } },
+      "height-sm": { "$type": "dimension", "$value": { "value": 128, "unit": "px" } },
+      "height-lg": { "$type": "dimension", "$value": { "value": 256, "unit": "px" } },
+      "padding": { "$type": "dimension", "$value": "{space.2}" },
+      "radius": { "$type": "dimension", "$value": "{radius.control}" },
+      "scrollbar-width": { "$type": "dimension", "$value": { "value": 10, "unit": "px" }, "$description": "Observed optical width; verify before implementation." },
+      "background": { "$type": "color", "$value": "{color.semantic.background-subdued}" },
+      "scrollbar": { "$type": "color", "$value": "{color.base.gray-700}" }
+    }
+  },
+  "font": {
+    "family-sans": { "$type": "fontFamily", "$value": ["Microsoft JhengHei", "system-ui", "sans-serif"], "$description": "Candidate UI font stack; the source SVG converted text to outlines, so the original font cannot be verified." },
+    "size-label": { "$type": "dimension", "$value": { "value": 14, "unit": "px" } },
+    "size-body": { "$type": "dimension", "$value": { "value": 16, "unit": "px" } },
+    "size-title": { "$type": "dimension", "$value": { "value": 24, "unit": "px" } },
+    "weight-regular": { "$type": "fontWeight", "$value": 400 },
+    "weight-semibold": { "$type": "fontWeight", "$value": 600 },
+    "line-height-body": { "$type": "number", "$value": 1.5 }
+  }
+}

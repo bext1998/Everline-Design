@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080" role="img" aria-labelledby="title desc">
+  <title id="title">Everline v0.1 candidate components</title>
+  <desc id="desc">Editable vector calibration board for Badge, Tag, and Inline alert components.</desc>
+  <metadata>
+    source-reference: works/72ppi/everline_p1.svg; status: candidate; created: 2026-07-16; do-not-treat-as-frozen
+  </metadata>
+  <defs>
+    <style>
+      .ui { font-family: "Microsoft JhengHei", system-ui, sans-serif; }
+      .title { font-size: 30px; font-weight: 700; fill: #fff; }
+      .section { font-size: 24px; font-weight: 600; fill: #f2f2f2; }
+      .body { font-size: 16px; font-weight: 400; fill: #f2f2f2; }
+      .label { font-size: 14px; font-weight: 600; fill: #f2f2f2; }
+      .note { font-size: 14px; font-weight: 400; fill: #a8a8a8; }
+      .alert-title { font-size: 17px; font-weight: 600; fill: #f2f2f2; }
+      .alert-body { font-size: 14px; font-weight: 400; fill: #b8b8b8; }
+      .icon { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2; }
+    </style>
+  </defs>
+
+  <rect width="1920" height="1080" fill="#1a1a1a"/>
+  <rect x="0.5" y="0.5" width="1919" height="1079" fill="none" stroke="#000"/>
+
+  <g id="board-heading" class="ui">
+    <text class="title" x="48" y="58">Everline Design Language - Agent Extension</text>
+    <text class="note" x="48" y="88">v0.1 candidate / source: everline_p1.svg / requires visual calibration</text>
+    <g transform="translate(1630 32)">
+      <rect width="236" height="40" rx="20" fill="#333" stroke="#598ae8" stroke-width="2"/>
+      <circle cx="22" cy="20" r="6" fill="#598ae8"/>
+      <text class="label" x="38" y="25">CANDIDATE - NOT FROZEN</text>
+    </g>
+  </g>
+
+  <g id="badge-tag" class="ui" transform="translate(48 148)">
+    <text class="section" x="0" y="0">Badge / Tag</text>
+    <text class="note" x="0" y="30">40 px compact height · 16 px horizontal padding · pill radius · 8 px scale grid</text>
+
+    <g id="tag-neutral" transform="translate(0 66)">
+      <rect width="96" height="40" rx="20" fill="#333"/>
+      <text class="label" x="48" y="25" text-anchor="middle">一般</text>
+    </g>
+    <g id="tag-accent" transform="translate(112 66)">
+      <rect width="96" height="40" rx="20" fill="#598ae8"/>
+      <circle cx="18" cy="20" r="4" fill="#fff"/>
+      <text class="label" x="57" y="25" text-anchor="middle" fill="#fff">選取</text>
+    </g>
+    <g id="tag-danger" transform="translate(224 66)">
+      <rect width="96" height="40" rx="20" fill="#c1272d"/>
+      <path class="icon" d="M18 12v9 M18 27h.01" stroke="#fff"/>
+      <text class="label" x="58" y="25" text-anchor="middle" fill="#fff">阻擋</text>
+    </g>
+    <g id="tag-outline" transform="translate(336 66)">
+      <rect x="1" y="1" width="110" height="38" rx="19" fill="#333" stroke="#598ae8" stroke-width="2"/>
+      <text class="label" x="56" y="25" text-anchor="middle">已篩選</text>
+    </g>
+    <g id="tag-disabled" transform="translate(464 66)">
+      <rect width="96" height="40" rx="20" fill="#666"/>
+      <text x="48" y="25" text-anchor="middle" font-family="Microsoft JhengHei, system-ui, sans-serif" font-size="14" font-weight="600" fill="#444">停用</text>
+    </g>
+
+    <g id="tag-removable" transform="translate(0 126)">
+      <rect width="144" height="40" rx="20" fill="#333"/>
+      <text class="label" x="16" y="25">高優先</text>
+      <path class="icon" d="M116 15l10 10 M126 15l-10 10" stroke="#f2f2f2"/>
+    </g>
+    <text class="note" x="158" y="150">removable：尾端圖示需有獨立命中區與可存取名稱</text>
+  </g>
+
+  <g id="inline-alert" class="ui" transform="translate(700 148)">
+    <text class="section" x="0" y="0">Inline alert</text>
+    <text class="note" x="0" y="30">96 px minimum height · 16 px radius · semantic accent rail</text>
+
+    <g id="alert-info" transform="translate(0 66)">
+      <rect width="760" height="96" rx="16" fill="#333"/>
+      <rect x="12" y="16" width="4" height="64" rx="2" fill="#598ae8"/>
+      <circle cx="48" cy="48" r="14" fill="none" stroke="#598ae8" stroke-width="2"/>
+      <path class="icon" d="M48 43v12 M48 38h.01" stroke="#598ae8"/>
+      <text class="alert-title" x="80" y="39">同步已暫停</text>
+      <text class="alert-body" x="80" y="67">重新連線後會繼續處理尚未上傳的變更。</text>
+      <g transform="translate(712 24)">
+        <rect width="48" height="48" rx="24" fill="transparent"/>
+        <path class="icon" d="M18 18l12 12 M30 18L18 30" stroke="#f2f2f2"/>
+      </g>
+    </g>
+
+    <g id="alert-danger" transform="translate(0 182)">
+      <rect width="760" height="96" rx="16" fill="#333"/>
+      <rect x="12" y="16" width="4" height="64" rx="2" fill="#c1272d"/>
+      <path class="icon" d="M48 33l15 28H33l15-28z M48 43v8 M48 56h.01" stroke="#c1272d"/>
+      <text class="alert-title" x="80" y="39">無法儲存變更</text>
+      <text class="alert-body" x="80" y="67">請保留此頁並檢查連線，避免遺失尚未同步的內容。</text>
+    </g>
+
+    <g id="alert-neutral" transform="translate(0 298)">
+      <rect width="760" height="96" rx="16" fill="#333"/>
+      <rect x="12" y="16" width="4" height="64" rx="2" fill="#666"/>
+      <circle cx="48" cy="48" r="14" fill="none" stroke="#f2f2f2" stroke-width="2"/>
+      <path class="icon" d="M43 48l4 4 8-9" stroke="#f2f2f2"/>
+      <text class="alert-title" x="80" y="39">草稿已保留</text>
+      <text class="alert-body" x="80" y="67">這項狀態不代表成功語意，僅確認本機草稿仍可使用。</text>
+    </g>
+  </g>
+
+  <g id="token-reference" class="ui" transform="translate(48 566)">
+    <text class="section" x="0" y="0">Candidate token reference</text>
+    <text class="note" x="0" y="30">Observed colors are preserved; spacing and typography remain inferred candidates.</text>
+    <g transform="translate(0 64)">
+      <g id="swatch-canvas">
+        <rect width="112" height="80" rx="12" fill="#1a1a1a" stroke="#444"/>
+        <text class="label" x="12" y="104">canvas</text><text class="note" x="12" y="126">#1A1A1A</text>
+      </g>
+      <g id="swatch-surface" transform="translate(132 0)">
+        <rect width="112" height="80" rx="12" fill="#333"/>
+        <text class="label" x="12" y="104">surface</text><text class="note" x="12" y="126">#333333</text>
+      </g>
+      <g id="swatch-gray-800" transform="translate(264 0)">
+        <rect width="112" height="80" rx="12" fill="#444"/>
+        <text class="label" x="12" y="104">gray-800</text><text class="note" x="12" y="126">#444444</text>
+      </g>
+      <g id="swatch-gray-700" transform="translate(396 0)">
+        <rect width="112" height="80" rx="12" fill="#4d4d4d"/>
+        <text class="label" x="12" y="104">gray-700</text><text class="note" x="12" y="126">#4D4D4D</text>
+      </g>
+      <g id="swatch-gray-600" transform="translate(528 0)">
+        <rect width="112" height="80" rx="12" fill="#666"/>
+        <text class="label" x="12" y="104">gray-600</text><text class="note" x="12" y="126">#666666</text>
+      </g>
+      <g id="swatch-blue" transform="translate(660 0)">
+        <rect width="112" height="80" rx="12" fill="#598ae8"/>
+        <text class="label" x="12" y="104">primary</text><text class="note" x="12" y="126">#598AE8</text>
+      </g>
+      <g id="swatch-red" transform="translate(792 0)">
+        <rect width="112" height="80" rx="12" fill="#c1272d"/>
+        <text class="label" x="12" y="104">danger</text><text class="note" x="12" y="126">#C1272D</text>
+      </g>
+      <g id="swatch-off-white" transform="translate(924 0)">
+        <rect width="112" height="80" rx="12" fill="#f2f2f2"/>
+        <text class="label" x="12" y="104">foreground</text><text class="note" x="12" y="126">#F2F2F2</text>
+      </g>
+    </g>
+  </g>
+
+  <g id="system-notes" class="ui" transform="translate(48 880)">
+    <rect width="1412" height="128" rx="16" fill="#222" stroke="#444"/>
+    <text class="label" x="24" y="36">Calibration notes</text>
+    <text class="note" x="24" y="66">• Original SVG text is outlined; Microsoft JhengHei is a rendering candidate, not an observed font.</text>
+    <text class="note" x="24" y="92">• Success and warning colors are intentionally omitted until real product semantics are confirmed.</text>
+    <text class="note" x="760" y="66">• This file does not replace works/everline_p1.ai.</text>
+    <text class="note" x="760" y="92">• Review spacing, type weight, and 40 px compact height before promotion.</text>
+  </g>
+</svg>
