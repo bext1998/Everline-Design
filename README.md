@@ -68,7 +68,7 @@ Everline Design/
 
 這些目錄只在有實際內容時建立，不以空目錄表示尚未存在的能力。
 
-`docs/lucide-icons/`、`docs/lucide-icons.zip`、`docs/lucide-font.zip`、`docs/lucide-font/`（2026-07-19 起）為**本機參考快取，不再納入版本控制**：先前完整封存進 git 歷史會讓每次 clone 都下載大量第三方素材，故改為 `.gitignore` 排除。這些檔案僅存在於曾經建立過快取的本機環境；重新 clone 本倉庫不會取得這些檔案。需要時請自行從 Lucide 上游重新下載對應版本（先前封存版本為 1.24.0）。
+`docs/lucide-icons/`、`docs/lucide-icons.zip`、`docs/lucide-font.zip`、`docs/lucide-font/`為**本機參考快取，已由 `.gitignore` 排除、不納入版本控制**；重新 clone 本倉庫不會取得這些檔案，需要時請自行從 Lucide 上游重新下載（封存版本 1.24.0）。變更原因與細節見 `docs/STATUS.md`。
 
 ## 文件入口
 
@@ -88,7 +88,7 @@ Everline Design/
 5. 將重大設計方向及責任邊界變更記錄在 `docs/`。
 6. 公開發布或整合進產品前，再次確認來源、授權和是否包含不應公開的資訊。
 
-既有的 `works/illustrator/everline_p1.ai`（2026-07-19 經使用者同意，由 `works/everline_p1.ai` 搬移至此）尚未完成內部結構盤點；後續若再搬移或重新命名，仍應先確認外部引用與匯出依賴。
+`works/illustrator/everline_p1.ai` 尚未完成內部結構盤點；再次搬移或重新命名前須先確認外部引用與匯出依賴並取得使用者同意（搬移歷史見 `docs/STATUS.md`）。
 
 ## 下一階段
 
