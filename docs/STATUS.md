@@ -21,6 +21,7 @@
 - 目前持續維護的完整候選視覺來源是 `works/everline-components-master.svg`（2026-07-19 建立，共 17 類 candidate，明細見上方「收尾狀態」），對應預覽為 `exports/everline-components-master.png`。
 - `works/everline-agent-components-v0.1.svg`（原 Badge／Tag、Inline alert 候選稿）已由上述總表取代，標記 `superseded-by`，保留為歷史快照、不再更新；對應舊預覽 `exports/everline-agent-components-v0.1.png` 同樣保留不動。
 - 候選規範與 token 分別位於 `docs/design-system-v0.1-draft.md` 與 `tokens/everline-draft.tokens.json`；已涵蓋來源中的 Button、Icon button、Switch、Checkbox、Radio、Split button／Dropdown、Text input／Textarea、Color swatch，以及 Badge／Tag、Inline alert、Select／Combobox、Menu／Context menu、Tabs、Tooltip、Modal／Dialog、Toast／Snackbar，整體尚未定稿。
+- 2026-07-19：經拋棄式原型比較（`tmp/prototype-html-components.html`，Button／Icon button／Switch／Text input／Badge／Menu／Modal／Tooltip）驗證後，使用者決定新增 `works/html/` 作為 HTML/CSS 候選元件原型的資料夾，與 `works/illustrator/` 並行；Illustrator 保留構思／草稿角色，元件定案後才轉為 HTML/CSS。既有 `works/everline-components-master.svg` 的 18 類候選不強制立即遷移，個別元件確定要遷移時才動作。規則已同步進 `AGENTS.md`、`docs/spec.md`。
 
 ## 已確認觀察
 

@@ -19,7 +19,8 @@
 
 - ✅ 已決定：元件規格與 design token 以同一批 candidate 校準稿同步開始。
 - ✅ 已決定：UI 字型為 Noto Sans TC。
-- ✅ 已決定：後續所有候選元件統一維護在單一總表 `works/everline-components-master.svg`，不再為每批新增獨立檔案。
+- ⚠️ 已由後續決定取代（見下）：原本「後續所有候選元件統一維護在單一總表 `works/everline-components-master.svg`」的決定，僅適用於已完成的第一批（含既有 9 類）；不再套用於第二批之後。
+- ✅ 已決定（2026-07-19）：第二批起的新候選元件改用 `works/html/` 的 HTML/CSS 原型（真實文字、flexbox、CSS custom properties、原生互動狀態），取代繼續擴充 SVG 總表的做法；Illustrator 仍是構思階段。既有 `works/everline-components-master.svg` 的 18 類候選維持不動，不強制遷移。細節見 `docs/STATUS.md`、`AGENTS.md`。
 - 今天畫出的按鈕與輸入框是否作為正式 v0.1 起點，或先標記為草稿候選？
 - 總表中重畫的 Badge／Tag、Inline alert 是否與原候選稿視覺一致，是否需要微調？
 - Split button opened variant 是否採用此候選：關閉時為完整膠囊；開啟時按鈕保留上方大圓角、下緣變直，選單面板上緣接齊、底部保留圓角，高度依選項內容決定？（本次 Select/Combobox 的 open 變體沿用同一邏輯，一併確認）

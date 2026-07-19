@@ -53,6 +53,8 @@ v0.1 目標：補齊 25 類，使初版元件總數達到 32 類。
 
 ### 第二批：產品結構與資料元件
 
+第二批起改用 `works/html/` 的 HTML/CSS 候選原型，不再併入 `works/everline-components-master.svg`（2026-07-19 決定，細節見 `docs/STATUS.md`）。
+
 - [ ] Sidebar / Navigation rail
 - [ ] Toolbar
 - [ ] Card / Tile

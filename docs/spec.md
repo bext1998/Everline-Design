@@ -8,7 +8,7 @@ Everline 是一個圖形界面設計語言與設計系統專案，目的是為 T
 
 目前已知專案狀態：
 
-- `works/` 用於存放向量繪圖專案檔。
+- `works/` 用於存放可編輯設計來源：Illustrator 向量繪圖專案檔（`works/illustrator/`），以及 2026-07-19 起新增的 HTML/CSS 候選元件原型（`works/html/`）——構思階段仍以 Illustrator 為主，元件大致定案後才轉為 HTML/CSS 候選規格。
 - 目前已有向量原始檔 `works/illustrator/everline_p1.ai`。
 - Taylor Kanban 的 GitHub 連結目前尚未成功驗證，因此本文件不記錄其 repo 架構、實作細節或未確認功能。
 
@@ -97,7 +97,7 @@ Everline 應支援未來逐步拆分為以下內容：
 
 向量原始檔與匯出圖片應避免混放。版本管理原則如下：
 
-- 原始向量檔放在 `works/`。
+- 原始向量檔與 HTML/CSS 候選元件原型皆放在 `works/`（分別位於 `works/illustrator/`、`works/html/`）。
 - 從向量檔轉出的圖片放在 `exports/`。
 - 不用匯出圖片覆蓋原始設計檔。
 - 若同一張圖有多種用途，應在 `exports/` 中用子資料夾或檔名標示用途。
@@ -119,8 +119,9 @@ Everline Design/
 ├─ docs/
 │  └─ spec.md
 ├─ works/
-│  └─ illustrator/
-│     └─ everline_p1.ai
+│  ├─ illustrator/
+│  │  └─ everline_p1.ai
+│  └─ html/
 ├─ exports/
 │  ├─ png/
 │  ├─ svg/
@@ -132,7 +133,7 @@ Everline Design/
 各資料夾責任如下：
 
 - `docs/`：保存規格、決策紀錄、使用指南與後續設計系統文件。
-- `works/`：保存向量原始專案檔，例如 `.ai`。
+- `works/`：保存可編輯設計來源，包含 `works/illustrator/` 的向量原始專案檔（例如 `.ai`）與 `works/html/` 的 HTML/CSS 候選元件原型。
 - `exports/`：保存由向量原始檔轉存出的圖片，例如 `.png`、`.svg`、`.webp`。
 - `references/`：保存參考素材、產品截圖、風格參考或競品資料。
 - `tokens/`：未來若需要設計 token，可保存 JSON、CSS variables 或其他可被前端使用的格式。
@@ -186,6 +187,12 @@ Everline 初版視為成功，需符合以下條件：
 - 輸出承諾：向量原始檔應放在 `works/`，檔名應可讀、可搜尋，並盡量使用小寫英文、數字、連字號或既有命名慣例。
 - 失敗行為：若無法判斷檔案用途，先保留在 `works/` 並於文件或後續待辦中標記需要補充說明，不可任意移到產品匯出資料夾。
 
+#### 1.2b HTML/CSS 候選元件原型管理契約（2026-07-19 新增）
+
+- 輸入要求：新增或調整 `works/html/` 下的候選元件時，必須先在 Illustrator 完成構思草稿，確認元件大致樣貌已定案，才轉為 HTML/CSS。
+- 輸出承諾：候選稿的視覺數值須對應 `tokens/` 既有語意 token，不得另建一套命名；圖示仍依既有圖示來源規則以 SVG 呈現，不併入 HTML/CSS 元件外殼；技術棧未驗證前維持框架中立的原生 HTML/CSS/JS。
+- 失敗行為：若元件仍在構思階段、尚無 Illustrator 草稿依據，不可直接以 HTML/CSS 宣告為候選規格；不得因採用 HTML/CSS 就預設特定前端框架或視為已進入前端元件庫實作。
+
 #### 1.3 匯出圖片管理契約
 
 - 輸入要求：從向量檔匯出圖片時，必須知道來源向量檔、輸出格式與使用情境。
@@ -201,7 +208,8 @@ Everline 初版視為成功，需符合以下條件：
 ### 2. Invariants：系統不變式
 
 - `docs/spec.md` 必須維持為 Everline 的主要規格入口。
-- `works/` 永遠代表向量原始專案檔，不應被用來存放一般匯出圖片。
+- `works/` 永遠代表可編輯設計來源（Illustrator 向量原始檔、HTML/CSS 候選元件原型），不應被用來存放一般匯出圖片。
+- `works/html/` 只能保存候選階段的 HTML/CSS 元件原型，不代表已進入前端元件庫實作；技術棧未驗證前不得預設特定前端框架。
 - `exports/` 永遠代表由向量檔輸出的圖片或可交付視覺資產，不應成為設計來源的唯一保存位置。
 - `references/` 只能保存參考素材，不應被視為正式可用資產來源。
 - `tokens/` 只能在需要可被產品或工具消費的設計 token 時使用，不應放入一般圖片或向量原始檔。
@@ -245,7 +253,7 @@ Everline 初版視為成功，需符合以下條件：
 #### 關鍵測試案例
 
 - [FROZEN] TP-001：`docs/spec.md` 必須存在，且仍是 Everline 的主要規格入口。
-- [FROZEN] TP-002：文件必須明確區分 `works/` 的向量原始檔與 `exports/` 的匯出圖片。
+- [FROZEN] TP-002：文件必須明確區分 `works/` 的可編輯設計來源（向量原始檔、HTML/CSS 候選元件原型）與 `exports/` 的匯出圖片。
 - [FROZEN] TP-003：Taylor Kanban repo 未驗證前，不得新增其技術棧、檔案結構或內部元件描述。
 - [FROZEN] TP-004：新增設計系統內容時，必須能歸類到設計原則、token、元件、圖示資產或匯出規則之一。
 - [FROZEN] TP-005：硬化後文件必須包含 Contract、Invariants、Edge Cases、Acceptance Criteria、Test Plan、FROZEN Decisions、Drift Risk Analysis、Open Questions。
@@ -260,7 +268,7 @@ Everline 初版視為成功，需符合以下條件：
 ### 6. FROZEN Decisions：凍結決策
 
 - [FROZEN] Everline 的定位是「圖形界面設計語言與設計系統專案」，不是單一前端 app、單一品牌圖檔或單次繪圖任務。若變更，需同步更新專案概述、核心問題、目標、非目標與成功指標。
-- [FROZEN] `works/` 是向量原始專案檔資料夾。若變更，需同步更新目前已知專案狀態、檔案版本管理規則、資料夾結構、Invariants 與 Test Plan。
+- [FROZEN] `works/` 是可編輯設計來源資料夾，涵蓋 Illustrator 向量原始檔（`works/illustrator/`）與 HTML/CSS 候選元件原型（`works/html/`，2026-07-19 新增；構思仍以 Illustrator 為主，元件定案後才轉為 HTML/CSS）。若再變更，需同步更新目前已知專案狀態、檔案版本管理規則、資料夾結構、Invariants 與 Test Plan。
 - [FROZEN] `exports/` 是向量檔轉存圖片的建議資料夾。若變更，需同步更新匯出圖片資料夾規劃、資料夾結構、Contract、Invariants 與 Acceptance Criteria。
 - [FROZEN] Taylor Kanban repo 未驗證前，不記錄其內部技術細節。若變更，需先補上驗證來源、驗證日期與影響範圍。
 - [FROZEN] 初版不直接實作前端元件庫，也不重構 Taylor Kanban。若變更，需建立新的實作規格或任務文件。
@@ -287,5 +295,5 @@ Everline 初版視為成功，需符合以下條件：
 - 待確認：是否需要建立資產索引文件，例如 `docs/assets-index.md`？
 - 待確認：是否需要定義正式版本號規則，例如 `v0.1`、`v0.2` 或日期版號？
 - ✅ 已確認：`docs/spec.md` 是目前主要規格文件位置。
-- ✅ 已確認：`works/` 用於存放向量繪圖專案檔。
+- ✅ 已確認：`works/` 用於存放可編輯設計來源，涵蓋 Illustrator 向量繪圖專案檔與 HTML/CSS 候選元件原型（2026-07-19 起）。
 - ✅ 已確認：Everline 初版同時涵蓋設計系統方向與資料夾工作流。
