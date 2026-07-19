@@ -399,7 +399,7 @@ Text input 用於單行短文字；Textarea 用於描述、備註與多行內容
 ### 狀態、互動與內容
 
 - 已畫出 `closed`、`open`（含 selected item 與 disabled item）、`disabled`、`combobox`（可輸入搜尋，篩選結果以主色標示相符文字）；`hover item`、`keyboard focus`、`loading` 尚未畫出。combobox 目前只示範文字比對高亮，尚未定義無結果、多選、非同步搜尋等狀態。
-- 2026-07-19 校準：combobox 的 2 px 藍色 focus 描邊改為包住整個 trigger ＋ 結果列表（而非只框住輸入列）。依據 Android／Material Design 3 的 SearchView「contained style」查證：搜尋框在展開狀態下與建議清單以同一個視覺容器呈現（"the SearchBar persists visually within the SearchView, creating a more expressive and visually cohesive experience"），因此 focus 指示應涵蓋整個容器輪廓，而不只是輸入欄本身。來源：[Material Design 3 Search guidelines](https://m3.material.io/components/search/guidelines)、[material-components-android Search.md](https://github.com/material-components/material-components-android/blob/master/docs/components/Search.md)。
+- 定案：combobox 的 2 px 藍色 focus 描邊包住整個 trigger＋結果列表（而非只框住輸入列），依據 Material Design 3 SearchView 的「contained style」慣例（搜尋框展開時與建議清單共用同一視覺容器）。來源：[Material Design 3 Search guidelines](https://m3.material.io/components/search/guidelines)、[material-components-android Search.md](https://github.com/material-components/material-components-android/blob/master/docs/components/Search.md)。
 - `ArrowDown`／`Enter`／`Space` 開啟選單，方向鍵移動，`Enter` 選取並關閉，`Escape` 關閉且不變更目前值。
 - 選項文字使用名詞而非動詞，與 Split button 的可執行命令語彙區分。
 
@@ -464,8 +464,7 @@ Text input 用於單行短文字；Textarea 用於描述、備註與多行內容
 
 ### 結構與變體
 
-- 8 px 圓角提示框，出現在觸發元件右側，垂直置中對齊觸發元件中心；左側有指回觸發元件的小三角形。
-- 2026-07-19 校準修正：第一輪候選稿的箭頭與觸發元件中心沒對齊（座標計算錯誤）；曾短暫改為上方彈出樣式，使用者確認後改回側邊彈出（原始設計方向），並修正對齊，使提示框與觸發元件共用同一條垂直中心線。
+- 8 px 圓角提示框，出現在觸發元件右側，垂直置中對齊觸發元件中心（箭頭三角形頂點精準指向該中心線）；左側有指回觸發元件的小三角形。已定案為側邊彈出（非上方彈出）。
 
 ### 狀態、互動與內容
 
@@ -518,7 +517,7 @@ Text input 用於單行短文字；Textarea 用於描述、備註與多行內容
 
 ### 狀態、互動與內容
 
-- 已畫出 `shown`（純訊息）、`with action`（含可點擊文字動作）、`queued`（背後可見下一筆）、`danger／error`（左側 4 px 紅色強調條＋警示圖示，搭配可點擊的「重試」文字動作）；自動消失時間、可關閉按鈕尚未定義。
+- 已畫出 `shown`（純訊息）、`with action`（含可點擊文字動作）、`queued`（背後可見下一筆）、`danger／error`（24×24 px 實心紅色圓形＋白色驚嘆號圖示，圖示與文字間距約 14 px，搭配可點擊的「重試」文字動作；容器維持一般深灰底與圓角，不使用左側裝飾條）；自動消失時間、可關閉按鈕尚未定義。
 - 非阻斷、不搶焦點；有動作時該動作需可鍵盤操作。
 - 文案簡短直述結果，不需要句號。
 
@@ -530,24 +529,17 @@ Text input 用於單行短文字；Textarea 用於描述、備註與多行內容
 ## 校準清單
 
 - ✅ 已確認：字型家族為 Noto Sans TC（2026-07-19 使用者確認）；中文字重仍待進一步確認。
+- ✅ 已完成多輪視覺校準（2026-07-19，共七輪，最終結果已反映在各元件小節；逐輪細節見 git log）：disabled 前景色改用 `fill-opacity="0.55"`（非 hex alpha，因部分工具如 Illustrator 對 `#RRGGBBAA` 支援不一致，token 見 `opacity.disabled`）；Tooltip 定案側邊彈出並修正箭頭對齊；Icon button/Select/Menu/Tabs/Tooltip/Modal/Toast 補齊 outline variant、combobox 搜尋、checked item 與快捷鍵提示、hover 狀態、`below` placement、backdrop、loading 等形態（對應 token 見 `tokens/everline-draft.tokens.json`）；修正 combobox 結果列文字因 `<tspan>` 混色未帶外層 `fill` 而部分渲染器不顯示的問題；Toast danger/error 圖示定案為 24×24 px 實心紅圓＋白色驚嘆號、移除左側裝飾條，並修正與其他 toast 圖示的對齊。
 - 待確認 compact 元件採用 40 px，或統一使用既有 48 px 控制高度。
 - 待確認 gray-600 是否真的是 input default surface，而不是暫時佔位狀態。
 - 待補 success／warning 語意色，但在有實際產品情境前不新增。
 - 待將確認後的元件回填至 Illustrator 主來源；本批不修改 `works/illustrator/everline_p1.ai`。
 - 第一批新元件（Select/Combobox、Menu/Context menu、Tabs、Tooltip、Modal/Dialog、Toast/Snackbar）僅畫出核心狀態，見各元件小節「狀態、互動與內容」，尚未涵蓋完整無障礙與鍵盤操作驗證。
-- ✅ 已依使用者第二輪校準意見修正（2026-07-19）：
-  - disabled 前景色維持 off-white，但改用 `fill-opacity="0.55"`（而非 8 位元 hex alpha `#f2f2f28c`）表示 55% 不透明度——第一輪修正的色值在部分 SVG 檢視／編輯工具（例如 Illustrator）對 `#RRGGBBAA` 支援不一致，可能顯示為未套用透明度；`fill-opacity`／`stroke-opacity` 是 SVG 1.1 標準屬性，相容性更穩定。對應 token 見 `tokens/everline-draft.tokens.json` 的 `opacity.disabled`。
-  - Tooltip 依使用者決定改回側邊彈出樣式（原始設計方向），並修正對齊：觸發元件（圖示按鈕）與提示框的垂直中心線對齊在 y=24，箭頭三角形頂點精準指向該中心線，不再是先前因座標誤算導致的偏移。中途曾短暫改為上方彈出樣式，使用者已決定改回側邊樣式，不再採用上方彈出。
-- ✅ 已依使用者第三輪校準意見補齊（2026-07-19）：Icon button 補上 outline variant；Select 補上 combobox 搜尋變體；Menu 補上 checked/toggled item 與鍵盤快捷鍵提示；Tabs 補上 hover 狀態；Tooltip 補上 `below` placement（與既有 `beside` 並列）；Modal 補上 backdrop 視覺樣式與 `loading` 狀態；Toast 補上 `danger/error` 變體。目的是讓元件的不同形態更完整，方便後續建構設計系統與 design token；對應新 token 見 `tokens/everline-draft.tokens.json` 的 `opacity.backdrop`、`opacity.hover-overlay`、`component.modal.backdrop-color`、`component.tabs.hover-background`、`component.menu.checked-indicator`／`shortcut-foreground`、`component.select.search-match-highlight`。
-- ✅ 已依使用者第四輪校準意見修正（2026-07-19）：Tabs disabled 文字改用系統一致的 off-white 55% 透明度（原本 `#444` 實色在深色畫布上顯得突兀不一致）；Toast danger/error 移除左側紅色裝飾條、圖示改為與 Inline alert danger 一致的警示三角形（原本裸露的驚嘆線點圖示搭配裝飾條不符合既有 alert 圖示語彙）；Combobox 輸入框文字改回一般前景色（不應與結果列表的匹配高亮同色），並將 trigger 底部套用與 select-open 相同的圓角收平技法，使視覺結構與 Select 展開清單一致。另外排查了「元件存在於原始碼但未渲染」的回報，找到並修正了 combobox 結果列文字混用 `<tspan>` 局部上色卻未替外層 `<text>` 補上 `fill` 的脆弱寫法（全檔僅此兩處），其餘無法複現。
-- ✅ 已依使用者第五輪校準意見修正（2026-07-19）：查證 Android／Material Design 3 SearchView 慣例後，combobox 的 2 px 藍色 focus 描邊改為包住整個 trigger＋結果列表（詳見 Select/Combobox 小節說明與來源連結）；Toast danger/error 圖示位置修正對齊（原本三角形圖示 bounding box 偏左 9 px，與 shown/with action/queued 三個變體的圖示左緣不對齊，已對齊至與其餘變體一致的 x=20–38 範圍）。
-- ✅ 已依使用者第六輪校準意見修正（2026-07-19）：Toast danger/error 圖示太小、不易辨識為警示標誌，移除三角形外框，改為單獨放大的驚嘆號（垂直線 10 px＋圓點，stroke-width 2.5），並延伸至與其他 toast 圖示一致的 y=20–34 範圍，修正先前因三角形內縮導致視覺偏高的對齊問題。
-- ✅ 已依使用者第七輪校準意見修正（2026-07-19）：Toast danger/error 圖示改為 24×24 px 實心紅色圓形（`#c1272d`）＋白色驚嘆號，圖示與文字間距約 14 px（介於使用者要求的 12–16 px）；Toast 容器仍維持 `#333` 深灰底與 16 px 圓角，「重試」文字動作仍為主色藍，避免整個元件被紅色主導。
 
 ## 設計系統／Token 全面檢查（2026-07-19）
 
 使用者要求檢查整個設計系統與 token 是否需要修改或增加規則。已直接新增的部分見上方「Token 命名慣例」「圖示系統」「堆疊順序（Layer）候選」「動效（Motion）候選」四個新章節，皆為純新增，不影響任何已核准的既有視覺。以下是同一次檢查中發現、但**會改變既有元件實際顏色**的問題，刻意不擅自執行，留待使用者決定：
 
-- ✅ 已解決（2026-07-19，使用者指示「先統一浮動面板背景色，改用新的 background-overlay token」）：新增 `color.semantic.background-overlay` = `{color.base.gray-700}`（`#4D4D4D`），並讓 Select／Split button 的選單面板、Menu 面板、Tooltip、Modal 全部改用這個共用語意 token，取代原本 4 種不一致的色值（含 Modal 原本未對應 base palette 的裸 hex `#222222`，一併收編）。選擇 gray-700 而非 gray-800，是因為 gray-800 已是 `border-default`——若重用會讓浮動面板自身的邊框在自己的底色上完全消失。副作用：Menu 的 hover 列原本也用 gray-700 實色，與新的面板底色相同會變成隱形；已改用與 Tabs hover 相同的手法（`#ffffff` + `opacity.hover-overlay` 疊加），而不是再發明一個新的實色值。已在 `works/everline-components-master.svg` 五個元件同步套用並渲染核對，無元件互相遮蔽或消失。
+- ✅ 已解決（2026-07-19）：新增 `color.semantic.background-overlay` = `{color.base.gray-700}`（`#4D4D4D`），套用於 Select／Split button 選單面板、Menu、Tooltip、Modal 共 5 處，取代原本 4 種不一致色值（含 Modal 原本未對應 base palette 的裸 hex）。選 gray-700 而非 gray-800，因 gray-800 已是 `border-default`，重用會讓浮動面板自身邊框消失。連帶修正 Menu hover 列因此變隱形的問題，改用 `#ffffff` + `opacity.hover-overlay` 疊加（比照 Tabs 既有手法）。已在 `works/everline-components-master.svg` 同步套用並渲染核對。
 - **⚠️ 待決定：focus ring 與 outline variant 目前共用同一組視覺（2 px 藍色描邊）**。Button／Icon button 的 `outline` 變體，與規格中提到但尚未畫出的 `focused` 狀態，目前都只能用「2 px 藍色描邊」表達，兩者在視覺上會完全一樣。真正開始畫 `focused` 狀態時，一個本身就是 outline 樣式的按鈕會分不清楚「這是 outline 變體」還是「這是目前被鍵盤聚焦」。建議：另立獨立的 focus ring 表現（例如外擴 2px 的偏移光暈，而非緊貼邊緣的描邊），但這也是需要視覺驗證的決定，非本次一併執行。
 - **後續建議（非本次動作項目）**：第二批（Sidebar／Toolbar／Card／List／Data table／Kanban column／Task card）會再新增至少 List、Data table、Kanban column 三個「可選取列」型元件。目前 Select 展開面板／Split button 選單／Menu 三者已經各自發展出選取列的視覺語彙（hover 背景、選取列強調條、checked 圖示等），彼此沒有共用一套「list item」token。建議在開始第二批前，先決定是否要抽出一組共用的 `component.list-item.*` token（hover/selected/disabled 背景、指示條寬度與色彩），供 Select、Split button、Menu、未來的 List／Data table／Kanban column 共同引用，避免同一個「選取列」概念在 6-7 個元件裡各自長出不同規則。
