@@ -75,13 +75,15 @@
 - 不得以一張設計草圖直接宣告元件已定稿；應區分候選、草稿、已審核與穩定狀態。
 - 新元件必須證明有跨畫面或跨產品的重用價值；一次性組合應留在產品層，不要過早升格為系統元件。
 
-### HTML/CSS 候選元件原型（2026-07-19 新增）
+### HTML/CSS 候選元件原型（2026-07-19 新增，同日修正流程順序）
 
 - Illustrator 仍是構思與草稿階段的入口（使用者慣用工具），保留原有角色；圖示仍以既有規則為準，維持 SVG。
-- 元件大致樣貌在 Illustrator 定案後，才轉移到 `works/html/` 以 HTML/CSS 定義候選規格：真實文字、flexbox／CSS custom properties 版面，以及 `:hover`／`:focus`／`:disabled` 等原生互動狀態，取代手繪每個狀態的做法。
+- SVG 候選＋人類審查階段不被取代：元件大致樣貌在 Illustrator 定案後，先以 SVG 產生候選稿供人類視覺審查。第一批（既有 18 類）留在 `works/everline-components-master.svg`；第二批起改用獨立的批次檔案（例如 `works/everline-components-batch2.svg`），不再併入同一份總表，避免單一檔案過度膨脹、增加後續 agent 讀取負擔。
+- SVG 候選稿經人類確認沒有問題後，才轉為 `works/html/` 下的 HTML/CSS：真實文字、flexbox／CSS custom properties 版面，以及 `:hover`／`:focus`／`:disabled` 等原生互動狀態，取代手繪每個狀態的做法。
+- 轉為 HTML/CSS 屬於「畢業」：該元件之後以 `works/html/` 的 HTML/CSS 版本為候選規格權威來源，對應 SVG 版本標記為歷史快照（比照既有 `superseded-by` 慣例），不再更新。
 - CSS custom properties 必須對應 `tokens/` 下既有語意 token 命名，不得另建一套命名系統。
 - 這仍是候選／草稿階段，不代表進入前端元件庫實作；技術棧未驗證前，候選稿須維持框架中立的原生 HTML/CSS/JS，不得預設 React、Vue 等特定前端框架。
-- 既有 `works/everline-components-master.svg` 候選稿不強制立即遷移；個別元件確定要遷移到 `works/html/` 時才動作，並在對應文件註記取代關係（比照既有 `superseded-by` 慣例）。
+- 既有 `works/everline-components-master.svg`（第一批 18 類）不強制立即轉為 HTML/CSS；個別元件確定要轉換時才動作。
 
 ### 圖示、字型與品牌資產
 
