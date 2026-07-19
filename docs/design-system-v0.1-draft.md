@@ -4,7 +4,8 @@
 建立日期：2026-07-16（2026-07-19 更新：新增總表候選稿與 6 個第一批新元件）  
 來源：`works/everline_p1.svg`、`works/everline_p1.pdf`（2026-07-19 起，原 `works/72ppi/` 子資料夾已攤平併入 `works/`）  
 候選向量稿：`works/everline-components-master.svg`（目前持續維護的完整候選視覺來源，涵蓋既有元件與第一批新元件）  
-歷史候選稿：`works/everline-agent-components-v0.1.svg`（已由總表取代，僅保留為歷史快照，不再更新）
+歷史候選稿：`works/everline-agent-components-v0.1.svg`（已由總表取代，僅保留為歷史快照，不再更新）  
+第二批：`works/everline-components-batch2.svg` 與 `docs/design-system-v0.1-batch2-draft.md`（2026-07-20 起，Sidebar／Toolbar／Card／List／Data table／Task card／Kanban column，獨立於本檔案與 master.svg 的同層檔案，不是取代關係）
 
 本文件是受控延伸用的校準稿，不是穩定版規格。已觀察到的值與本次推導值分開記錄；使用者確認前，不應將候選內容視為 Everline 的凍結決策。
 
@@ -542,4 +543,4 @@ Text input 用於單行短文字；Textarea 用於描述、備註與多行內容
 
 - ✅ 已解決（2026-07-19）：新增 `color.semantic.background-overlay` = `{color.base.gray-700}`（`#4D4D4D`），套用於 Select／Split button 選單面板、Menu、Tooltip、Modal 共 5 處，取代原本 4 種不一致色值（含 Modal 原本未對應 base palette 的裸 hex）。選 gray-700 而非 gray-800，因 gray-800 已是 `border-default`，重用會讓浮動面板自身邊框消失。連帶修正 Menu hover 列因此變隱形的問題，改用 `#ffffff` + `opacity.hover-overlay` 疊加（比照 Tabs 既有手法）。已在 `works/everline-components-master.svg` 同步套用並渲染核對。
 - **⚠️ 待決定：focus ring 與 outline variant 目前共用同一組視覺（2 px 藍色描邊）**。Button／Icon button 的 `outline` 變體，與規格中提到但尚未畫出的 `focused` 狀態，目前都只能用「2 px 藍色描邊」表達，兩者在視覺上會完全一樣。真正開始畫 `focused` 狀態時，一個本身就是 outline 樣式的按鈕會分不清楚「這是 outline 變體」還是「這是目前被鍵盤聚焦」。建議：另立獨立的 focus ring 表現（例如外擴 2px 的偏移光暈，而非緊貼邊緣的描邊），但這也是需要視覺驗證的決定，非本次一併執行。
-- **後續建議（非本次動作項目）**：第二批（Sidebar／Toolbar／Card／List／Data table／Kanban column／Task card）會再新增至少 List、Data table、Kanban column 三個「可選取列」型元件。目前 Select 展開面板／Split button 選單／Menu 三者已經各自發展出選取列的視覺語彙（hover 背景、選取列強調條、checked 圖示等），彼此沒有共用一套「list item」token。建議在開始第二批前，先決定是否要抽出一組共用的 `component.list-item.*` token（hover/selected/disabled 背景、指示條寬度與色彩），供 Select、Split button、Menu、未來的 List／Data table／Kanban column 共同引用，避免同一個「選取列」概念在 6-7 個元件裡各自長出不同規則。
+- ✅ 已解決（2026-07-20）：List、Data table、Kanban column 的共用「list item」token 問題已決定——新增 `component.list-item.*`，只套用在這三個第二批新元件，不回頭改動已審查過的 Select／Split button／Menu。細節與設計理由見 `docs/design-system-v0.1-batch2-draft.md`「已解決的開放問題：共用 list-item token」一節。

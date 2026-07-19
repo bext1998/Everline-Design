@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="3000" viewBox="0 0 1920 3000" role="img" aria-labelledby="title desc">
+  <title id="title">Everline v0.1 components batch 2 sheet</title>
+  <desc id="desc">Second-batch candidate vector sheet: Sidebar/Navigation rail, Toolbar, Card/Tile, List, Data table, Task card, Kanban column.</desc>
+  <metadata>
+    sibling-of: works/everline-components-master.svg (2026-07-19) — not a supersession; batch 1's 18 components remain there unchanged;
+    spec-reference: docs/design-system-v0.1-batch2-draft.md;
+    status: candidate; created: 2026-07-20; do-not-treat-as-frozen;
+    note: section order is Sidebar, Toolbar, Card/Tile, List, Data table, Task card, Kanban column — Task card is drawn before Kanban column (differs from docs/TODO.md checklist order) because Kanban column's normal state embeds Task card;
+    structural-reference-only (not a style source): works/TaylorConceptMockup1.svg — its flat/table layout is not reused here, see docs/design-system-v0.1-batch2-draft.md Kanban column section for the 處處是圓 requirement.
+  </metadata>
+  <defs>
+    <style>
+      .ui { font-family: "Noto Sans TC", system-ui, sans-serif; }
+      .title { font-size: 30px; font-weight: 700; fill: #fff; }
+      .section { font-size: 24px; font-weight: 600; fill: #f2f2f2; }
+      .body { font-size: 16px; font-weight: 400; fill: #f2f2f2; }
+      .label { font-size: 14px; font-weight: 600; fill: #f2f2f2; }
+      .note { font-size: 14px; font-weight: 400; fill: #a8a8a8; }
+      .caption { font-size: 12px; font-weight: 400; fill: #888; }
+      .meta { font-size: 12px; font-weight: 400; fill: #a8a8a8; }
+      .icon { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2; }
+    </style>
+  </defs>
+
+  <rect width="1920" height="3000" fill="#1a1a1a"/>
+
+  <g id="board-heading" class="ui">
+    <text class="title" x="48" y="58">Everline Design Language — Components Batch 2 Sheet</text>
+    <text class="note" x="48" y="88">v0.1 candidate · Sidebar/Nav rail, Toolbar, Card/Tile, List, Data table, Task card, Kanban column · sibling to everline-components-master.svg</text>
+    <g transform="translate(1630 32)">
+      <rect width="236" height="40" rx="20" fill="#333" stroke="#598ae8" stroke-width="2"/>
+      <circle cx="22" cy="20" r="6" fill="#598ae8"/>
+      <text class="label" x="38" y="25">CANDIDATE - NOT FROZEN</text>
+    </g>
+  </g>
+
+  <!-- ===================== Sidebar / Navigation rail ===================== -->
+
+  <g id="c-sidebar" class="ui" transform="translate(48 170)">
+    <text class="section" x="0" y="0">Sidebar / Navigation rail</text>
+    <text class="note" x="0" y="28">one component, two modes · expanded 256 px · collapsed (rail) 72 px · item height 48 px</text>
+    <g transform="translate(0 56)">
+      <g id="sidebar-expanded" transform="translate(0 0)">
+        <rect width="256" height="340" rx="16" fill="#333"/>
+        <text class="caption" x="16" y="28" fill="#666">分類</text>
+        <g transform="translate(8 40)">
+          <rect x="16" y="12" width="20" height="20" rx="4" fill="none" stroke="#f2f2f2" stroke-width="2"/>
+          <text class="label" x="48" y="27">看板</text>
+        </g>
+        <g transform="translate(8 92)">
+          <rect width="240" height="48" rx="8" fill="#ffffff" fill-opacity="0.06"/>
+          <rect x="16" y="12" width="20" height="20" rx="4" fill="none" stroke="#f2f2f2" stroke-width="2"/>
+          <text class="label" x="48" y="27">資產庫</text>
+          <text class="caption" x="228" y="27" text-anchor="end">hover</text>
+        </g>
+        <g transform="translate(8 144)">
+          <rect width="240" height="48" rx="8" fill="#598ae8"/>
+          <rect x="16" y="12" width="20" height="20" rx="4" fill="none" stroke="#fff" stroke-width="2"/>
+          <text class="label" x="48" y="27" fill="#fff">元件庫</text>
+          <text class="caption" x="228" y="27" text-anchor="end" fill="#fff">selected</text>
+        </g>
+        <g transform="translate(8 196)">
+          <rect x="16" y="12" width="20" height="20" rx="4" fill="none" stroke="#f2f2f2" stroke-width="2" stroke-opacity="0.55"/>
+          <text class="label" x="48" y="27" fill="#f2f2f2" fill-opacity="0.55">封存區</text>
+          <text class="caption" x="228" y="27" text-anchor="end">disabled</text>
+        </g>
+        <text class="caption" x="128" y="364" text-anchor="middle">expanded</text>
+      </g>
+      <g id="sidebar-collapsed" transform="translate(304 0)">
+        <rect width="72" height="340" rx="16" fill="#333"/>
+        <g transform="translate(12 40)">
+          <rect x="14" y="14" width="20" height="20" rx="4" fill="none" stroke="#f2f2f2" stroke-width="2"/>
+        </g>
+        <g transform="translate(12 92)">
+          <rect width="48" height="48" rx="8" fill="#598ae8"/>
+          <rect x="14" y="14" width="20" height="20" rx="4" fill="none" stroke="#fff" stroke-width="2"/>
+        </g>
+        <g transform="translate(12 144)">
+          <rect x="14" y="14" width="20" height="20" rx="4" fill="none" stroke="#f2f2f2" stroke-width="2"/>
+          <circle cx="38" cy="12" r="5" fill="#598ae8" stroke="#333" stroke-width="2"/>
+        </g>
+        <text class="caption" x="36" y="364" text-anchor="middle">collapsed</text>
+      </g>
+      <text class="note" x="408" y="184">collapsed 第三項展示 notification 徽章；resizing 互動未畫出（見批次擱置事項）</text>
+    </g>
+  </g>
+
+  <!-- ===================== Toolbar ===================== -->
+
+  <g id="c-toolbar" class="ui" transform="translate(48 670)">
+    <text class="section" x="0" y="0">Toolbar</text>
+    <text class="note" x="0" y="28">48 px height · 40 px compact · icon-button cluster + divider</text>
+    <g transform="translate(0 56)">
+      <g id="toolbar-default" transform="translate(0 0)">
+        <rect width="256" height="48" rx="8" fill="#333"/>
+        <!-- all icons share a common 24x24 local bbox centered at (12,12), so every icon lands on the same row center (y=24) regardless of state -->
+        <g transform="translate(16 12)">
+          <path class="icon" d="M6 13l4 4 8-9" stroke="#f2f2f2"/>
+        </g>
+        <g transform="translate(64 4)">
+          <rect width="40" height="40" rx="8" fill="#598ae8"/>
+          <g transform="translate(8 8)">
+            <path class="icon" d="M12 6v12 M6 12h12" stroke="#fff"/>
+          </g>
+        </g>
+        <g transform="translate(128 12)">
+          <path class="icon" d="M7 7l10 10 M17 7L7 17" stroke="#f2f2f2" stroke-opacity="0.55"/>
+        </g>
+        <line x1="184" y1="8" x2="184" y2="40" stroke="#444" stroke-width="1"/>
+        <g transform="translate(200 12)">
+          <circle cx="6" cy="12" r="1.6" fill="#f2f2f2"/>
+          <circle cx="12" cy="12" r="1.6" fill="#f2f2f2"/>
+          <circle cx="18" cy="12" r="1.6" fill="#f2f2f2"/>
+        </g>
+        <text class="caption" x="28" y="64" text-anchor="middle">default</text>
+        <text class="caption" x="84" y="64" text-anchor="middle">selected</text>
+        <text class="caption" x="140" y="64" text-anchor="middle">disabled</text>
+        <text class="caption" x="212" y="64" text-anchor="middle">more</text>
+      </g>
+      <g id="toolbar-compact" transform="translate(288 4)">
+        <rect width="160" height="40" rx="8" fill="#333"/>
+        <g transform="translate(8 8)">
+          <path class="icon" d="M6 13l4 4 8-9" stroke="#f2f2f2"/>
+        </g>
+        <g transform="translate(48 4)">
+          <rect width="32" height="32" rx="6" fill="#598ae8"/>
+          <g transform="translate(4 4)">
+            <path class="icon" d="M12 6v12 M6 12h12" stroke="#fff"/>
+          </g>
+        </g>
+        <line x1="96" y1="6" x2="96" y2="34" stroke="#444" stroke-width="1"/>
+        <g transform="translate(112 8)">
+          <circle cx="6" cy="12" r="1.6" fill="#f2f2f2"/>
+          <circle cx="12" cy="12" r="1.6" fill="#f2f2f2"/>
+          <circle cx="18" cy="12" r="1.6" fill="#f2f2f2"/>
+        </g>
+        <text class="caption" x="0" y="60">compact</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- ===================== Card / Tile ===================== -->
+
+  <g id="c-card" class="ui" transform="translate(48 850)">
+    <text class="section" x="0" y="0">Card / Tile</text>
+    <text class="note" x="0" y="28">generic content container · 16 px radius · 24 px padding · distinct from Task card</text>
+    <g transform="translate(0 56)">
+      <g id="card-default" transform="translate(0 0)">
+        <rect width="220" height="140" rx="16" fill="#333"/>
+        <rect x="24" y="24" width="120" height="16" rx="4" fill="#4d4d4d"/>
+        <rect x="24" y="52" width="172" height="12" rx="4" fill="#4d4d4d"/>
+        <rect x="24" y="72" width="140" height="12" rx="4" fill="#4d4d4d"/>
+        <text class="caption" x="110" y="128" text-anchor="middle">default</text>
+      </g>
+      <g id="card-hover" transform="translate(244 0)">
+        <rect width="220" height="140" rx="16" fill="#333"/>
+        <rect width="220" height="140" rx="16" fill="#ffffff" fill-opacity="0.06"/>
+        <rect x="24" y="24" width="120" height="16" rx="4" fill="#4d4d4d"/>
+        <rect x="24" y="52" width="172" height="12" rx="4" fill="#4d4d4d"/>
+        <rect x="24" y="72" width="140" height="12" rx="4" fill="#4d4d4d"/>
+        <text class="caption" x="110" y="128" text-anchor="middle">hover</text>
+      </g>
+      <g id="card-selected" transform="translate(488 0)">
+        <rect x="1" y="1" width="218" height="138" rx="15" fill="#333" stroke="#598ae8" stroke-width="2"/>
+        <rect x="24" y="24" width="120" height="16" rx="4" fill="#4d4d4d"/>
+        <rect x="24" y="52" width="172" height="12" rx="4" fill="#4d4d4d"/>
+        <rect x="24" y="72" width="140" height="12" rx="4" fill="#4d4d4d"/>
+        <text class="caption" x="110" y="128" text-anchor="middle">selected</text>
+      </g>
+      <g id="card-disabled" transform="translate(732 0)">
+        <rect width="220" height="140" rx="16" fill="#333" fill-opacity="0.55"/>
+        <rect x="24" y="24" width="120" height="16" rx="4" fill="#4d4d4d" fill-opacity="0.55"/>
+        <rect x="24" y="52" width="172" height="12" rx="4" fill="#4d4d4d" fill-opacity="0.55"/>
+        <rect x="24" y="72" width="140" height="12" rx="4" fill="#4d4d4d" fill-opacity="0.55"/>
+        <text class="caption" x="110" y="128" text-anchor="middle">disabled</text>
+      </g>
+      <g id="card-error" transform="translate(976 0)">
+        <rect width="220" height="140" rx="16" fill="#333"/>
+        <rect x="12" y="16" width="4" height="108" rx="2" fill="#c1272d"/>
+        <rect x="36" y="24" width="120" height="16" rx="4" fill="#4d4d4d"/>
+        <rect x="36" y="52" width="160" height="12" rx="4" fill="#4d4d4d"/>
+        <rect x="36" y="72" width="128" height="12" rx="4" fill="#4d4d4d"/>
+        <text class="caption" x="120" y="128" text-anchor="middle">error</text>
+      </g>
+      <text class="note" x="0" y="176">dragging 未畫出（見批次擱置事項：拖曳／拖放中視覺）</text>
+    </g>
+  </g>
+
+  <!-- ===================== List ===================== -->
+
+  <g id="c-list" class="ui" transform="translate(48 1120)">
+    <text class="section" x="0" y="0">List</text>
+    <text class="note" x="0" y="28">48 px row · individually-rounded rows + 4 px gap (處處是圓, not adjoining flat dividers) · component.list-item.*</text>
+    <g transform="translate(0 56)">
+      <g id="list-basic" transform="translate(0 0)">
+        <text class="caption" x="0" y="-8" fill="#666">selection：整列點擊＋前導勾選</text>
+        <g id="list-item-default" transform="translate(0 0)">
+          <rect width="320" height="48" rx="8" fill="none"/>
+          <rect x="16" y="14" width="20" height="20" rx="4" fill="none" stroke="#f2f2f2" stroke-width="2"/>
+          <text class="label" x="52" y="29">draft-proposal.fig</text>
+          <text class="caption" x="304" y="29" text-anchor="end">default</text>
+        </g>
+        <g id="list-item-hover" transform="translate(0 52)">
+          <rect width="320" height="48" rx="8" fill="#ffffff" fill-opacity="0.06"/>
+          <rect x="16" y="14" width="20" height="20" rx="4" fill="none" stroke="#f2f2f2" stroke-width="2"/>
+          <text class="label" x="52" y="29">kanban-icons.ai</text>
+          <text class="caption" x="304" y="29" text-anchor="end">hover</text>
+        </g>
+        <g id="list-item-selected" transform="translate(0 104)">
+          <rect width="320" height="48" rx="8" fill="#598ae8" fill-opacity="0.18"/>
+          <rect x="0" y="8" width="3" height="32" rx="1.5" fill="#598ae8"/>
+          <path class="icon" d="M18 24l4 4 6-8" stroke="#598ae8"/>
+          <text class="label" x="52" y="29">token-export.json</text>
+          <text class="caption" x="304" y="29" text-anchor="end">selected</text>
+        </g>
+        <g id="list-item-disabled" transform="translate(0 156)">
+          <rect x="16" y="14" width="20" height="20" rx="4" fill="none" stroke="#f2f2f2" stroke-width="2" stroke-opacity="0.55"/>
+          <text class="label" x="52" y="29" fill="#f2f2f2" fill-opacity="0.55">archived-v0.svg</text>
+          <text class="caption" x="304" y="29" text-anchor="end">disabled</text>
+        </g>
+      </g>
+      <g id="list-row-action" transform="translate(384 0)">
+        <text class="caption" x="0" y="-8" fill="#666">row action：列尾動作按鈕，不觸發選取</text>
+        <g transform="translate(0 0)">
+          <rect width="320" height="48" rx="8" fill="none"/>
+          <text class="label" x="16" y="29">everline_p1.ai</text>
+          <g transform="translate(272 4)">
+            <rect width="40" height="40" rx="8" fill="transparent"/>
+            <path class="icon" d="M12 12l16 16 M28 12L12 28" stroke="#f2f2f2"/>
+          </g>
+          <text class="caption" x="304" y="66" text-anchor="end">action ≠ selection</text>
+        </g>
+      </g>
+      <g id="list-grouped" transform="translate(768 0)">
+        <text class="caption" x="0" y="-8" fill="#666">grouped</text>
+        <rect x="0" y="0" width="320" height="16" fill="none"/>
+        <text class="caption" x="0" y="12" fill="#666">今天</text>
+        <g transform="translate(0 24)">
+          <rect width="320" height="48" rx="8" fill="none"/>
+          <rect x="16" y="14" width="20" height="20" rx="4" fill="none" stroke="#f2f2f2" stroke-width="2"/>
+          <text class="label" x="52" y="29">meeting-notes.md</text>
+        </g>
+        <text class="caption" x="0" y="92" fill="#666">本週稍早</text>
+        <g transform="translate(0 104)">
+          <rect width="320" height="48" rx="8" fill="none"/>
+          <rect x="16" y="14" width="20" height="20" rx="4" fill="none" stroke="#f2f2f2" stroke-width="2"/>
+          <text class="label" x="52" y="29">roadmap.pdf</text>
+        </g>
+      </g>
+      <text class="note" x="0" y="244">empty、loading 未畫出（見批次擱置事項）</text>
+    </g>
+  </g>
+
+  <!-- ===================== Data table ===================== -->
+
+  <g id="c-data-table" class="ui" transform="translate(48 1560)">
+    <text class="section" x="0" y="0">Data table</text>
+    <text class="note" x="0" y="28">single row-height (48 px) only this pass · component.list-item.* rows · density/pagination undecided</text>
+    <g transform="translate(0 56)">
+      <g id="data-table-default" transform="translate(0 0)">
+        <rect width="640" height="48" rx="8" fill="#333"/>
+        <rect x="16" y="14" width="20" height="20" rx="4" fill="none" stroke="#666" stroke-width="2"/>
+        <text class="label" x="52" y="29" fill="#666">名稱</text>
+        <g transform="translate(300 14)">
+          <text class="label" x="0" y="15" fill="#666">狀態</text>
+          <path class="icon" d="M40 6l5 5 5-5" stroke="#598ae8" stroke-width="1.6"/>
+        </g>
+        <text class="label" x="480" y="29" fill="#666">更新時間</text>
+      </g>
+      <g id="data-table-row-default" transform="translate(0 52)">
+        <rect width="640" height="48" rx="8" fill="none"/>
+        <rect x="16" y="14" width="20" height="20" rx="4" fill="none" stroke="#f2f2f2" stroke-width="2"/>
+        <text class="label" x="52" y="29">看板 A — Sprint 12</text>
+        <text class="label" x="300" y="29">進行中</text>
+        <text class="caption" x="480" y="29">2 小時前</text>
+        <text class="caption" x="624" y="29" text-anchor="end">default</text>
+      </g>
+      <g id="data-table-row-hover" transform="translate(0 104)">
+        <rect width="640" height="48" rx="8" fill="#ffffff" fill-opacity="0.06"/>
+        <rect x="16" y="14" width="20" height="20" rx="4" fill="none" stroke="#f2f2f2" stroke-width="2"/>
+        <text class="label" x="52" y="29">看板 B — 資產整理</text>
+        <text class="label" x="300" y="29">封存</text>
+        <text class="caption" x="480" y="29">1 天前</text>
+        <text class="caption" x="624" y="29" text-anchor="end">hover</text>
+      </g>
+      <g id="data-table-row-selected" transform="translate(0 156)">
+        <rect width="640" height="48" rx="8" fill="#598ae8" fill-opacity="0.18"/>
+        <rect x="0" y="8" width="3" height="32" rx="1.5" fill="#598ae8"/>
+        <path class="icon" d="M18 24l4 4 6-8" stroke="#598ae8"/>
+        <text class="label" x="52" y="29">看板 C — 元件審查</text>
+        <text class="label" x="300" y="29">進行中</text>
+        <text class="caption" x="480" y="29">剛剛</text>
+        <text class="caption" x="624" y="29" text-anchor="end">selected</text>
+      </g>
+      <text class="note" x="0" y="244">pagination、loading、empty、row/cell error 未畫出（見批次擱置事項）</text>
+    </g>
+  </g>
+
+  <!-- ===================== Task card ===================== -->
+
+  <g id="c-task-card" class="ui" transform="translate(48 1980)">
+    <text class="section" x="0" y="0">Task card</text>
+    <text class="note" x="0" y="28">status dot + title + tags (base) · due-date + assignee (candidate) · extends component.card.*</text>
+    <g transform="translate(0 56)">
+      <g id="task-card-default" transform="translate(0 0)">
+        <rect width="240" height="132" rx="16" fill="#333"/>
+        <circle cx="28" cy="28" r="4" fill="#666"/>
+        <text class="label" x="40" y="32">重新設計登入頁</text>
+        <g transform="translate(20 56)">
+          <rect width="72" height="28" rx="14" fill="#4d4d4d"/>
+          <text class="caption" x="36" y="18" text-anchor="middle" fill="#f2f2f2">前端</text>
+        </g>
+        <g transform="translate(100 56)">
+          <rect width="72" height="28" rx="14" fill="#4d4d4d"/>
+          <text class="caption" x="36" y="18" text-anchor="middle" fill="#f2f2f2">P1</text>
+        </g>
+        <text class="caption" x="120" y="120" text-anchor="middle">default</text>
+      </g>
+      <g id="task-card-hover" transform="translate(264 0)">
+        <rect width="240" height="132" rx="16" fill="#333"/>
+        <rect width="240" height="132" rx="16" fill="#ffffff" fill-opacity="0.06"/>
+        <circle cx="28" cy="28" r="4" fill="#666"/>
+        <text class="label" x="40" y="32">重新設計登入頁</text>
+        <g transform="translate(20 56)">
+          <rect width="72" height="28" rx="14" fill="#4d4d4d"/>
+          <text class="caption" x="36" y="18" text-anchor="middle" fill="#f2f2f2">前端</text>
+        </g>
+        <text class="caption" x="120" y="120" text-anchor="middle">hover</text>
+      </g>
+      <g id="task-card-selected" transform="translate(528 0)">
+        <rect x="1" y="1" width="238" height="130" rx="15" fill="#333" stroke="#598ae8" stroke-width="2"/>
+        <circle cx="28" cy="28" r="4" fill="#666"/>
+        <text class="label" x="40" y="32">重新設計登入頁</text>
+        <g transform="translate(20 56)">
+          <rect width="72" height="28" rx="14" fill="#4d4d4d"/>
+          <text class="caption" x="36" y="18" text-anchor="middle" fill="#f2f2f2">前端</text>
+        </g>
+        <text class="caption" x="120" y="120" text-anchor="middle">selected</text>
+      </g>
+      <g id="task-card-done" transform="translate(792 0)">
+        <rect width="240" height="132" rx="16" fill="#333"/>
+        <circle cx="28" cy="28" r="4" fill="#598ae8"/>
+        <text class="label" x="40" y="32" fill="#f2f2f2" fill-opacity="0.55">重新設計登入頁</text>
+        <g transform="translate(20 56)">
+          <rect width="72" height="28" rx="14" fill="#4d4d4d" fill-opacity="0.55"/>
+          <text class="caption" x="36" y="18" text-anchor="middle" fill="#f2f2f2" fill-opacity="0.55">前端</text>
+        </g>
+        <text class="caption" x="120" y="120" text-anchor="middle">done</text>
+      </g>
+      <g id="task-card-blocked" transform="translate(1056 0)">
+        <rect width="240" height="132" rx="16" fill="#333"/>
+        <circle cx="28" cy="28" r="4" fill="#c1272d"/>
+        <text class="label" x="40" y="32">重新設計登入頁</text>
+        <g transform="translate(20 56)">
+          <rect width="88" height="28" rx="14" fill="#c1272d"/>
+          <text class="caption" x="44" y="18" text-anchor="middle" fill="#fff">已阻擋</text>
+        </g>
+        <text class="caption" x="120" y="120" text-anchor="middle">blocked</text>
+      </g>
+      <g id="task-card-extended-fields" transform="translate(1320 0)">
+        <rect width="240" height="156" rx="16" fill="#333"/>
+        <circle cx="28" cy="28" r="4" fill="#666"/>
+        <text class="label" x="40" y="32">重新設計登入頁</text>
+        <g transform="translate(20 56)">
+          <rect width="72" height="28" rx="14" fill="#4d4d4d"/>
+          <text class="caption" x="36" y="18" text-anchor="middle" fill="#f2f2f2">前端</text>
+        </g>
+        <g transform="translate(20 96)">
+          <rect x="0" y="4" width="16" height="14" rx="2" fill="none" stroke="#666" stroke-width="1.5"/>
+          <line x1="0" y1="9" x2="16" y2="9" stroke="#666" stroke-width="1.5"/>
+          <line x1="4" y1="0" x2="4" y2="6" stroke="#666" stroke-width="1.5"/>
+          <line x1="12" y1="0" x2="12" y2="6" stroke="#666" stroke-width="1.5"/>
+          <text class="caption" x="24" y="16">7/25 截止</text>
+        </g>
+        <circle cx="212" cy="104" r="12" fill="#4d4d4d"/>
+        <text class="caption" x="212" y="108" text-anchor="middle" fill="#f2f2f2">TZ</text>
+        <text class="caption" x="120" y="144" text-anchor="middle">候選欄位（非正式 Avatar 元件）</text>
+      </g>
+      <text class="note" x="0" y="176">dragging 未畫出（見批次擱置事項）</text>
+    </g>
+  </g>
+
+  <!-- ===================== Kanban column ===================== -->
+
+  <g id="c-kanban-column" class="ui" transform="translate(48 2430)">
+    <text class="section" x="0" y="0">Kanban column</text>
+    <text class="note" x="0" y="28">rounded cards + gaps only (處處是圓) · not the flat layout in works/TaylorConceptMockup1.svg (structural reference only)</text>
+    <g transform="translate(0 56)">
+      <g id="kanban-column-normal" transform="translate(0 0)">
+        <rect width="288" height="420" rx="16" fill="#262626"/>
+        <g transform="translate(16 16)">
+          <text class="label" x="0" y="16">進行中</text>
+          <rect x="228" y="0" width="28" height="20" rx="10" fill="#4d4d4d"/>
+          <text class="caption" x="242" y="14" text-anchor="middle" fill="#f2f2f2">3</text>
+        </g>
+        <g transform="translate(16 48)">
+          <rect width="256" height="84" rx="16" fill="#333"/>
+          <circle cx="20" cy="20" r="4" fill="#598ae8"/>
+          <text class="label" x="32" y="24">重新設計登入頁</text>
+          <g transform="translate(16 44)">
+            <rect width="64" height="24" rx="12" fill="#4d4d4d"/>
+            <text class="caption" x="32" y="16" text-anchor="middle" fill="#f2f2f2">前端</text>
+          </g>
+        </g>
+        <g transform="translate(16 140)">
+          <rect width="256" height="84" rx="16" fill="#333"/>
+          <circle cx="20" cy="20" r="4" fill="#666"/>
+          <text class="label" x="32" y="24">補齊無障礙檢查</text>
+          <g transform="translate(16 44)">
+            <rect width="64" height="24" rx="12" fill="#4d4d4d"/>
+            <text class="caption" x="32" y="16" text-anchor="middle" fill="#f2f2f2">QA</text>
+          </g>
+        </g>
+        <g transform="translate(16 232)">
+          <rect width="256" height="84" rx="16" fill="#333"/>
+          <circle cx="20" cy="20" r="4" fill="#c1272d"/>
+          <text class="label" x="32" y="24">API 回應格式待確認</text>
+          <g transform="translate(16 44)">
+            <rect width="72" height="24" rx="12" fill="#c1272d"/>
+            <text class="caption" x="36" y="16" text-anchor="middle" fill="#fff">已阻擋</text>
+          </g>
+        </g>
+        <text class="caption" x="144" y="404" text-anchor="middle">normal</text>
+      </g>
+      <g id="kanban-column-empty" transform="translate(320 0)">
+        <rect width="288" height="420" rx="16" fill="#262626"/>
+        <g transform="translate(16 16)">
+          <text class="label" x="0" y="16">待辦</text>
+          <rect x="228" y="0" width="28" height="20" rx="10" fill="#4d4d4d"/>
+          <text class="caption" x="242" y="14" text-anchor="middle" fill="#f2f2f2">0</text>
+        </g>
+        <g transform="translate(144 200)">
+          <circle r="20" fill="none" stroke="#666" stroke-width="2"/>
+          <path class="icon" d="M-8 0h16 M0 -8v16" stroke="#666"/>
+          <text class="caption" x="0" y="48" text-anchor="middle" fill="#666">目前沒有任務</text>
+        </g>
+        <text class="caption" x="144" y="404" text-anchor="middle">empty</text>
+      </g>
+      <g id="kanban-column-limit-reached" transform="translate(640 0)">
+        <rect width="288" height="420" rx="16" fill="#262626"/>
+        <g transform="translate(16 16)">
+          <text class="label" x="0" y="16">審查中</text>
+          <rect x="222" y="0" width="34" height="20" rx="10" fill="#c1272d"/>
+          <text class="caption" x="239" y="14" text-anchor="middle" fill="#fff">5/5</text>
+        </g>
+        <g transform="translate(16 48)">
+          <rect width="256" height="84" rx="16" fill="#333"/>
+          <circle cx="20" cy="20" r="4" fill="#598ae8"/>
+          <text class="label" x="32" y="24">Token 命名複查</text>
+          <g transform="translate(16 44)">
+            <rect width="64" height="24" rx="12" fill="#4d4d4d"/>
+            <text class="caption" x="32" y="16" text-anchor="middle" fill="#f2f2f2">審查</text>
+          </g>
+        </g>
+        <text class="caption" x="144" y="404" text-anchor="middle">limit-reached</text>
+      </g>
+      <text class="note" x="0" y="452">drag-over、collapsed、loading 未畫出（見批次擱置事項）</text>
+    </g>
+  </g>
+
+</svg>

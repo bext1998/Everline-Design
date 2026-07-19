@@ -1,6 +1,6 @@
 # Everline 狀態
 
-最後更新：2026-07-19
+最後更新：2026-07-20
 
 ## 收尾狀態
 
@@ -22,6 +22,9 @@
 - `works/everline-agent-components-v0.1.svg`（原 Badge／Tag、Inline alert 候選稿）已由上述總表取代，標記 `superseded-by`，保留為歷史快照、不再更新；對應舊預覽 `exports/everline-agent-components-v0.1.png` 同樣保留不動。
 - 候選規範與 token 分別位於 `docs/design-system-v0.1-draft.md` 與 `tokens/everline-draft.tokens.json`；已涵蓋來源中的 Button、Icon button、Switch、Checkbox、Radio、Split button／Dropdown、Text input／Textarea、Color swatch，以及 Badge／Tag、Inline alert、Select／Combobox、Menu／Context menu、Tabs、Tooltip、Modal／Dialog、Toast／Snackbar，整體尚未定稿。
 - 2026-07-19：經拋棄式原型比較（`tmp/prototype-html-components.html`，Button／Icon button／Switch／Text input／Badge／Menu／Modal／Tooltip）驗證後，使用者決定新增 `works/html/` 作為 HTML/CSS 候選元件原型的資料夾。流程為 Illustrator 構思 → SVG 產生候選稿供人類審查（第一批留在 `works/everline-components-master.svg`；第二批起改用獨立批次檔案，例如 `works/everline-components-batch2.svg`，避免單一總表過度膨脹）→ 審查確認沒問題後才轉為 `works/html/` 的 HTML/CSS，轉換後該元件以 HTML/CSS 為權威來源（「畢業」），對應 SVG 版本標記為歷史快照。既有 18 類候選不強制立即轉換，個別元件確定要轉換時才動作。規則已同步進 `AGENTS.md`、`docs/spec.md`。
+- 2026-07-20：第二批 7 類元件（Sidebar/Navigation rail、Toolbar、Card/Tile、List、Data table、Task card、Kanban column）已完成 SVG candidate 草稿並經使用者審查通過，位於獨立檔案 `works/everline-components-batch2.svg`，對應預覽 `exports/everline-components-batch2.png`，規格見 `docs/design-system-v0.1-batch2-draft.md`。已解決之前留下的共用 list-item token 開放問題：新增 `component.list-item.*`，只套用於 List／Data table／Kanban column，不回頭改動 Select／Split button／Menu。三個跨元件問題（拖曳／拖放視覺、空狀態／載入中佔位、密度／分頁）本批刻意擱置未畫。
+- 審查過程中發現並修正 4 個視覺問題（皆已用 headless Chrome 渲染核對）：Toolbar 各圖示（打勾／加號／叉叉／更多）原本各自用不同大小手繪座標、未對齊同一水平中心線，已統一為 24×24 基準框重繪；Toolbar 的 default 與 compact 兩個容器原本零間距黏在一起，已加開 32px 間距；Data table 表頭的 sorted 排序箭頭原本離「狀態」文字過遠且垂直未對齊，已移到文字正後方並對齊；Kanban column「normal」欄位內第一張 Task card 高度（100px）與其餘兩張（84px）不一致，已統一為 84px。
+- 審查通過只代表 SVG 視覺定案；HTML/CSS 轉換（「畢業」）另約時間進行，本次未執行。
 
 ## 已確認觀察
 

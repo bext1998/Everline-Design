@@ -34,7 +34,8 @@
       "action-danger": { "$type": "color", "$value": "{color.base.red}" },
       "border-default": { "$type": "color", "$value": "{color.base.gray-800}" },
       "border-focus": { "$type": "color", "$value": "{color.base.blue}" },
-      "background-overlay": { "$type": "color", "$value": "{color.base.gray-700}", "$description": "Unified surface for floating/overlay panels (Select and Split-button menu, Menu/Context menu, Tooltip, Modal). Added 2026-07-19 to replace 4 previously uncoordinated values (background-subdued, background-surface, a direct gray-800 reference, and Modal's unaliased #222222) that gave visually-similar floating panels inconsistent depth and, worse, borrowed background-subdued's 'disabled' semantic for interactive menu surfaces. Chosen over gray-800 specifically because gray-800 is border-default — reusing it would make every overlay panel's border invisible against its own fill." }
+      "background-overlay": { "$type": "color", "$value": "{color.base.gray-700}", "$description": "Unified surface for floating/overlay panels (Select and Split-button menu, Menu/Context menu, Tooltip, Modal). Added 2026-07-19 to replace 4 previously uncoordinated values (background-subdued, background-surface, a direct gray-800 reference, and Modal's unaliased #222222) that gave visually-similar floating panels inconsistent depth and, worse, borrowed background-subdued's 'disabled' semantic for interactive menu surfaces. Chosen over gray-800 specifically because gray-800 is border-default — reusing it would make every overlay panel's border invisible against its own fill." },
+      "foreground-subdued": { "$type": "color", "$value": "{color.base.gray-700}", "$description": "Batch 2 candidate (2026-07-20). Medium-emphasis text role (table headers, sidebar section labels, task-card meta text). Backfills a semantic token for a role several existing components (e.g. component.tabs.foreground-default) reached directly into color.base.gray-700 for, bypassing the semantic layer contrary to the project's own token-naming convention. Purely additive — does not change any existing component's rendered value." }
     }
   },
   "space": {
@@ -80,7 +81,8 @@
   "opacity": {
     "disabled": { "$type": "number", "$value": 0.55, "$description": "Applied via fill-opacity/opacity (or CSS opacity), not baked into a color value. Used with color.semantic.foreground-disabled so disabled text stays legible-but-muted; kept as a separate multiplier rather than an alpha hex color for portability to tools (e.g. Illustrator) with inconsistent #RRGGBBAA support." },
     "backdrop": { "$type": "number", "$value": 0.45, "$description": "Batch 1 candidate (2026-07-19). Applied to color.base.canvas (or #000000) via fill-opacity for the modal scrim; not baked into the color value, for the same portability reason as opacity.disabled." },
-    "hover-overlay": { "$type": "number", "$value": 0.06, "$description": "Batch 1 candidate (2026-07-19). Subtle white overlay for hover backgrounds on dark surfaces where a solid hover color isn't defined yet (e.g. Tabs hover), applied via fill=\"#ffffff\" fill-opacity." }
+    "hover-overlay": { "$type": "number", "$value": 0.06, "$description": "Batch 1 candidate (2026-07-19). Subtle white overlay for hover backgrounds on dark surfaces where a solid hover color isn't defined yet (e.g. Tabs hover), applied via fill=\"#ffffff\" fill-opacity." },
+    "selected-overlay": { "$type": "number", "$value": 0.18, "$description": "Batch 2 candidate (2026-07-20). Tinted selected-row background for component.list-item.* (List/Data table/Kanban column), applied to color.semantic.action-primary via fill-opacity. Deliberately a tint, not Select's existing solid action-primary fill — multi-row persistent selection (a table, a list) reads as a stack of buttons if every selected row is solid-filled; this only applies to the 3 new components, Select/Split-button/Menu are unchanged in this pass." }
   },
   "size": {
     "control-md": { "$type": "dimension", "$value": { "value": 48, "unit": "px" }, "$description": "Observed standard button and switch height." },
@@ -250,6 +252,82 @@
       "danger-icon-background": { "$type": "color", "$value": "{color.semantic.action-danger}" },
       "danger-icon-foreground": { "$type": "color", "$value": "{color.semantic.foreground-inverse}" },
       "icon-text-gap": { "$type": "dimension", "$value": { "value": 14, "unit": "px" }, "$description": "Candidate; user-specified range was 12-16 px." }
+    },
+    "list-item": {
+      "$description": "Batch 2 candidate (2026-07-20). Shared row language for List, Data table, and Kanban column's task-card rows only — deliberately NOT retrofitted onto Select/Split-button/Menu's existing selected-item visuals in this pass (see docs/design-system-v0.1-batch2-draft.md for the retrofit-later note).",
+      "height": { "$type": "dimension", "$value": "{size.control-md}" },
+      "padding-inline": { "$type": "dimension", "$value": "{space.2}" },
+      "gap": { "$type": "dimension", "$value": "{space.1}" },
+      "radius": { "$type": "dimension", "$value": "{radius.sm}" },
+      "row-gap": { "$type": "dimension", "$value": { "value": 4, "unit": "px" }, "$description": "Optical gap between adjoining individually-rounded rows, per 處處是圓; not a component scale step, same treatment as component.switch.thumb-inset." },
+      "background-hover": { "$type": "color", "$value": "#ffffff", "$description": "Combine with opacity.hover-overlay via fill-opacity, same technique as tabs/menu hover." },
+      "background-selected": { "$type": "color", "$value": "{color.semantic.action-primary}", "$description": "Combine with opacity.selected-overlay via fill-opacity — a tint, not a solid fill." },
+      "indicator-width": { "$type": "dimension", "$value": { "value": 3, "unit": "px" }, "$description": "Left accent bar on selected rows; a decorative accent, distinct from border.width-*." },
+      "indicator-color": { "$type": "color", "$value": "{color.semantic.action-primary}" },
+      "foreground-default": { "$type": "color", "$value": "{color.semantic.foreground-primary}" },
+      "foreground-disabled": { "$type": "color", "$value": "{color.semantic.foreground-disabled}" }
+    },
+    "sidebar": {
+      "$description": "Batch 2 candidate (2026-07-20). Single component with expanded and collapsed (rail) modes.",
+      "width-expanded": { "$type": "dimension", "$value": { "value": 256, "unit": "px" }, "$description": "Candidate reference width; unverified." },
+      "width-collapsed": { "$type": "dimension", "$value": { "value": 72, "unit": "px" }, "$description": "Candidate rail width; unverified." },
+      "item-height": { "$type": "dimension", "$value": "{size.control-md}" },
+      "item-radius": { "$type": "dimension", "$value": "{radius.sm}" },
+      "padding": { "$type": "dimension", "$value": "{space.2}" },
+      "section-header-foreground": { "$type": "color", "$value": "{color.semantic.foreground-subdued}" },
+      "notification-dot-size": { "$type": "dimension", "$value": { "value": 8, "unit": "px" } },
+      "notification-dot-color": { "$type": "color", "$value": "{color.semantic.action-primary}", "$description": "Candidate; whether notification dots should carry primary or danger semantics is flagged open, not decided in this pass." }
+    },
+    "toolbar": {
+      "$description": "Batch 2 candidate (2026-07-20).",
+      "height": { "$type": "dimension", "$value": "{size.control-md}" },
+      "compact-height": { "$type": "dimension", "$value": "{size.tag-md}" },
+      "padding-inline": { "$type": "dimension", "$value": "{space.2}" },
+      "item-gap": { "$type": "dimension", "$value": "{space.1}" },
+      "divider": { "$type": "color", "$value": "{color.semantic.border-default}" },
+      "background": { "$type": "color", "$value": "{color.semantic.background-surface}" }
+    },
+    "card": {
+      "$description": "Batch 2 candidate (2026-07-20). Generic content card, distinct from component.task-card.",
+      "radius": { "$type": "dimension", "$value": "{radius.lg}" },
+      "padding": { "$type": "dimension", "$value": "{space.3}" },
+      "background": { "$type": "color", "$value": "{color.semantic.background-surface}" },
+      "background-hover": { "$type": "color", "$value": "#ffffff", "$description": "Combine with opacity.hover-overlay via fill-opacity." },
+      "border-selected": { "$type": "color", "$value": "{color.semantic.action-primary}" },
+      "border-error": { "$type": "color", "$value": "{color.semantic.action-danger}", "$description": "Reuses Inline alert's 4px indicator-bar language rather than inventing a new error treatment." }
+    },
+    "list": {
+      "$description": "Batch 2 candidate (2026-07-20).",
+      "row-gap": { "$type": "dimension", "$value": "{component.list-item.row-gap}" },
+      "group-header-height": { "$type": "dimension", "$value": "{size.tag-md}" },
+      "group-header-foreground": { "$type": "color", "$value": "{color.semantic.foreground-subdued}" }
+    },
+    "data-table": {
+      "$description": "Batch 2 candidate (2026-07-20). Single row-height only in this pass; density and pagination are intentionally not yet defined.",
+      "header-height": { "$type": "dimension", "$value": "{size.control-md}" },
+      "header-background": { "$type": "color", "$value": "{color.semantic.background-surface}" },
+      "header-foreground": { "$type": "color", "$value": "{color.semantic.foreground-subdued}" },
+      "sort-indicator-color": { "$type": "color", "$value": "{color.semantic.action-primary}" },
+      "cell-padding-inline": { "$type": "dimension", "$value": "{space.2}" }
+    },
+    "kanban-column": {
+      "$description": "Batch 2 candidate (2026-07-20). Must render as individually-rounded cards with gaps — never the flat/table layout referenced in works/TaylorConceptMockup1.svg, which is a structural reference only, not a style source.",
+      "width": { "$type": "dimension", "$value": { "value": 320, "unit": "px" }, "$description": "Candidate reference width; unverified." },
+      "radius": { "$type": "dimension", "$value": "{radius.lg}" },
+      "header-height": { "$type": "dimension", "$value": "{size.control-md}" },
+      "header-background": { "$type": "color", "$value": "{color.semantic.background-surface}" },
+      "card-gap": { "$type": "dimension", "$value": "{component.list-item.row-gap}" },
+      "limit-badge-color": { "$type": "color", "$value": "{color.semantic.action-danger}" }
+    },
+    "task-card": {
+      "$description": "Batch 2 candidate (2026-07-20). Extends component.card.*; status-dot colors constrained to the existing approved palette, no unapproved success/warning hues.",
+      "status-dot-size": { "$type": "dimension", "$value": { "value": 8, "unit": "px" } },
+      "status-dot-default": { "$type": "color", "$value": "{color.base.gray-600}" },
+      "status-dot-done": { "$type": "color", "$value": "{color.semantic.action-primary}", "$description": "No approved success/green token yet; reuses action-primary blue to mean 'complete' pending a real success-color decision." },
+      "status-dot-blocked": { "$type": "color", "$value": "{color.semantic.action-danger}" },
+      "tag-gap": { "$type": "dimension", "$value": "{space.1}" },
+      "due-date-foreground": { "$type": "color", "$value": "{color.semantic.foreground-subdued}" },
+      "assignee-avatar-size": { "$type": "dimension", "$value": { "value": 24, "unit": "px" }, "$description": "Lightweight ad-hoc avatar placeholder for the assignee candidate field — deliberately not component.avatar.*; Avatar/Avatar group remains a second-phase candidate, out of v0.1 scope per docs/TODO.md." }
     }
   },
   "font": {
