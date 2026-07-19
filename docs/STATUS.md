@@ -17,8 +17,8 @@
 - 2026-07-13 的設計草圖已更新 Everline Design Language 的第一批可視化 UI 語彙，包含預設按鈕、圖示按鈕、開關按鈕、分割按鈕、下拉選單、單行輸入框、多行文字輸入框與基礎色票。
 - 對應的可編輯來源是 `works/illustrator/everline_p1.ai`，目前預覽是 `works/eve工作區域 1.png`。
 - `works/everline_p1.svg` 與 `works/everline_p1.pdf` 是 2026-07-16 提供的交換格式；已驗證兩者畫板皆為 1920 × 1080，視覺內容一致。
-- 2026-07-19：原 `works/72ppi/` 子資料夾已攤平併入 `works/`，`works/everline_p1.ai` 另搬至 `works/illustrator/`；皆經使用者同意。
-- 目前持續維護的完整候選視覺來源是 `works/everline-components-master.svg`（2026-07-19 建立），對應預覽為 `exports/everline-components-master.png`；內容涵蓋既有 9 類元件、重畫的 Badge／Tag、Inline alert，以及第一批 6 類新元件，共 17 類 candidate。
+- 2026-07-19：`works/everline_p1.ai` 搬至 `works/illustrator/`，經使用者同意（`works/72ppi/` 攤平併入 `works/` 見下方「專案整理」）。
+- 目前持續維護的完整候選視覺來源是 `works/everline-components-master.svg`（2026-07-19 建立，共 17 類 candidate，明細見上方「收尾狀態」），對應預覽為 `exports/everline-components-master.png`。
 - `works/everline-agent-components-v0.1.svg`（原 Badge／Tag、Inline alert 候選稿）已由上述總表取代，標記 `superseded-by`，保留為歷史快照、不再更新；對應舊預覽 `exports/everline-agent-components-v0.1.png` 同樣保留不動。
 - 候選規範與 token 分別位於 `docs/design-system-v0.1-draft.md` 與 `tokens/everline-draft.tokens.json`；已涵蓋來源中的 Button、Icon button、Switch、Checkbox、Radio、Split button／Dropdown、Text input／Textarea、Color swatch，以及 Badge／Tag、Inline alert、Select／Combobox、Menu／Context menu、Tabs、Tooltip、Modal／Dialog、Toast／Snackbar，整體尚未定稿。
 
