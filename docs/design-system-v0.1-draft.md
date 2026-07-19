@@ -1,9 +1,10 @@
 # Everline v0.1 設計系統草稿
 
 狀態：`candidate`  
-建立日期：2026-07-16  
-來源：`works/72ppi/everline_p1.svg`、`works/72ppi/everline_p1.pdf`  
-候選向量稿：`works/everline-agent-components-v0.1.svg`
+建立日期：2026-07-16（2026-07-19 更新：新增總表候選稿與 6 個第一批新元件）  
+來源：`works/everline_p1.svg`、`works/everline_p1.pdf`（2026-07-19 起，原 `works/72ppi/` 子資料夾已攤平併入 `works/`）  
+候選向量稿：`works/everline-components-master.svg`（目前持續維護的完整候選視覺來源，涵蓋既有元件與第一批新元件）  
+歷史候選稿：`works/everline-agent-components-v0.1.svg`（已由總表取代，僅保留為歷史快照，不再更新）
 
 本文件是受控延伸用的校準稿，不是穩定版規格。已觀察到的值與本次推導值分開記錄；使用者確認前，不應將候選內容視為 Everline 的凍結決策。
 
@@ -12,6 +13,7 @@
 - 元件放大與縮小一律以 8 px 為尺寸級距，並維持內部元素的相對比例。
 - 建議元件高度序列為 `32 / 40 / 48 / 56 / 64 px`；新增尺寸不得插入任意中間值。
 - 膠囊半徑可由元件高度的一半推導；1 px／2 px 描邊屬光學邊界，不當作元件縮放級距。若縮放後需要不同描邊，必須另行視覺驗證。
+- Everline v0.1 僅定義深色（dark）介面；淺色（light）主題不在本階段範圍內。若未來需要淺色主題，須另立規格與獨立 token 對照表，不假設現有語意 token 可直接反轉沿用。
 
 ## 設計原則候選
 
@@ -20,6 +22,7 @@
 - 圓潤但不柔弱：主要操作使用膠囊外形；較大資訊容器使用 16 px 圓角，保留工具介面的清晰邊界。
 - 低裝飾：以純色、描邊、間距及文字層級表達狀態，不先引入陰影或複雜漸層。
 - 漸進定稿：新元件先標記為 candidate，經視覺校準及產品情境驗證後才能升格。
+- 處處是圓（2026-07-19 新增，使用者確認）：Everline 的視覺識別建立在「所有元素皆為圓角或圓形」，沒有直角硬邊。容器內若有多個子項目（例如清單、看板欄位），子項目之間應各自保留圓角並以間距區隔，不得使用貼合的直角分隔列排成表格式版面；表格式、直角貼合的排版不屬於 Everline 語言，即使結構上合理也需重新以圓角卡片／間距呈現。
 
 ## Token 分類與來源
 
@@ -43,11 +46,58 @@
 - 8 px 基準間距階梯：`8 / 16 / 24 / 32 / 40 / 48 px`。
 - 大型資訊容器圓角：`16 px`。
 - compact tag 高度：`40 px`。
-- UI 字型暫用 `Microsoft JhengHei, system-ui, sans-serif`。來源 SVG 的文字已轉外框，無法驗證原始字型，因此這項必須人工確認。
+- UI 字型為 `Noto Sans TC, system-ui, sans-serif`。來源 SVG 的文字已轉外框，agent 端原本無法從檔案驗證原始字型；2026-07-19 由使用者直接確認實際使用 Noto Sans TC，已從候選值改為確認值。
+
+## Token 命名慣例
+
+2026-07-19 新增。隨著元件數量增加（目前已 14 個元件的 token 區塊），需要一個明確命名慣例，避免後續元件各自發明命名方式：
+
+- **全域 primitive**：`color.base.*`、`space.*`、`radius.*`、`size.*` 等，只放「觀察值」或不帶語意的基礎數值，不直接在元件中引用。
+- **語意層**：`color.semantic.*`，命名採 `{目的}-{強調層級}`，例如 `background-surface`、`foreground-disabled`、`action-danger`、`border-focus`。元件應優先引用語意層，只有語意層無法表達時才直接引用 base primitive。
+- **元件層**：`component.{元件名}.{屬性}[-{變體}]`，屬性命名需重用語意層已有的字根（`background-*`、`foreground-*`、`border-*`），避免同一概念在不同元件出現不同詞序或用字（例如應統一用 `menu-background`，不要有的元件寫成 `background-menu`）。
+- **不透明度獨立於顏色**：透明度一律另立 `opacity.*` 類別（例如 `opacity.disabled`），不烘進 8 位元 hex alpha 顏色值——原因見 `tokens/everline-draft.tokens.json` 中 `opacity.disabled` 的 `$description`（Illustrator 對 `#RRGGBBAA` 支援不穩定，2026-07-19 已實際踩雷過一次）。
+- 新增 token 前，先檢查語意層或既有元件 token 是否已可表達，不要為了「看起來更精確」而重新宣告一個數值相同但命名不同的 token。
+
+## 圖示系統
+
+2026-07-19 新增。目前所有元件內的圖示（打勾、chevron、驚嘆號、放大鏡、勾選圖示等）都是手繪 SVG path，尚未對接正式圖示庫，且從未被系統性定義過，僅在各元件小節零星提及「24 px 圖示」。以下把散落的慣例收斂成一致規則：
+
+- **圖示網格**：一般情境 24 px（`size.icon-md`）；緊湊情境（如 badge 前導圖示、小型狀態指示）16 px（`size.icon-sm`）。
+- **線寬**：候選 `2px`（`tokens` 新增 `icon.stroke-width`），沿用目前手繪圖示已一致使用的 stroke-width。
+- **對齊**：圖示在容器內採光學置中，不是純幾何置中（沿用 Icon button 既有規則，推廣為全域圖示規則）。
+- **狀態色**：圖示不單獨定義色彩系統，繼承所在元件當下的語意色（例如 disabled 元件內的圖示套用該元件的 `foreground-disabled` + `opacity.disabled`）。
+- **來源庫（新約束，使用者 2026-07-19 指定）**：正式導入圖示資產時，依實作情境選擇來源，兩者本質上都是 Lucide 圖示家族，差別只在技術情境：
+  - 若元件是以 **shadcn/ui** 組成（例如透過 shadcn/ui 的 Button／DropdownMenu／Dialog 等 recipe），直接使用該元件套件內建整合的圖示（即 `lucide-react`），不額外混用其他來源，以維持 shadcn/ui 元件內部一致性。
+  - 若情境不使用 shadcn/ui（例如純向量稿設計階段、非 React 實作、或需要 Illustrator 可編輯的圖示），直接取用 `docs/lucide-icons/` 圖示資產。
+  - 此約束不代表已確認 Taylor Kanban 或任一延伸產品的技術棧；只是 Everline 自己的圖示來源慣例，供未來任一採用者參考。
+- 比照 AGENTS.md 既有規則重申：第三方圖示庫（含 Lucide／shadcn）只作原型與參考，Everline 仍需維持自己的尺寸、線寬、對齊、狀態與命名規則，不因使用現成圖示庫而省略系統規範。
+- **待辦**：本文件目前所有元件內的手繪圖示都是暫時佔位，尚未替換為正式 Lucide／shadcn 圖示資產；替換時需保留來源、版本與授權紀錄（已封存版本 1.24.0）。
+- **注意（2026-07-19）**：`docs/lucide-icons/`、`docs/lucide-icons.zip`、`docs/lucide-font.zip` 已改為 `.gitignore` 排除的本機參考快取，不保證隨 repo clone 提供；若在其他環境找不到這些檔案，需自行從 Lucide 上游重新下載版本 1.24.0（或後續版本，並更新此處版本紀錄）。
+
+## 堆疊順序（Layer）候選
+
+2026-07-19 新增。Everline 目前已有 5 類會脫離正常文件流、彼此可能同時存在的浮動元件：Select／Split button 的展開面板、Menu、Tooltip、Modal（含 backdrop）、Toast。目前沒有任何規則定義它們同時出現時的疊放順序（例如：Modal 開啟中彈出一個確認 Toast，何者在上？Tooltip 出現在已開啟的 Menu 項目上，是否能正確蓋在 Menu 之上？）。`tokens/everline-draft.tokens.json` 新增 `layer.*` 候選數值：
+
+| Layer | 候選值 | 說明 |
+| --- | --- | --- |
+| `overlay` | 100 | Select／Split button／Menu 的展開面板 |
+| `tooltip` | 200 | 高於 overlay，因為 tooltip 可能出現在已開啟選單的項目上 |
+| `modal-backdrop` | 300 | |
+| `modal` | 310 | 僅高於自身 backdrop |
+| `toast` | 400 | 慣例上置頂，讓「已刪除」等關鍵回饋在 Modal 開啟／關閉中仍可見 |
+
+這組順序是常見慣例推論，不是已驗證的產品決策；尤其 `toast` 是否真的該蓋過開啟中的 `modal`，需要依 Everline／Taylor Kanban 實際互動情境確認。
+
+## 動效（Motion）候選
+
+2026-07-19 新增。Split button（來源 SVG 本身標註「需要動畫轉場特效」）、Modal（開闔動畫）、Tooltip（顯示／消失時機）皆已在規格文字中提到動畫，但過去沒有任何 token 支撐這些敘述。`tokens/everline-draft.tokens.json` 新增 `motion.*` 候選數值：`duration-fast`（120ms，hover／pressed 微互動）、`duration-base`（200ms，開合轉場）、`duration-slow`（320ms，保留給較大版面變化，目前尚無元件使用）、`easing-standard`（候選 ease-out 曲線）。
+
+- 所有開合／進出場動畫必須尊重 `prefers-reduced-motion`：使用者開啟減少動態偏好時，改為直接顯示／隱藏，不得延遲鍵盤操作（原本只在 Split button 提過，本次推廣為全域規則）。
+- 以上數值皆為候選，未經視覺驗證，定稿前不得由實作者自行套用為正式規格。
 
 ## 原始元件量測
 
-以下數值直接取自 `works/72ppi/everline_p1.svg`，屬於已查證的來源事實。帶小數或不符合系統級距的畫板尺寸只保留為追溯證據，不會全部轉成產品 token。
+以下數值直接取自 `works/everline_p1.svg`，屬於已查證的來源事實。帶小數或不符合系統級距的畫板尺寸只保留為追溯證據，不會全部轉成產品 token。
 
 | 元件 | SVG 實測 | 系統化處理 |
 | --- | --- | --- |
@@ -67,7 +117,7 @@
 | 元件 | 已畫出 | 規格需要但尚未畫出 |
 | --- | --- | --- |
 | Button | primary、neutral、disabled、danger、outline | hover、pressed、focused、loading |
-| Icon button | primary、neutral、disabled、danger | hover、pressed、focused、selected、tooltip |
+| Icon button | primary、neutral、disabled、danger、outline（2026-07-19 補上） | hover、pressed、focused、selected、tooltip |
 | Switch | on、off、disabled、danger-on | focused、loading、error feedback |
 | Checkbox | unchecked、checked、indeterminate、disabled | focused、error group |
 | Radio | unchecked、checked、disabled | focused、error group |
@@ -113,7 +163,7 @@
 ### 結構與變體
 
 - 48 × 48 px 圓形容器，候選圖示尺寸 24 px，圖示在容器內光學置中。
-- 沿用 Button 的 primary、neutral、danger、disabled 語意色；來源尚未畫 outline variant。
+- 沿用 Button 的 primary、neutral、danger、disabled 語意色；2026-07-19 補上 outline variant（candidate，非原始 Illustrator 來源，比照 Button outline 的 2 px 藍色描邊）。
 
 ### 狀態、互動與內容
 
@@ -333,10 +383,171 @@ Text input 用於單行短文字；Textarea 用於描述、備註與多行內容
 - 動態出現的一般資訊使用 `role="status"`；需立即處理的錯誤才使用 `role="alert"`。
 - 關閉按鈕需有可存取名稱。文字與背景對比需在整合產品時依實際字型與尺寸重新驗證。
 
+## Select / Combobox
+
+狀態：`candidate`（第一批新元件，2026-07-19）
+
+### 用途與邊界
+
+從固定選項中選取一項，適用於狀態、負責人、排序、篩選條件等情境。選項需要搜尋或內容過多時應改用 combobox 搜尋變體（2026-07-19 已補上候選畫面）。不適合用來執行命令，執行命令請用 Split button 或 Menu。
+
+### 結構與變體
+
+- Trigger 高度 48 px、radius 24 px、內距比照 Text input；右側 chevron 圖示指出開合方向。
+- 開啟面板貼齊 trigger 下緣，面板底部圓角 16 px，選項列高 48 px。
+
+### 狀態、互動與內容
+
+- 已畫出 `closed`、`open`（含 selected item 與 disabled item）、`disabled`、`combobox`（可輸入搜尋，篩選結果以主色標示相符文字）；`hover item`、`keyboard focus`、`loading` 尚未畫出。combobox 目前只示範文字比對高亮，尚未定義無結果、多選、非同步搜尋等狀態。
+- 2026-07-19 校準：combobox 的 2 px 藍色 focus 描邊改為包住整個 trigger ＋ 結果列表（而非只框住輸入列）。依據 Android／Material Design 3 的 SearchView「contained style」查證：搜尋框在展開狀態下與建議清單以同一個視覺容器呈現（"the SearchBar persists visually within the SearchView, creating a more expressive and visually cohesive experience"），因此 focus 指示應涵蓋整個容器輪廓，而不只是輸入欄本身。來源：[Material Design 3 Search guidelines](https://m3.material.io/components/search/guidelines)、[material-components-android Search.md](https://github.com/material-components/material-components-android/blob/master/docs/components/Search.md)。
+- `ArrowDown`／`Enter`／`Space` 開啟選單，方向鍵移動，`Enter` 選取並關閉，`Escape` 關閉且不變更目前值。
+- 選項文字使用名詞而非動詞，與 Split button 的可執行命令語彙區分。
+
+### 無障礙
+
+- 需要 combobox／listbox 語意，開啟狀態需暴露 `aria-expanded`。
+- 目前選取值需可由輔助科技辨識，不能只靠視覺樣式表達。
+
+## Menu / Context menu
+
+狀態：`candidate`（第一批新元件，2026-07-19）
+
+### 用途與邊界
+
+依目前選取物或游標位置提供相關操作，例如卡片右鍵、圖形物件操作、欄位設定。不適合承載長表單或多步驟流程。
+
+### 結構與變體
+
+- 面板圓角 16 px，選項列高 40 px（沿用 compact 元件高度），內距 8 px。
+- 群組之間以 1 px 分隔線區隔。
+
+### 狀態、互動與內容
+
+- 已畫出 `default item`、`hover item`（背景 gray-700）、`keyboard focus item`（2 px 藍色 focus ring）、`danger item`（紅字，需與一般選項分組）、`disabled item`，以及第二組候選面板示範的 `checked/toggled item`（勾選圖示，用於可切換選項如「顯示網格」）與帶鍵盤快捷鍵提示的一般 item（例如「貼齊邊界」搭配 `⌘G`，快捷鍵文字使用低強度 gray-600）。submenu 指示（例如右側箭頭）尚未畫出。
+- 方向鍵移動，`Enter` 執行，`Escape` 關閉並將焦點還給觸發元件。
+- 選項文字使用可執行動詞；破壞性選項需以分隔線與一般選項區隔。
+
+### 無障礙
+
+- 使用 menu／menuitem 語意；開啟時焦點需移入選單。
+- 關閉後焦點必須明確返回觸發元件，不可遺失。
+
+## Tabs
+
+狀態：`candidate`（第一批新元件，2026-07-19）
+
+### 用途與邊界
+
+在同一上下文內切換同層內容，例如卡片詳情的活動／設定／附件。不可用來表示跨層級導覽，也不可取代主要導覽。
+
+### 結構與變體
+
+- 底部 1 px 分隔線貫穿整列；選取中的 tab 以 2 px 主色底線標示。
+
+### 狀態、互動與內容
+
+- 已畫出 `selected`、`default`（未選取）、`disabled`、`hover`（以 6% 白色疊加背景表示，見 `tokens` 的 `opacity.hover-overlay`）；`focus-visible` 尚未畫出。
+- 方向鍵在群組內移動，`Tab` 鍵離開群組；標籤文字需簡短且彼此平行語法。
+
+### 無障礙
+
+- 使用 tablist／tab／tabpanel 語意；selected tab 需對應 `aria-selected` 並與 tabpanel 建立關聯。
+- disabled tab 需可被輔助科技識別為不可選取。
+
+## Tooltip
+
+狀態：`candidate`（第一批新元件，2026-07-19）
+
+### 用途與邊界
+
+在 hover 或鍵盤 focus 觸發元件時，補充其名稱或用途說明，常搭配 Icon button。不可承載主要資訊或可互動內容。
+
+### 結構與變體
+
+- 8 px 圓角提示框，出現在觸發元件右側，垂直置中對齊觸發元件中心；左側有指回觸發元件的小三角形。
+- 2026-07-19 校準修正：第一輪候選稿的箭頭與觸發元件中心沒對齊（座標計算錯誤）；曾短暫改為上方彈出樣式，使用者確認後改回側邊彈出（原始設計方向），並修正對齊，使提示框與觸發元件共用同一條垂直中心線。
+
+### 狀態、互動與內容
+
+- 已畫出 `shown` 的兩種 `placement`：`beside`（預設，右側彈出）與 `below`（觸發元件貼近畫面上緣或右緣時的替代位置）；`delay-in`、`delay-out`、`left`／`above` 等其餘 placement 變體尚未定義。兩種已畫出的 placement 皆以箭頭頂點對齊觸發元件中心為準則。
+- 只在 hover 或 focus 時出現，滑鼠移開或失焦即消失；純觸控裝置的替代呈現方式本批未定義。
+- 文案使用動作名稱，不重複圖示本身的視覺意義。
+
+### 無障礙
+
+- 觸發元件需有 `aria-describedby` 指向 tooltip 內容。
+- tooltip 本身不可成為 Tab 焦點停留點。
+
+## Modal / Dialog
+
+狀態：`candidate`（第一批新元件，2026-07-19）
+
+### 用途與邊界
+
+阻斷目前流程，要求使用者確認、輸入或處理重要資訊，例如刪除確認、建立看板。不應用於可在頁面內完成的輕量操作。
+
+### 結構與變體
+
+- 16 px 圓角容器：標題、說明文字、底部操作列（次要動作靠左、主要動作靠右，動作使用 compact 40 px 按鈕）。
+- 2026-07-19 已補畫遮罩（scrim）視覺樣式（見下方狀態說明）；實際 focus trap 行為仍需前端實作時另補。
+
+### 狀態、互動與內容
+
+- 已畫出 `default action`（主色確認按鈕）、`danger action`（紅色確認按鈕，用於不可逆操作）、`loading`（主要動作降低不透明度並附旋轉指示，次要動作同步停用）；`error`、多步驟變體尚未畫出。
+- 2026-07-19 補上 backdrop 視覺樣式（`#000000` 搭配 45% 不透明度，見 token `modal.backdrop-color` 與 `opacity.backdrop`），僅為靜態視覺示範；focus trap、開啟／關閉動畫等屬於行為規格，無法由靜態向量表達，仍待前端實作時定義。
+- 開啟時焦點需移入對話框並鎖定在框內（focus trap，本批未實作）；`Escape` 關閉非破壞性對話框。
+- 標題直接說明將發生的事；danger 對話框的說明文字需明確描述後果，不能只寫「確定」。
+
+### 無障礙
+
+- 使用 dialog／alertdialog 語意（danger 建議 alertdialog）。
+- 關閉後焦點需回到觸發元件。
+
+## Toast / Snackbar
+
+狀態：`candidate`（第一批新元件，2026-07-19）
+
+### 用途與邊界
+
+短暫顯示非阻斷式回饋，例如儲存、複製、刪除、同步結果。不可承載需要立即決策的內容（改用 Modal），也不可取代持續存在的狀態提示（改用 Inline alert）。
+
+### 結構與變體
+
+- 16 px 圓角膠囊型容器，高度 56 px；可選尾端文字動作（例如「復原」）。
+- 多筆同時觸發時以背後可見的堆疊卡片暗示佇列。
+
+### 狀態、互動與內容
+
+- 已畫出 `shown`（純訊息）、`with action`（含可點擊文字動作）、`queued`（背後可見下一筆）、`danger／error`（左側 4 px 紅色強調條＋警示圖示，搭配可點擊的「重試」文字動作）；自動消失時間、可關閉按鈕尚未定義。
+- 非阻斷、不搶焦點；有動作時該動作需可鍵盤操作。
+- 文案簡短直述結果，不需要句號。
+
+### 無障礙
+
+- 使用 `role="status"`（非緊急）呈現。
+- 不可只依賴自動消失時間讓使用者獲取資訊；關鍵回饋是否同時記錄在可回顧處（例如活動紀錄），留待產品情境確認。
+
 ## 校準清單
 
-- 待使用者確認字型家族與中文字重。
+- ✅ 已確認：字型家族為 Noto Sans TC（2026-07-19 使用者確認）；中文字重仍待進一步確認。
 - 待確認 compact 元件採用 40 px，或統一使用既有 48 px 控制高度。
 - 待確認 gray-600 是否真的是 input default surface，而不是暫時佔位狀態。
 - 待補 success／warning 語意色，但在有實際產品情境前不新增。
-- 待將確認後的元件回填至 Illustrator 主來源；本批不修改 `works/everline_p1.ai`。
+- 待將確認後的元件回填至 Illustrator 主來源；本批不修改 `works/illustrator/everline_p1.ai`。
+- 第一批新元件（Select/Combobox、Menu/Context menu、Tabs、Tooltip、Modal/Dialog、Toast/Snackbar）僅畫出核心狀態，見各元件小節「狀態、互動與內容」，尚未涵蓋完整無障礙與鍵盤操作驗證。
+- ✅ 已依使用者第二輪校準意見修正（2026-07-19）：
+  - disabled 前景色維持 off-white，但改用 `fill-opacity="0.55"`（而非 8 位元 hex alpha `#f2f2f28c`）表示 55% 不透明度——第一輪修正的色值在部分 SVG 檢視／編輯工具（例如 Illustrator）對 `#RRGGBBAA` 支援不一致，可能顯示為未套用透明度；`fill-opacity`／`stroke-opacity` 是 SVG 1.1 標準屬性，相容性更穩定。對應 token 見 `tokens/everline-draft.tokens.json` 的 `opacity.disabled`。
+  - Tooltip 依使用者決定改回側邊彈出樣式（原始設計方向），並修正對齊：觸發元件（圖示按鈕）與提示框的垂直中心線對齊在 y=24，箭頭三角形頂點精準指向該中心線，不再是先前因座標誤算導致的偏移。中途曾短暫改為上方彈出樣式，使用者已決定改回側邊樣式，不再採用上方彈出。
+- ✅ 已依使用者第三輪校準意見補齊（2026-07-19）：Icon button 補上 outline variant；Select 補上 combobox 搜尋變體；Menu 補上 checked/toggled item 與鍵盤快捷鍵提示；Tabs 補上 hover 狀態；Tooltip 補上 `below` placement（與既有 `beside` 並列）；Modal 補上 backdrop 視覺樣式與 `loading` 狀態；Toast 補上 `danger/error` 變體。目的是讓元件的不同形態更完整，方便後續建構設計系統與 design token；對應新 token 見 `tokens/everline-draft.tokens.json` 的 `opacity.backdrop`、`opacity.hover-overlay`、`component.modal.backdrop-color`、`component.tabs.hover-background`、`component.menu.checked-indicator`／`shortcut-foreground`、`component.select.search-match-highlight`。
+- ✅ 已依使用者第四輪校準意見修正（2026-07-19）：Tabs disabled 文字改用系統一致的 off-white 55% 透明度（原本 `#444` 實色在深色畫布上顯得突兀不一致）；Toast danger/error 移除左側紅色裝飾條、圖示改為與 Inline alert danger 一致的警示三角形（原本裸露的驚嘆線點圖示搭配裝飾條不符合既有 alert 圖示語彙）；Combobox 輸入框文字改回一般前景色（不應與結果列表的匹配高亮同色），並將 trigger 底部套用與 select-open 相同的圓角收平技法，使視覺結構與 Select 展開清單一致。另外排查了「元件存在於原始碼但未渲染」的回報，找到並修正了 combobox 結果列文字混用 `<tspan>` 局部上色卻未替外層 `<text>` 補上 `fill` 的脆弱寫法（全檔僅此兩處），其餘無法複現。
+- ✅ 已依使用者第五輪校準意見修正（2026-07-19）：查證 Android／Material Design 3 SearchView 慣例後，combobox 的 2 px 藍色 focus 描邊改為包住整個 trigger＋結果列表（詳見 Select/Combobox 小節說明與來源連結）；Toast danger/error 圖示位置修正對齊（原本三角形圖示 bounding box 偏左 9 px，與 shown/with action/queued 三個變體的圖示左緣不對齊，已對齊至與其餘變體一致的 x=20–38 範圍）。
+- ✅ 已依使用者第六輪校準意見修正（2026-07-19）：Toast danger/error 圖示太小、不易辨識為警示標誌，移除三角形外框，改為單獨放大的驚嘆號（垂直線 10 px＋圓點，stroke-width 2.5），並延伸至與其他 toast 圖示一致的 y=20–34 範圍，修正先前因三角形內縮導致視覺偏高的對齊問題。
+- ✅ 已依使用者第七輪校準意見修正（2026-07-19）：Toast danger/error 圖示改為 24×24 px 實心紅色圓形（`#c1272d`）＋白色驚嘆號，圖示與文字間距約 14 px（介於使用者要求的 12–16 px）；Toast 容器仍維持 `#333` 深灰底與 16 px 圓角，「重試」文字動作仍為主色藍，避免整個元件被紅色主導。
+
+## 設計系統／Token 全面檢查（2026-07-19）
+
+使用者要求檢查整個設計系統與 token 是否需要修改或增加規則。已直接新增的部分見上方「Token 命名慣例」「圖示系統」「堆疊順序（Layer）候選」「動效（Motion）候選」四個新章節，皆為純新增，不影響任何已核准的既有視覺。以下是同一次檢查中發現、但**會改變既有元件實際顏色**的問題，刻意不擅自執行，留待使用者決定：
+
+- ✅ 已解決（2026-07-19，使用者指示「先統一浮動面板背景色，改用新的 background-overlay token」）：新增 `color.semantic.background-overlay` = `{color.base.gray-700}`（`#4D4D4D`），並讓 Select／Split button 的選單面板、Menu 面板、Tooltip、Modal 全部改用這個共用語意 token，取代原本 4 種不一致的色值（含 Modal 原本未對應 base palette 的裸 hex `#222222`，一併收編）。選擇 gray-700 而非 gray-800，是因為 gray-800 已是 `border-default`——若重用會讓浮動面板自身的邊框在自己的底色上完全消失。副作用：Menu 的 hover 列原本也用 gray-700 實色，與新的面板底色相同會變成隱形；已改用與 Tabs hover 相同的手法（`#ffffff` + `opacity.hover-overlay` 疊加），而不是再發明一個新的實色值。已在 `works/everline-components-master.svg` 五個元件同步套用並渲染核對，無元件互相遮蔽或消失。
+- **⚠️ 待決定：focus ring 與 outline variant 目前共用同一組視覺（2 px 藍色描邊）**。Button／Icon button 的 `outline` 變體，與規格中提到但尚未畫出的 `focused` 狀態，目前都只能用「2 px 藍色描邊」表達，兩者在視覺上會完全一樣。真正開始畫 `focused` 狀態時，一個本身就是 outline 樣式的按鈕會分不清楚「這是 outline 變體」還是「這是目前被鍵盤聚焦」。建議：另立獨立的 focus ring 表現（例如外擴 2px 的偏移光暈，而非緊貼邊緣的描邊），但這也是需要視覺驗證的決定，非本次一併執行。
+- **後續建議（非本次動作項目）**：第二批（Sidebar／Toolbar／Card／List／Data table／Kanban column／Task card）會再新增至少 List、Data table、Kanban column 三個「可選取列」型元件。目前 Select 展開面板／Split button 選單／Menu 三者已經各自發展出選取列的視覺語彙（hover 背景、選取列強調條、checked 圖示等），彼此沒有共用一套「list item」token。建議在開始第二批前，先決定是否要抽出一組共用的 `component.list-item.*` token（hover/selected/disabled 背景、指示條寬度與色彩），供 Select、Split button、Menu、未來的 List／Data table／Kanban column 共同引用，避免同一個「選取列」概念在 6-7 個元件裡各自長出不同規則。

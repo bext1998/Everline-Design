@@ -3,7 +3,8 @@
   <title id="title">Everline v0.1 candidate components</title>
   <desc id="desc">Editable vector calibration board for Badge, Tag, and Inline alert components.</desc>
   <metadata>
-    source-reference: works/72ppi/everline_p1.svg; status: candidate; created: 2026-07-16; do-not-treat-as-frozen
+    source-reference: works/72ppi/everline_p1.svg; status: candidate; created: 2026-07-16; do-not-treat-as-frozen;
+    superseded-by: works/everline-components-master.svg (2026-07-19) — kept as a historical snapshot, no longer the maintained candidate source for Badge/Tag and Inline alert.
   </metadata>
   <defs>
     <style>

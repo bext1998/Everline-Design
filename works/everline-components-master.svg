@@ -1,0 +1,554 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="5424" viewBox="0 0 1920 5424" role="img" aria-labelledby="title desc">
+  <title id="title">Everline v0.1 components master sheet</title>
+  <desc id="desc">Consolidated candidate vector sheet combining existing and newly drafted Everline components.</desc>
+  <metadata>
+    source-reference: works/72ppi/everline_p1.svg (measurements) + docs/design-system-v0.1-draft.md (spec) + works/everline-agent-components-v0.1.svg (badge/tag, inline alert, reproduced here);
+    status: candidate; created: 2026-07-19; do-not-treat-as-frozen;
+    note: existing components are faithful reconstructions from verified measurements, not byte-identical copies (original text in everline_p1.svg is outlined and not reusable);
+    font-family confirmed by user as Noto Sans TC on 2026-07-19 (no longer a candidate value).
+  </metadata>
+  <defs>
+    <style>
+      .ui { font-family: "Noto Sans TC", system-ui, sans-serif; }
+      .title { font-size: 30px; font-weight: 700; fill: #fff; }
+      .section { font-size: 24px; font-weight: 600; fill: #f2f2f2; }
+      .body { font-size: 16px; font-weight: 400; fill: #f2f2f2; }
+      .label { font-size: 14px; font-weight: 600; fill: #f2f2f2; }
+      .note { font-size: 14px; font-weight: 400; fill: #a8a8a8; }
+      .caption { font-size: 12px; font-weight: 400; fill: #888; }
+      .alert-title { font-size: 17px; font-weight: 600; fill: #f2f2f2; }
+      .alert-body { font-size: 14px; font-weight: 400; fill: #b8b8b8; }
+      .icon { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2; }
+    </style>
+  </defs>
+
+  <rect width="1920" height="5424" fill="#1a1a1a"/>
+
+  <g id="board-heading" class="ui">
+    <text class="title" x="48" y="58">Everline Design Language — Components Master Sheet</text>
+    <text class="note" x="48" y="88">v0.1 candidate · consolidates existing + batch 1 components · source: everline_p1.svg measurements, design-system-v0.1-draft.md</text>
+    <g transform="translate(1630 32)">
+      <rect width="236" height="40" rx="20" fill="#333" stroke="#598ae8" stroke-width="2"/>
+      <circle cx="22" cy="20" r="6" fill="#598ae8"/>
+      <text class="label" x="38" y="25">CANDIDATE - NOT FROZEN</text>
+    </g>
+  </g>
+
+  <!-- ===================== EXISTING COMPONENTS (rebuilt for consistency) ===================== -->
+
+  <g id="c-button" class="ui" transform="translate(48 170)">
+    <text class="section" x="0" y="0">Button</text>
+    <text class="note" x="0" y="28">48 px height · pill radius 24 px · padding-inline 24 px</text>
+    <g transform="translate(0 56)">
+      <g transform="translate(0 0)">
+        <rect width="140" height="48" rx="24" fill="#598ae8"/>
+        <text class="label" x="70" y="30" text-anchor="middle" fill="#fff">預設</text>
+        <text class="caption" x="70" y="68" text-anchor="middle">primary</text>
+      </g>
+      <g transform="translate(164 0)">
+        <rect width="140" height="48" rx="24" fill="#333"/>
+        <text class="label" x="70" y="30" text-anchor="middle">預設</text>
+        <text class="caption" x="70" y="68" text-anchor="middle">neutral</text>
+      </g>
+      <g transform="translate(328 0)">
+        <rect width="140" height="48" rx="24" fill="#666"/>
+        <text class="label" x="70" y="30" text-anchor="middle" fill="#f2f2f2" fill-opacity="0.55">已停用</text>
+        <text class="caption" x="70" y="68" text-anchor="middle">disabled</text>
+      </g>
+      <g transform="translate(492 0)">
+        <rect width="140" height="48" rx="24" fill="#c1272d"/>
+        <text class="label" x="70" y="30" text-anchor="middle" fill="#fff">危險</text>
+        <text class="caption" x="70" y="68" text-anchor="middle">danger</text>
+      </g>
+      <g transform="translate(656 0)">
+        <rect x="1" y="1" width="138" height="46" rx="23" fill="#333" stroke="#598ae8" stroke-width="2"/>
+        <text class="label" x="70" y="30" text-anchor="middle">預設</text>
+        <text class="caption" x="70" y="68" text-anchor="middle">outline</text>
+      </g>
+    </g>
+  </g>
+
+  <g id="c-icon-button" class="ui" transform="translate(48 386)">
+    <text class="section" x="0" y="0">Icon button</text>
+    <text class="note" x="0" y="28">48 × 48 px · circular · 24 px icon area</text>
+    <g transform="translate(0 56)">
+      <g transform="translate(0 0)">
+        <rect width="48" height="48" rx="24" fill="#598ae8"/>
+        <text class="label" x="24" y="29" text-anchor="middle" fill="#fff" font-size="12">圖示</text>
+        <text class="caption" x="24" y="68" text-anchor="middle">primary</text>
+      </g>
+      <g transform="translate(72 0)">
+        <rect width="48" height="48" rx="24" fill="#333"/>
+        <text class="label" x="24" y="29" text-anchor="middle" font-size="12">圖示</text>
+        <text class="caption" x="24" y="68" text-anchor="middle">neutral</text>
+      </g>
+      <g transform="translate(144 0)">
+        <rect width="48" height="48" rx="24" fill="#666"/>
+        <text class="label" x="24" y="29" text-anchor="middle" fill="#f2f2f2" fill-opacity="0.55" font-size="12">圖示</text>
+        <text class="caption" x="24" y="68" text-anchor="middle">disabled</text>
+      </g>
+      <g transform="translate(216 0)">
+        <rect width="48" height="48" rx="24" fill="#c1272d"/>
+        <text class="label" x="24" y="29" text-anchor="middle" fill="#fff" font-size="12">圖示</text>
+        <text class="caption" x="24" y="68" text-anchor="middle">danger</text>
+      </g>
+      <g transform="translate(288 0)">
+        <rect x="1" y="1" width="46" height="46" rx="23" fill="#333" stroke="#598ae8" stroke-width="2"/>
+        <text class="label" x="24" y="29" text-anchor="middle" font-size="12">圖示</text>
+        <text class="caption" x="24" y="68" text-anchor="middle">outline</text>
+      </g>
+    </g>
+  </g>
+
+  <g id="c-switch" class="ui" transform="translate(48 602)">
+    <text class="section" x="0" y="0">Switch</text>
+    <text class="note" x="0" y="28">track 96 × 48 px · thumb 40 px · 4 px optical inset</text>
+    <g transform="translate(0 56)">
+      <g transform="translate(0 0)">
+        <rect width="96" height="48" rx="24" fill="#598ae8"/>
+        <circle cx="72" cy="24" r="20" fill="#f2f2f2"/>
+        <text class="caption" x="48" y="68" text-anchor="middle">on</text>
+      </g>
+      <g transform="translate(120 0)">
+        <rect width="96" height="48" rx="24" fill="#333"/>
+        <circle cx="24" cy="24" r="20" fill="#f2f2f2"/>
+        <text class="caption" x="48" y="68" text-anchor="middle">off</text>
+      </g>
+      <g transform="translate(240 0)">
+        <rect width="96" height="48" rx="24" fill="#333"/>
+        <circle cx="24" cy="24" r="20" fill="#666"/>
+        <text class="caption" x="48" y="68" text-anchor="middle">disabled</text>
+      </g>
+      <g transform="translate(360 0)">
+        <rect width="96" height="48" rx="24" fill="#c1272d"/>
+        <circle cx="72" cy="24" r="20" fill="#f2f2f2"/>
+        <text class="caption" x="48" y="68" text-anchor="middle">danger-on</text>
+      </g>
+    </g>
+  </g>
+
+  <g id="c-checkbox" class="ui" transform="translate(48 818)">
+    <text class="section" x="0" y="0">Checkbox</text>
+    <text class="note" x="0" y="28">32 × 32 px · radius 8 px · 20 px indicator</text>
+    <g transform="translate(0 56)">
+      <g transform="translate(0 0)">
+        <rect width="32" height="32" rx="8" fill="#333"/>
+        <path class="icon" d="M8 16l6 6 10-12" stroke="#598ae8"/>
+        <text class="label" x="44" y="22">已勾選狀態</text>
+      </g>
+      <g transform="translate(0 48)">
+        <rect width="32" height="32" rx="8" fill="#333"/>
+        <path class="icon" d="M8 16h16" stroke="#598ae8"/>
+        <text class="label" x="44" y="22">不確定狀態</text>
+      </g>
+      <g transform="translate(0 96)">
+        <rect width="32" height="32" rx="8" fill="#666"/>
+        <text class="label" x="44" y="22" fill="#888">已停用狀態</text>
+      </g>
+      <g transform="translate(0 144)">
+        <rect width="32" height="32" rx="8" fill="#333" stroke="#444" stroke-width="1"/>
+        <text class="label" x="44" y="22">取消勾選狀態</text>
+      </g>
+    </g>
+  </g>
+
+  <g id="c-radio" class="ui" transform="translate(48 1090)">
+    <text class="section" x="0" y="0">Radio</text>
+    <text class="note" x="0" y="28">32 × 32 px outer · 20 px selected indicator · always used within a radio group</text>
+    <g transform="translate(0 56)">
+      <g transform="translate(0 0)">
+        <circle cx="16" cy="16" r="16" fill="#333"/>
+        <circle cx="16" cy="16" r="10" fill="#598ae8"/>
+        <text class="label" x="44" y="22">已勾選狀態</text>
+      </g>
+      <g transform="translate(0 48)">
+        <circle cx="16" cy="16" r="16" fill="#666"/>
+        <text class="label" x="44" y="22" fill="#888">已停用狀態</text>
+      </g>
+      <g transform="translate(0 96)">
+        <circle cx="16" cy="16" r="16" fill="#333" stroke="#444" stroke-width="1"/>
+        <text class="label" x="44" y="22">取消勾選狀態</text>
+      </g>
+    </g>
+  </g>
+
+  <g id="c-split-button" class="ui" transform="translate(48 1322)">
+    <text class="section" x="0" y="0">Split button / Dropdown</text>
+    <text class="note" x="0" y="28">closed 180 × 48 px · disclosure 48 px · menu row 48 px · needs transition animation (per source note)</text>
+    <g transform="translate(0 56)">
+      <g id="split-closed" transform="translate(0 0)">
+        <rect width="180" height="48" rx="24" fill="#598ae8"/>
+        <line x1="132" y1="8" x2="132" y2="40" stroke="#4a76c9" stroke-width="1"/>
+        <text class="label" x="24" y="30" fill="#fff">分割</text>
+        <path class="icon" d="M148 20l8 8 8-8" stroke="#fff"/>
+        <text class="caption" x="90" y="68" text-anchor="middle">closed</text>
+      </g>
+      <g id="split-open" transform="translate(260 0)">
+        <rect width="180" height="48" rx="24" fill="#598ae8"/>
+        <rect y="24" width="180" height="24" fill="#598ae8"/>
+        <line x1="132" y1="8" x2="132" y2="40" stroke="#4a76c9" stroke-width="1"/>
+        <text class="label" x="24" y="30" fill="#fff">分割</text>
+        <path class="icon" d="M148 28l8-8 8 8" stroke="#fff"/>
+        <rect y="48" width="180" height="96" rx="24" fill="#4d4d4d"/>
+        <rect y="48" width="180" height="24" fill="#4d4d4d"/>
+        <text class="label" x="24" y="78">選項一</text>
+        <text class="label" x="24" y="126">選項二</text>
+        <text class="caption" x="90" y="164" text-anchor="middle">open</text>
+      </g>
+    </g>
+  </g>
+
+  <g id="c-text-input" class="ui" transform="translate(48 1682)">
+    <text class="section" x="0" y="0">Text input</text>
+    <text class="note" x="0" y="28">48 px height · radius 24 px · padding-inline 24 px</text>
+    <g transform="translate(0 56)">
+      <g transform="translate(0 0)">
+        <rect width="320" height="48" rx="24" fill="#666"/>
+        <text class="body" x="24" y="30" fill="#4d4d4d">請輸入文字</text>
+        <text class="caption" x="160" y="68" text-anchor="middle">empty</text>
+      </g>
+      <g transform="translate(344 0)">
+        <rect x="1" y="1" width="318" height="46" rx="23" fill="#666" stroke="#598ae8" stroke-width="2"/>
+        <text class="body" x="24" y="30" fill="#4d4d4d">請輸入文字</text>
+        <text class="caption" x="160" y="68" text-anchor="middle">focused</text>
+      </g>
+    </g>
+  </g>
+
+  <g id="c-textarea" class="ui" transform="translate(48 1898)">
+    <text class="section" x="0" y="0">Textarea</text>
+    <text class="note" x="0" y="28">256 × 128 / 256 × 256 px · radius 24 px · padding 16 px</text>
+    <g transform="translate(0 56)">
+      <g id="textarea-resizable" transform="translate(0 0)">
+        <rect width="256" height="128" rx="24" fill="#666"/>
+        <text class="body" x="16" y="30" fill="#4d4d4d">請輸入文字</text>
+        <path class="icon" d="M232 112l12-12 M240 116l8-8" stroke="#4d4d4d" stroke-width="1.5"/>
+        <text class="caption" x="128" y="148" text-anchor="middle">resizable</text>
+      </g>
+      <g id="textarea-scrollable" transform="translate(288 0)">
+        <rect width="256" height="256" rx="24" fill="#666"/>
+        <text class="body" x="16" y="30" fill="#4d4d4d">請輸入文字</text>
+        <rect x="232" y="16" width="10" height="224" rx="5" fill="#4d4d4d"/>
+        <path class="icon" d="M234 24l3-4 3 4 M234 224l3 4 3-4" stroke="#f2f2f2" stroke-width="1.5"/>
+        <text class="caption" x="128" y="276" text-anchor="middle">scrollable</text>
+      </g>
+    </g>
+  </g>
+
+  <g id="c-color-swatch" class="ui" transform="translate(48 2274)">
+    <text class="section" x="0" y="0">Color swatch</text>
+    <text class="note" x="0" y="28">source reference strip, not an interactive component (8 verified colors)</text>
+    <g transform="translate(0 56)">
+      <rect x="0" width="60" height="60" fill="#1a1a1a"/>
+      <rect x="60" width="60" height="60" fill="#333"/>
+      <rect x="120" width="60" height="60" fill="#444"/>
+      <rect x="180" width="60" height="60" fill="#4d4d4d"/>
+      <rect x="240" width="60" height="60" fill="#666"/>
+      <rect x="300" width="60" height="60" fill="#f2f2f2"/>
+      <rect x="360" width="60" height="60" fill="#598ae8"/>
+      <rect x="420" width="60" height="60" fill="#c1272d"/>
+    </g>
+  </g>
+
+  <g id="c-badge-tag" class="ui" transform="translate(48 2490)">
+    <text class="section" x="0" y="0">Badge / Tag</text>
+    <text class="note" x="0" y="28">40 px compact height · 16 px horizontal padding · pill radius · reproduced from works/everline-agent-components-v0.1.svg</text>
+    <g transform="translate(0 56)">
+      <g id="tag-neutral" transform="translate(0 0)">
+        <rect width="96" height="40" rx="20" fill="#333"/>
+        <text class="label" x="48" y="25" text-anchor="middle">一般</text>
+      </g>
+      <g id="tag-accent" transform="translate(112 0)">
+        <rect width="96" height="40" rx="20" fill="#598ae8"/>
+        <circle cx="18" cy="20" r="4" fill="#fff"/>
+        <text class="label" x="57" y="25" text-anchor="middle" fill="#fff">選取</text>
+      </g>
+      <g id="tag-danger" transform="translate(224 0)">
+        <rect width="96" height="40" rx="20" fill="#c1272d"/>
+        <path class="icon" d="M18 12v9 M18 27h.01" stroke="#fff"/>
+        <text class="label" x="58" y="25" text-anchor="middle" fill="#fff">阻擋</text>
+      </g>
+      <g id="tag-outline" transform="translate(336 0)">
+        <rect x="1" y="1" width="110" height="38" rx="19" fill="#333" stroke="#598ae8" stroke-width="2"/>
+        <text class="label" x="56" y="25" text-anchor="middle">已篩選</text>
+      </g>
+      <g id="tag-disabled" transform="translate(464 0)">
+        <rect width="96" height="40" rx="20" fill="#666"/>
+        <text class="label" x="48" y="25" text-anchor="middle" fill="#f2f2f2" fill-opacity="0.55">停用</text>
+      </g>
+      <g id="tag-removable" transform="translate(0 60)">
+        <rect width="144" height="40" rx="20" fill="#333"/>
+        <text class="label" x="16" y="25">高優先</text>
+        <path class="icon" d="M116 15l10 10 M126 15l-10 10" stroke="#f2f2f2"/>
+      </g>
+      <text class="note" x="158" y="84">removable：尾端圖示需有獨立命中區與可存取名稱</text>
+    </g>
+  </g>
+
+  <g id="c-inline-alert" class="ui" transform="translate(48 2762)">
+    <text class="section" x="0" y="0">Inline alert</text>
+    <text class="note" x="0" y="28">96 px minimum height · 16 px radius · semantic accent rail · reproduced from works/everline-agent-components-v0.1.svg</text>
+    <g transform="translate(0 56)">
+      <g id="alert-info" transform="translate(0 0)">
+        <rect width="760" height="96" rx="16" fill="#333"/>
+        <rect x="12" y="16" width="4" height="64" rx="2" fill="#598ae8"/>
+        <circle cx="48" cy="48" r="14" fill="none" stroke="#598ae8" stroke-width="2"/>
+        <path class="icon" d="M48 43v12 M48 38h.01" stroke="#598ae8"/>
+        <text class="alert-title" x="80" y="39">同步已暫停</text>
+        <text class="alert-body" x="80" y="67">重新連線後會繼續處理尚未上傳的變更。</text>
+        <g transform="translate(712 24)">
+          <path class="icon" d="M18 18l12 12 M30 18L18 30" stroke="#f2f2f2"/>
+        </g>
+      </g>
+      <g id="alert-danger" transform="translate(0 116)">
+        <rect width="760" height="96" rx="16" fill="#333"/>
+        <rect x="12" y="16" width="4" height="64" rx="2" fill="#c1272d"/>
+        <path class="icon" d="M48 33l15 28H33l15-28z M48 43v8 M48 56h.01" stroke="#c1272d"/>
+        <text class="alert-title" x="80" y="39">無法儲存變更</text>
+        <text class="alert-body" x="80" y="67">請保留此頁並檢查連線，避免遺失尚未同步的內容。</text>
+      </g>
+      <g id="alert-neutral" transform="translate(0 232)">
+        <rect width="760" height="96" rx="16" fill="#333"/>
+        <rect x="12" y="16" width="4" height="64" rx="2" fill="#666"/>
+        <circle cx="48" cy="48" r="14" fill="none" stroke="#f2f2f2" stroke-width="2"/>
+        <path class="icon" d="M43 48l4 4 8-9" stroke="#f2f2f2"/>
+        <text class="alert-title" x="80" y="39">草稿已保留</text>
+        <text class="alert-body" x="80" y="67">這項狀態不代表成功語意，僅確認本機草稿仍可使用。</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- ===================== NEW BATCH 1 COMPONENTS (candidate) ===================== -->
+
+  <g id="c-select" class="ui" transform="translate(48 3194)">
+    <text class="section" x="0" y="0">Select / Combobox</text>
+    <text class="note" x="0" y="28">candidate · 48 px trigger height · menu row 48 px · menu surface reuses background-subdued</text>
+    <g transform="translate(0 56)">
+      <g id="select-closed" transform="translate(0 0)">
+        <rect width="220" height="48" rx="24" fill="#333" stroke="#444" stroke-width="1"/>
+        <text class="body" x="24" y="30">請選擇分類</text>
+        <path class="icon" d="M182 20l8 8 8-8" stroke="#f2f2f2"/>
+        <text class="caption" x="110" y="68" text-anchor="middle">closed</text>
+      </g>
+      <g id="select-open" transform="translate(260 0)">
+        <rect width="220" height="48" rx="24" fill="#333" stroke="#444" stroke-width="1"/>
+        <rect y="24" width="220" height="24" fill="#333"/>
+        <text class="body" x="24" y="30">請選擇分類</text>
+        <path class="icon" d="M182 28l8-8 8 8" stroke="#f2f2f2"/>
+        <rect y="48" width="220" height="144" rx="16" fill="#4d4d4d"/>
+        <rect y="48" width="220" height="16" fill="#4d4d4d"/>
+        <text class="label" x="24" y="78">選項一</text>
+        <rect y="96" width="220" height="48" fill="#598ae8"/>
+        <rect x="12" y="104" width="4" height="32" rx="2" fill="#fff"/>
+        <text class="label" x="24" y="126" fill="#fff">選項二（已選取）</text>
+        <text class="label" x="24" y="174" fill="#666">選項三（已停用）</text>
+        <text class="caption" x="110" y="212" text-anchor="middle">open</text>
+      </g>
+      <g id="select-disabled" transform="translate(520 0)">
+        <rect width="220" height="48" rx="24" fill="#666"/>
+        <text class="body" x="24" y="30" fill="#f2f2f2" fill-opacity="0.55">請選擇分類</text>
+        <path class="icon" d="M182 20l8 8 8-8" stroke="#f2f2f2" stroke-opacity="0.55"/>
+        <text class="caption" x="110" y="68" text-anchor="middle">disabled</text>
+      </g>
+      <g id="select-combobox" transform="translate(780 0)">
+        <rect width="220" height="48" rx="24" fill="#333"/>
+        <rect y="24" width="220" height="24" fill="#333"/>
+        <circle cx="24" cy="20" r="6" class="icon" stroke="#a8a8a8"/>
+        <path d="M28 24l6 6" class="icon" stroke="#a8a8a8"/>
+        <text class="body" x="44" y="30" fill="#f2f2f2">看板</text>
+        <rect x="76" y="15" width="1.5" height="18" fill="#f2f2f2"/>
+        <rect y="48" width="220" height="96" rx="16" fill="#4d4d4d"/>
+        <rect y="48" width="220" height="16" fill="#4d4d4d"/>
+        <text class="label" x="24" y="78" fill="#f2f2f2"><tspan fill="#598ae8">看板</tspan>檢視</text>
+        <text class="label" x="24" y="126" fill="#f2f2f2"><tspan fill="#598ae8">看板</tspan>欄位設定</text>
+        <path d="M24 0H196A24 24 0 0 1 220 24V128A16 16 0 0 1 204 144H16A16 16 0 0 1 0 128V24A24 24 0 0 1 24 0Z" fill="none" stroke="#598ae8" stroke-width="2"/>
+        <text class="caption" x="110" y="164" text-anchor="middle">combobox (search + filter)</text>
+      </g>
+    </g>
+  </g>
+
+  <g id="c-menu" class="ui" transform="translate(48 3554)">
+    <text class="section" x="0" y="0">Menu / Context menu</text>
+    <text class="note" x="0" y="28">candidate · 40 px row height · shown open (trigger reuses Icon button / Button)</text>
+    <g transform="translate(0 56)">
+      <rect width="220" height="232" rx="16" fill="#4d4d4d" stroke="#444"/>
+      <g transform="translate(8 8)">
+        <text class="label" x="12" y="26">複製</text>
+        <rect y="40" width="204" height="40" rx="8" fill="#ffffff" fill-opacity="0.06"/>
+        <text class="label" x="12" y="66">貼上</text>
+        <text class="caption" x="192" y="66" text-anchor="end">hover</text>
+        <rect y="80" width="204" height="40" rx="8" fill="none" stroke="#598ae8" stroke-width="2"/>
+        <text class="label" x="12" y="106">重新命名</text>
+        <text class="caption" x="192" y="106" text-anchor="end">focus</text>
+        <line x1="0" y1="128" x2="204" y2="128" stroke="#444" stroke-width="1"/>
+        <text class="label" x="12" y="156" fill="#c1272d">刪除</text>
+        <text class="label" x="12" y="196" fill="#666">設為預設</text>
+        <text class="caption" x="192" y="196" text-anchor="end">disabled</text>
+      </g>
+      <g id="menu-toggle-variant" transform="translate(260 0)">
+        <rect width="220" height="152" rx="16" fill="#4d4d4d" stroke="#444"/>
+        <g transform="translate(8 8)">
+          <path class="icon" d="M4 14l4 4 8-9" stroke="#598ae8"/>
+          <text class="label" x="24" y="26">顯示網格</text>
+          <text class="caption" x="192" y="26" text-anchor="end">checked</text>
+          <text class="label" x="12" y="66">貼齊邊界</text>
+          <text class="caption" x="192" y="66" text-anchor="end" fill="#666">⌘G</text>
+          <line x1="0" y1="88" x2="204" y2="88" stroke="#444" stroke-width="1"/>
+          <text class="label" x="12" y="122">關閉面板</text>
+          <text class="caption" x="192" y="122" text-anchor="end" fill="#666">Esc</text>
+        </g>
+      </g>
+    </g>
+  </g>
+
+  <g id="c-tabs" class="ui" transform="translate(48 3914)">
+    <text class="section" x="0" y="0">Tabs</text>
+    <text class="note" x="0" y="28">candidate · same-level content switch · 2 px selected indicator</text>
+    <g transform="translate(0 56)">
+      <line x1="0" y1="40" x2="560" y2="40" stroke="#444" stroke-width="1"/>
+      <text class="label" x="0" y="24" fill="#fff">活動</text>
+      <line x1="0" y1="42" x2="48" y2="42" stroke="#598ae8" stroke-width="2"/>
+      <text class="body" x="80" y="24" fill="#a8a8a8">設定</text>
+      <text class="body" x="160" y="24" fill="#a8a8a8">附件</text>
+      <text class="body" x="240" y="24" fill="#f2f2f2" fill-opacity="0.55">紀錄</text>
+      <rect x="312" y="4" width="56" height="28" rx="6" fill="#ffffff" fill-opacity="0.06"/>
+      <text class="body" x="320" y="24" fill="#f2f2f2">預覽</text>
+      <text class="caption" x="0" y="66">selected</text>
+      <text class="caption" x="80" y="66">default</text>
+      <text class="caption" x="240" y="66">disabled</text>
+      <text class="caption" x="320" y="66">hover</text>
+    </g>
+  </g>
+
+  <g id="c-tooltip" class="ui" transform="translate(48 4090)">
+    <text class="section" x="0" y="0">Tooltip</text>
+    <text class="note" x="0" y="28">candidate · default placement is beside the trigger; falls back to below near a viewport edge</text>
+    <g transform="translate(0 56)">
+      <rect x="0" y="0" width="48" height="48" rx="24" fill="#333"/>
+      <text class="label" x="24" y="29" text-anchor="middle" font-size="12">圖示</text>
+      <path d="M64 18 L64 30 L56 24 Z" fill="#4d4d4d"/>
+      <rect x="64" y="6" width="96" height="36" rx="8" fill="#4d4d4d"/>
+      <text class="label" x="112" y="29" text-anchor="middle" fill="#f2f2f2" font-size="13">刪除任務</text>
+      <text class="caption" x="0" y="68">beside placement (default)</text>
+      <g transform="translate(200 0)">
+        <rect x="0" y="0" width="48" height="48" rx="24" fill="#333"/>
+        <text class="label" x="24" y="29" text-anchor="middle" font-size="12">圖示</text>
+        <path d="M18 64 L30 64 L24 56 Z" fill="#4d4d4d"/>
+        <rect x="-28" y="64" width="104" height="36" rx="8" fill="#4d4d4d"/>
+        <text class="label" x="24" y="87" text-anchor="middle" fill="#f2f2f2" font-size="13">刪除任務</text>
+        <text class="caption" x="24" y="120" text-anchor="middle">below placement</text>
+      </g>
+    </g>
+  </g>
+
+  <g id="c-modal" class="ui" transform="translate(48 4346)">
+    <text class="section" x="0" y="0">Modal / Dialog</text>
+    <text class="note" x="0" y="28">candidate · blocks current flow · 16 px container radius</text>
+    <g transform="translate(0 56)">
+      <g id="modal-default" transform="translate(0 0)">
+        <rect x="-16" y="-16" width="412" height="256" rx="16" fill="#000000" fill-opacity="0.45"/>
+        <rect width="380" height="200" rx="16" fill="#4d4d4d" stroke="#444"/>
+        <text class="alert-title" x="24" y="42">建立看板</text>
+        <text class="alert-body" x="24" y="70">確認建立後即可開始新增任務與欄位。</text>
+        <g transform="translate(160 144)">
+          <rect width="80" height="40" rx="20" fill="#333"/>
+          <text class="label" x="40" y="25" text-anchor="middle">取消</text>
+        </g>
+        <g transform="translate(252 144)">
+          <rect width="104" height="40" rx="20" fill="#598ae8"/>
+          <text class="label" x="52" y="25" text-anchor="middle" fill="#fff">建立</text>
+        </g>
+        <text class="caption" x="190" y="228" text-anchor="middle">default action · with backdrop</text>
+      </g>
+      <g id="modal-danger" transform="translate(460 0)">
+        <rect width="380" height="200" rx="16" fill="#4d4d4d" stroke="#444"/>
+        <text class="alert-title" x="24" y="42">刪除任務？</text>
+        <text class="alert-body" x="24" y="70">此操作無法復原，任務內容將永久刪除。</text>
+        <g transform="translate(160 144)">
+          <rect width="80" height="40" rx="20" fill="#333"/>
+          <text class="label" x="40" y="25" text-anchor="middle">取消</text>
+        </g>
+        <g transform="translate(252 144)">
+          <rect width="104" height="40" rx="20" fill="#c1272d"/>
+          <text class="label" x="52" y="25" text-anchor="middle" fill="#fff">刪除</text>
+        </g>
+        <text class="caption" x="190" y="228" text-anchor="middle">destructive action</text>
+      </g>
+      <g id="modal-loading" transform="translate(900 0)">
+        <rect width="380" height="200" rx="16" fill="#4d4d4d" stroke="#444"/>
+        <text class="alert-title" x="24" y="42">建立看板</text>
+        <text class="alert-body" x="24" y="70">正在建立，請稍候…</text>
+        <g transform="translate(160 144)">
+          <rect width="80" height="40" rx="20" fill="#333"/>
+          <text class="label" x="40" y="25" text-anchor="middle" fill="#f2f2f2" fill-opacity="0.55">取消</text>
+        </g>
+        <g transform="translate(252 144)">
+          <rect width="104" height="40" rx="20" fill="#598ae8" fill-opacity="0.55"/>
+          <circle cx="30" cy="20" r="10" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="12 8" stroke-linecap="round"/>
+          <text class="label" x="66" y="25" text-anchor="middle" fill="#fff">建立中</text>
+        </g>
+        <text class="caption" x="190" y="228" text-anchor="middle">loading</text>
+      </g>
+    </g>
+  </g>
+
+  <g id="c-toast" class="ui" transform="translate(48 4746)">
+    <text class="section" x="0" y="0">Toast / Snackbar</text>
+    <text class="note" x="0" y="28">candidate · transient non-blocking feedback · rounded surface</text>
+    <g transform="translate(0 56)">
+      <g id="toast-default" transform="translate(0 0)">
+        <rect width="280" height="56" rx="16" fill="#333"/>
+        <path class="icon" d="M20 28l6 6 12-14" stroke="#598ae8"/>
+        <text class="label" x="48" y="33">已複製連結</text>
+        <text class="caption" x="140" y="76" text-anchor="middle">shown</text>
+      </g>
+      <g id="toast-action" transform="translate(304 0)">
+        <rect width="280" height="56" rx="16" fill="#333"/>
+        <text class="label" x="20" y="33">已刪除任務</text>
+        <text class="label" x="220" y="33" fill="#598ae8">復原</text>
+        <text class="caption" x="140" y="76" text-anchor="middle">with action</text>
+      </g>
+      <g id="toast-queued" transform="translate(608 0)">
+        <rect x="8" y="8" width="272" height="48" rx="16" fill="#222"/>
+        <rect width="280" height="56" rx="16" fill="#333"/>
+        <text class="label" x="20" y="33">已同步 3 個項目</text>
+        <text class="caption" x="140" y="76" text-anchor="middle">queued</text>
+      </g>
+      <g id="toast-danger" transform="translate(912 0)">
+        <rect width="280" height="56" rx="16" fill="#333"/>
+        <circle cx="22" cy="28" r="12" fill="#c1272d"/>
+        <path class="icon" d="M22 22v8 M22 34h.01" stroke="#fff" stroke-width="2.2"/>
+        <text class="label" x="48" y="33">同步失敗</text>
+        <text class="label" x="220" y="33" fill="#598ae8">重試</text>
+        <text class="caption" x="140" y="76" text-anchor="middle">danger / error</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- ===================== TOKEN REFERENCE ===================== -->
+
+  <g id="token-reference" class="ui" transform="translate(48 4986)">
+    <text class="section" x="0" y="0">Candidate token reference</text>
+    <text class="note" x="0" y="28">Observed colors are confirmed; spacing and typography remain candidate values pending further product integration.</text>
+    <g transform="translate(0 56)">
+      <g><rect width="112" height="80" rx="12" fill="#1a1a1a" stroke="#444"/><text class="label" x="12" y="100">canvas</text><text class="note" x="12" y="122">#1A1A1A</text></g>
+      <g transform="translate(132 0)"><rect width="112" height="80" rx="12" fill="#333"/><text class="label" x="12" y="100">surface</text><text class="note" x="12" y="122">#333333</text></g>
+      <g transform="translate(264 0)"><rect width="112" height="80" rx="12" fill="#444"/><text class="label" x="12" y="100">gray-800</text><text class="note" x="12" y="122">#444444</text></g>
+      <g transform="translate(396 0)"><rect width="112" height="80" rx="12" fill="#4d4d4d"/><text class="label" x="12" y="100">gray-700</text><text class="note" x="12" y="122">#4D4D4D</text></g>
+      <g transform="translate(528 0)"><rect width="112" height="80" rx="12" fill="#666"/><text class="label" x="12" y="100">gray-600</text><text class="note" x="12" y="122">#666666</text></g>
+      <g transform="translate(660 0)"><rect width="112" height="80" rx="12" fill="#598ae8"/><text class="label" x="12" y="100">primary</text><text class="note" x="12" y="122">#598AE8</text></g>
+      <g transform="translate(792 0)"><rect width="112" height="80" rx="12" fill="#c1272d"/><text class="label" x="12" y="100">danger</text><text class="note" x="12" y="122">#C1272D</text></g>
+      <g transform="translate(924 0)"><rect width="112" height="80" rx="12" fill="#f2f2f2"/><text class="label" x="12" y="100">foreground</text><text class="note" x="12" y="122">#F2F2F2</text></g>
+    </g>
+  </g>
+
+  <g id="system-notes" class="ui" transform="translate(48 5226)">
+    <rect width="1824" height="150" rx="16" fill="#222" stroke="#444"/>
+    <text class="label" x="24" y="34">Calibration notes</text>
+    <text class="note" x="24" y="62">• Existing components (Button…Inline alert) are faithful reconstructions from verified measurements in docs/design-system-v0.1-draft.md, not pixel copies of works/72ppi/everline_p1.svg (its text is outlined and not reusable).</text>
+    <text class="note" x="24" y="86">• Font family confirmed as Noto Sans TC by the user on 2026-07-19; no longer a candidate value.</text>
+    <text class="note" x="24" y="110">• Select/Combobox, Menu/Context menu, Tabs, Tooltip, Modal/Dialog, Toast/Snackbar are new batch-1 candidates; states beyond what is drawn here still need definition.</text>
+    <text class="note" x="24" y="134">• This file does not replace works/everline_p1.ai. works/everline-agent-components-v0.1.svg is superseded by this file for viewing purposes but is kept as a historical snapshot.</text>
+  </g>
+</svg>

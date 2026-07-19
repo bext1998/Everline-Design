@@ -1,0 +1,8 @@
+# Third-party icon/font archives kept as local reference only, not versioned in this repo.
+docs/lucide-icons/
+docs/lucide-icons.zip
+docs/lucide-font.zip
+docs/lucide-font/
+
+# Illustrator lock/autosave log files.
+works/**/*.log

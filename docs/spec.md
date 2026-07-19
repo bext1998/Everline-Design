@@ -9,7 +9,7 @@ Everline 是一個圖形界面設計語言與設計系統專案，目的是為 T
 目前已知專案狀態：
 
 - `works/` 用於存放向量繪圖專案檔。
-- 目前已有向量原始檔 `works/everline_p1.ai`。
+- 目前已有向量原始檔 `works/illustrator/everline_p1.ai`。
 - Taylor Kanban 的 GitHub 連結目前尚未成功驗證，因此本文件不記錄其 repo 架構、實作細節或未確認功能。
 
 ## 核心問題
@@ -91,7 +91,7 @@ Everline 應支援未來逐步拆分為以下內容：
 - 同一資產的原始檔與匯出檔應能從檔名辨識關聯。
 - 若需要版本，可使用明確版本尾綴，例如 `brand-mark-primary-v2.ai`。
 
-目前的 `works/everline_p1.ai` 可視為既有原始檔；後續若重命名，應先確認是否已有外部引用。
+目前的 `works/illustrator/everline_p1.ai` 可視為既有原始檔；後續若再重命名，應先確認是否已有外部引用。Illustrator 原始專案檔統一存放於 `works/illustrator/`，此類工作檔命名不受本節命名規則約束。
 
 ### 4. 檔案版本管理規則
 
@@ -119,7 +119,8 @@ Everline Design/
 ├─ docs/
 │  └─ spec.md
 ├─ works/
-│  └─ everline_p1.ai
+│  └─ illustrator/
+│     └─ everline_p1.ai
 ├─ exports/
 │  ├─ png/
 │  ├─ svg/

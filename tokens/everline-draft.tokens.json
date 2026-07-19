@@ -29,11 +29,12 @@
       "background-subdued": { "$type": "color", "$value": "{color.base.gray-600}" },
       "foreground-primary": { "$type": "color", "$value": "{color.base.off-white}" },
       "foreground-inverse": { "$type": "color", "$value": "{color.base.white}" },
-      "foreground-disabled": { "$type": "color", "$value": "{color.base.gray-800}" },
+      "foreground-disabled": { "$type": "color", "$value": "{color.base.off-white}", "$description": "Off-white foreground, combined with opacity.disabled (not baked into the color as 8-digit hex alpha) so the value stays portable to tools like Illustrator that don't reliably support #RRGGBBAA. Updated 2026-07-19 per user feedback: the prior value (gray-800 #444444, solid) had too little contrast against the gray-600 disabled surface, making disabled controls hard to read as buttons at all rather than clearly-but-legibly muted." },
       "action-primary": { "$type": "color", "$value": "{color.base.blue}" },
       "action-danger": { "$type": "color", "$value": "{color.base.red}" },
       "border-default": { "$type": "color", "$value": "{color.base.gray-800}" },
-      "border-focus": { "$type": "color", "$value": "{color.base.blue}" }
+      "border-focus": { "$type": "color", "$value": "{color.base.blue}" },
+      "background-overlay": { "$type": "color", "$value": "{color.base.gray-700}", "$description": "Unified surface for floating/overlay panels (Select and Split-button menu, Menu/Context menu, Tooltip, Modal). Added 2026-07-19 to replace 4 previously uncoordinated values (background-subdued, background-surface, a direct gray-800 reference, and Modal's unaliased #222222) that gave visually-similar floating panels inconsistent depth and, worse, borrowed background-subdued's 'disabled' semantic for interactive menu surfaces. Chosen over gray-800 specifically because gray-800 is border-default — reusing it would make every overlay panel's border invisible against its own fill." }
     }
   },
   "space": {
@@ -54,6 +55,32 @@
   "border": {
     "width-default": { "$type": "dimension", "$value": { "value": 1, "unit": "px" } },
     "width-focus": { "$type": "dimension", "$value": { "value": 2, "unit": "px" } }
+  },
+  "motion": {
+    "$description": "Candidate (2026-07-19). No component's open/close or hover transition has been visually specified yet; these are placeholder values pending real product validation, added because Split button, Modal and Tooltip already reference 'needs animation' in spec text without any backing token.",
+    "duration-fast": { "$type": "duration", "$value": { "value": 120, "unit": "ms" }, "$description": "Micro-interactions: hover, pressed feedback." },
+    "duration-base": { "$type": "duration", "$value": { "value": 200, "unit": "ms" }, "$description": "Open/close transitions: dropdown, menu, tooltip, modal." },
+    "duration-slow": { "$type": "duration", "$value": { "value": 320, "unit": "ms" }, "$description": "Reserved for larger layout shifts; not yet used by any drawn component." },
+    "easing-standard": { "$type": "cubicBezier", "$value": [0.2, 0, 0, 1], "$description": "Candidate ease-out curve; unvalidated." },
+    "reduced-motion-rule": { "$type": "string", "$value": "prefers-reduced-motion: replace all open/close and hover transitions with an instant state change; never delay keyboard interaction on an animation.", "$description": "Generalizes the reduced-motion note already written for Split button to apply to every animated component (Modal, Tooltip, Menu, Select, Toast)." }
+  },
+  "layer": {
+    "$description": "Candidate stacking order (2026-07-19) for components that render outside normal document flow. Added because Everline now has 5 distinct overlay-type components (Select/Split-button/Menu panels, Tooltip, Modal+backdrop, Toast) with no defined order for when they coexist (e.g. a toast confirming an action taken inside an open modal). Values are placeholder integers, not CSS z-index requirements; needs product confirmation before treating as fixed.",
+    "overlay": { "$type": "number", "$value": 100, "$description": "Page-level popovers: Select/Combobox panel, Split-button menu, Menu/Context menu." },
+    "tooltip": { "$type": "number", "$value": 200, "$description": "Above overlay panels, since a tooltip can appear on a trigger inside an open menu/select." },
+    "modal-backdrop": { "$type": "number", "$value": 300 },
+    "modal": { "$type": "number", "$value": 310, "$description": "Just above its own backdrop. A tooltip rendered inside an open modal must still out-rank the modal locally; this global scale assumes tooltips are re-parented per context rather than fixed to a single number." },
+    "toast": { "$type": "number", "$value": 400, "$description": "Topmost by convention, so transient feedback (e.g. 'deleted') stays visible even while a modal is open or closing. Product should confirm this is the intended behavior for Everline." }
+  },
+  "icon": {
+    "$description": "Candidate (2026-07-19). Formalizes the stroke-width already used consistently by every hand-drawn icon across the master sheet.",
+    "stroke-width": { "$type": "number", "$value": 2, "$description": "Matches the .icon CSS class already used throughout works/everline-components-master.svg." },
+    "source": { "$type": "string", "$value": "shadcn/ui (via its bundled lucide-react integration) when the component is composed from shadcn/ui; otherwise the archived docs/lucide-icons-1.24.0 asset pack directly. Both resolve to the same Lucide icon family.", "$description": "User-specified constraint, 2026-07-19. Does not by itself confirm Taylor Kanban's tech stack; applies to whichever product ends up consuming Everline. Per AGENTS.md, third-party icon sets remain prototype/reference only — Everline still owns its own sizing, alignment and state rules layered on top (see size.icon-sm/icon-md and icon.stroke-width)." }
+  },
+  "opacity": {
+    "disabled": { "$type": "number", "$value": 0.55, "$description": "Applied via fill-opacity/opacity (or CSS opacity), not baked into a color value. Used with color.semantic.foreground-disabled so disabled text stays legible-but-muted; kept as a separate multiplier rather than an alpha hex color for portability to tools (e.g. Illustrator) with inconsistent #RRGGBBAA support." },
+    "backdrop": { "$type": "number", "$value": 0.45, "$description": "Batch 1 candidate (2026-07-19). Applied to color.base.canvas (or #000000) via fill-opacity for the modal scrim; not baked into the color value, for the same portability reason as opacity.disabled." },
+    "hover-overlay": { "$type": "number", "$value": 0.06, "$description": "Batch 1 candidate (2026-07-19). Subtle white overlay for hover backgrounds on dark surfaces where a solid hover color isn't defined yet (e.g. Tabs hover), applied via fill=\"#ffffff\" fill-opacity." }
   },
   "size": {
     "control-md": { "$type": "dimension", "$value": { "value": 48, "unit": "px" }, "$description": "Observed standard button and switch height." },
@@ -134,7 +161,7 @@
       "menu-row-height": { "$type": "dimension", "$value": "{size.control-md}" },
       "menu-radius": { "$type": "dimension", "$value": "{radius.control}" },
       "background": { "$type": "color", "$value": "{color.semantic.action-primary}" },
-      "menu-background": { "$type": "color", "$value": "{color.semantic.background-subdued}" }
+      "menu-background": { "$type": "color", "$value": "{color.semantic.background-overlay}" }
     },
     "text-input": {
       "height": { "$type": "dimension", "$value": "{size.control-md}" },
@@ -155,10 +182,78 @@
       "scrollbar-width": { "$type": "dimension", "$value": { "value": 10, "unit": "px" }, "$description": "Observed optical width; verify before implementation." },
       "background": { "$type": "color", "$value": "{color.semantic.background-subdued}" },
       "scrollbar": { "$type": "color", "$value": "{color.base.gray-700}" }
+    },
+    "select": {
+      "$description": "Batch 1 candidate (2026-07-19). Reuses text-input-like trigger and split-button-like menu surface.",
+      "trigger-height": { "$type": "dimension", "$value": "{size.control-md}" },
+      "trigger-radius": { "$type": "dimension", "$value": "{radius.control}" },
+      "padding-inline": { "$type": "dimension", "$value": "{space.3}" },
+      "menu-row-height": { "$type": "dimension", "$value": "{size.control-md}" },
+      "menu-radius": { "$type": "dimension", "$value": "{radius.lg}" },
+      "background": { "$type": "color", "$value": "{color.semantic.background-surface}" },
+      "border": { "$type": "color", "$value": "{color.semantic.border-default}" },
+      "menu-background": { "$type": "color", "$value": "{color.semantic.background-overlay}" },
+      "selected-background": { "$type": "color", "$value": "{color.semantic.action-primary}" },
+      "background-disabled": { "$type": "color", "$value": "{color.semantic.background-subdued}" },
+      "search-match-highlight": { "$type": "color", "$value": "{color.semantic.action-primary}", "$description": "Combobox variant: color applied to the matched substring in filtered results." }
+    },
+    "menu": {
+      "$description": "Batch 1 candidate (2026-07-19). Context/command menu surface.",
+      "row-height": { "$type": "dimension", "$value": "{size.tag-md}" },
+      "radius": { "$type": "dimension", "$value": "{radius.lg}" },
+      "item-radius": { "$type": "dimension", "$value": "{radius.sm}" },
+      "padding": { "$type": "dimension", "$value": "{space.1}" },
+      "background": { "$type": "color", "$value": "{color.semantic.background-overlay}" },
+      "hover-background": { "$type": "color", "$value": "#ffffff", "$description": "Combine with opacity.hover-overlay via fill-opacity, same technique as tabs.hover-background. Changed 2026-07-19 from a solid gray-700 fill because gray-700 is now background-overlay itself (menu's own panel fill) — a solid hover row in the same color would be invisible." },
+      "divider": { "$type": "color", "$value": "{color.semantic.border-default}" },
+      "danger-foreground": { "$type": "color", "$value": "{color.semantic.action-danger}" },
+      "disabled-foreground": { "$type": "color", "$value": "{color.base.gray-600}" },
+      "checked-indicator": { "$type": "color", "$value": "{color.semantic.action-primary}" },
+      "shortcut-foreground": { "$type": "color", "$value": "{color.base.gray-600}" }
+    },
+    "tabs": {
+      "$description": "Batch 1 candidate (2026-07-19).",
+      "indicator-width": { "$type": "dimension", "$value": "{border.width-focus}" },
+      "indicator-color": { "$type": "color", "$value": "{color.semantic.action-primary}" },
+      "divider": { "$type": "color", "$value": "{color.semantic.border-default}" },
+      "foreground-selected": { "$type": "color", "$value": "{color.semantic.foreground-inverse}" },
+      "foreground-default": { "$type": "color", "$value": "{color.base.gray-700}" },
+      "foreground-disabled": { "$type": "color", "$value": "{color.semantic.foreground-disabled}" },
+      "foreground-hover": { "$type": "color", "$value": "{color.semantic.foreground-primary}" },
+      "hover-background": { "$type": "color", "$value": "#ffffff", "$description": "Combine with opacity.hover-overlay via fill-opacity." }
+    },
+    "tooltip": {
+      "$description": "Batch 1 candidate (2026-07-19).",
+      "radius": { "$type": "dimension", "$value": "{radius.sm}" },
+      "max-width": { "$type": "dimension", "$value": { "value": 240, "unit": "px" }, "$description": "Candidate wrap width; not yet product-validated." },
+      "background": { "$type": "color", "$value": "{color.semantic.background-overlay}" },
+      "foreground": { "$type": "color", "$value": "{color.semantic.foreground-primary}" }
+    },
+    "modal": {
+      "$description": "Batch 1 candidate (2026-07-19). Focus trapping is a behavioral requirement (see spec), not something a static vector token can express.",
+      "radius": { "$type": "dimension", "$value": "{radius.lg}" },
+      "padding": { "$type": "dimension", "$value": "{space.3}" },
+      "action-height": { "$type": "dimension", "$value": "{size.tag-md}" },
+      "background": { "$type": "color", "$value": "{color.semantic.background-overlay}", "$description": "Changed 2026-07-19 from an unaliased #222222 (the only token in this file that skipped the base -> semantic -> component pattern) to the shared background-overlay token." },
+      "border": { "$type": "color", "$value": "{color.semantic.border-default}" },
+      "action-primary": { "$type": "color", "$value": "{color.semantic.action-primary}" },
+      "action-danger": { "$type": "color", "$value": "{color.semantic.action-danger}" },
+      "backdrop-color": { "$type": "color", "$value": "#000000", "$description": "Combine with opacity.backdrop via fill-opacity, not a baked alpha hex." }
+    },
+    "toast": {
+      "$description": "Batch 1 candidate (2026-07-19). Auto-dismiss timing not yet defined.",
+      "height": { "$type": "dimension", "$value": "{scale.component-heights.lg}", "$description": "56 px, one 8 px step above the standard control-md height." },
+      "radius": { "$type": "dimension", "$value": "{radius.lg}" },
+      "background": { "$type": "color", "$value": "{color.semantic.background-surface}" },
+      "action-foreground": { "$type": "color", "$value": "{color.semantic.action-primary}" },
+      "danger-icon-size": { "$type": "dimension", "$value": { "value": 24, "unit": "px" }, "$description": "Solid-fill circular danger icon, distinct from the bare-stroke icons used by the other toast variants." },
+      "danger-icon-background": { "$type": "color", "$value": "{color.semantic.action-danger}" },
+      "danger-icon-foreground": { "$type": "color", "$value": "{color.semantic.foreground-inverse}" },
+      "icon-text-gap": { "$type": "dimension", "$value": { "value": 14, "unit": "px" }, "$description": "Candidate; user-specified range was 12-16 px." }
     }
   },
   "font": {
-    "family-sans": { "$type": "fontFamily", "$value": ["Microsoft JhengHei", "system-ui", "sans-serif"], "$description": "Candidate UI font stack; the source SVG converted text to outlines, so the original font cannot be verified." },
+    "family-sans": { "$type": "fontFamily", "$value": ["Noto Sans TC", "system-ui", "sans-serif"], "$description": "Confirmed UI font stack (user-confirmed 2026-07-19). The source SVG had converted text to outlines, so this could not be verified from the file alone; no longer a candidate value." },
     "size-label": { "$type": "dimension", "$value": { "value": 14, "unit": "px" } },
     "size-body": { "$type": "dimension", "$value": { "value": 16, "unit": "px" } },
     "size-title": { "$type": "dimension", "$value": { "value": 24, "unit": "px" } },
