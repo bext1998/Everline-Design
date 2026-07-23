@@ -1,6 +1,6 @@
 # Everline 狀態
 
-最後更新：2026-07-23
+最後更新：2026-07-24
 
 ## 收尾狀態
 
@@ -31,6 +31,9 @@
 - 2026-07-23：修正 Kanban column `limit-reached` 狀態內容矛盾。核對 `works/everline-components-batch2.svg` 原始碼發現：該狀態徽章寫死 `5/5`（代表已達上限），但欄位內只畫了 1 張 Task card，數字與實際內容從繪製當下就對不上，導致「已達上限」的欄位看起來比「進行中」（3 張卡）還空。這是歷史 SVG 快照本身的疏漏，依規則不回頭更新 SVG；已在權威來源 `works/html/batch2/index.html` 把該欄位補齊為 5 張卡（沿用既有 Task card 樣式與「審查」標籤），讓畫面與徽章一致，並同步補了 `docs/design-system-v0.1-batch2-draft.md` 的狀態說明。已用 headless Chrome 重新渲染核對，截圖覆蓋 `tmp/qa-batch2/final-1920.png`。
 - 2026-07-23：`docs/TODO.md` 刪除、`docs/NEXT_ACTION.md` 刪除，元件層級待辦改用 GitHub Issues 追蹤，避免文件與 Issues 兩邊都要維護、內容互相飄移。刪除前保留一筆原記錄於 TODO.md 的既有決定：色票已整理為 color token 候選（見 `tokens/everline-draft.tokens.json`）；`exports/` 已建立並存放對應匯出圖；Title bar / Window chrome 已確認納入 Everline 範圍但標記為選擇性（optional）元件。同時精簡 `docs/spec.md` 的「工程防護層」（拿掉套用軟體工程規格範本但實際上無法執行的 Contract／Acceptance Criteria／Test Plan／Drift Risk Analysis，只留 FROZEN Decisions 與 Open Questions）。
 - 2026-07-23：修正 Kanban column 內 Task card 完全沒有可辨識分界的問題。用像素採樣核對 `works/html/batch2/styles.css` 發現 `.kanban-column` 跟 `.task-card` 共用同一條 CSS 規則、抓了同一個 `background-surface`（#333）token，欄位本體、卡片、卡片間隙全部渲染成同一個顏色，畫面上完全黏成一片。回查 `works/everline-components-batch2.svg` 原始碼確認：審查通過的版本本來就用了兩種深淺（欄位 `#262626`／卡片 `#333`）做出對比，只是這個 `#262626` 當時沒有被收進 token 表。已新增 `color.base.gray-850`（#262626）與 `component.kanban-column.background` 兩個 token（`tokens/everline-draft.tokens.json`），並讓 `.kanban-column` 改用這個較深的背景，跟 Task card 的 `background-surface` 區分開來；`docs/design-system-v0.1-batch2-draft.md` 同步記錄。修正後用像素掃描核對卡片與欄位間確實出現深色分隔（而非只靠肉眼判斷），截圖覆蓋 `tmp/qa-batch2/final-1920.png`、`final-1440.png`。
+- 2026-07-23：處理 GitHub issue #13（第二批遺留的跨元件設計決策），實作進 `works/html/batch2/`：(1) 拖曳／拖放視覺——不用陰影，改用降低不透明度（新增 `opacity.dragging` = 0.85）＋既有 `border-focus` 描邊；Kanban column 已可實際把 Task card 拖到別的欄位，`limit-reached` 欄位達上限會拒絕放下。(2) List／Data table 補上 `empty` 範例，沿用 Kanban 既有的 empty-state 樣式。(3) Data table 新增基本分頁控制（上一頁／下一頁＋頁碼），密度變體本輪不做。(4) Sidebar 新增可拖曳／鍵盤調整寬度的把手，新增 `component.sidebar.width-max`（400px）token，最小寬度沿用既有 `width-collapsed`。Loading 仍明確擱置，依賴尚未完成的 issue #9（Progress/Loading）。決定與範圍寫回 `docs/design-system-v0.1-batch2-draft.md`；已用 headless Chrome 重新渲染並確認頁面載入無 JS console 錯誤。
+- 2026-07-23：Kanban column `collapsed` 狀態原本一併實作了（縱向窄條，寬度沿用 Sidebar collapsed 的 72px，點擊展開／收合），但這個項目是直接沿用批次畢業時舊文件裡記錄的擱置清單，沒有重新跟使用者確認是否仍是實際需求——使用者事後確認並不需要這個狀態。已整個撤銷：`works/html/batch2/` 的 HTML／CSS／JS 與 `tokens/everline-draft.tokens.json` 的 `component.kanban-column.width-collapsed` 皆已移除，`docs/design-system-v0.1-batch2-draft.md` 同步記錄。教訓：舊 backlog／擱置清單裡的項目，重新處理前要先確認是否仍然需要，不能直接當成已核准需求執行。
+- 2026-07-24：修正 `.empty-state` 共用樣式的間距問題。`display: grid` 沒有設 `gap`，導致 icon 圓圈跟底下文字完全零間距、擠在一起——這個 class 被 Kanban／List／Data table 三處共用，同一個問題三處都會出現。已加上 `gap: var(--everline-space-2)`（16px），一次修正三處。已用 headless Chrome 重新渲染並逐一截圖核對三個位置的間距。
 
 ## 已確認觀察
 

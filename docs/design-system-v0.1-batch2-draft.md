@@ -15,13 +15,17 @@
 
 保留為未來選項、本批不執行：把 Select／Split button／Menu 的既有選取視覺回頭遷就同一套 list-item 語言。那是會改動已核准視覺的決定，需要獨立審查回合，不應是這次新增 token 的附帶結果。
 
-## 跨元件擱置事項
+## 跨元件設計決策（2026-07-23）
 
-以下三個問題會同時影響本批多個元件，本輪刻意擱置、不臨場自創答案：
+GitHub issue #13 收斂了畢業時擱置的跨元件問題。逐項決定如下，皆已回填 `works/html/batch2/` 並用像素驗證通過：
 
-- **拖曳／拖放中視覺**：Card 的 `dragging`、Kanban column 的 `drag-over`、Task card 的 `dragging`。本次 HTML/CSS 畢業未納入，待獨立決定 Everline「低裝飾、不先引入陰影」原則在此情境是否例外。
-- **空狀態／載入中佔位**：List、Data table、Kanban column 的 `empty`／`loading`。本次僅保留已審查的 Kanban `empty`；共用 loading／其他 empty 視覺仍待集中設計。
-- **密度／分頁**：Data table 的 `pagination` 與列高密度、Sidebar 的 `resizing`，本次未納入。
+- **拖曳／拖放中視覺**（Card 的 `dragging`、Kanban column 的 `drag-over`、Task card 的 `dragging`）：Everline「低裝飾、不先引入陰影」原則**不例外**——拖曳中的元素不使用陰影，改用降低不透明度（`opacity.dragging` = 0.85，刻意比 `opacity.disabled` 0.55 淺，因為拖曳中的元素仍是互動焦點，不是不可用）＋沿用既有 `border-focus` 描邊。drag-over 的放下目標（Kanban column）用 2px 虛線外框標示，並在卡片會插入的位置顯示一條 `action-primary` 高亮細線。Kanban column 已實作真實的原生拖放（可把 Task card 拖到別的欄位），`limit-reached` 欄位在達到 `data-kanban-max` 上限時會拒絕放下。
+- **空狀態佔位**（List、Data table、Kanban column 的 `empty`）：三個元件共用同一套視覺語言——沿用 Kanban 已審查的 `empty-state` 樣式（圓圈圖示＋簡短文字），只換圖示與文案，不各自發明版本。List／Data table 已各補一個 empty 範例。
+- **Loading**：**本次仍未實作，明確擱置**——依賴 Progress/Loading 元件（issue #9，尚未完成）；等該元件定案後才決定怎麼套進 List／Data table／Kanban column，不在這裡另外設計一套視覺語言。
+- **Data table 密度／分頁**：v0.1 範圍收斂為單一密度（維持既有 48px 列高，不做 compact/comfortable 等密度變體）＋基本分頁（上一頁／下一頁圖示按鈕＋頁碼文字）。分頁只做控制項狀態展示，本批未接上真實分頁資料。
+- **Data table 列層級 `error`**：仍未定義，不在本次 #13 範圍內（原文件誤把它跟上面三項並列，但它其實是 Data table 自己的獨立問題，需要先決定是列層級還是欄位層級才能設計視覺，留待之後另開項目）。
+- **Sidebar `resizing`**：新增拖曳把手（`.sidebar-resize-handle`，右緣 8px 熱區），滑鼠拖曳＋鍵盤 ArrowLeft/ArrowRight 皆可調整寬度；最小寬度沿用 `component.sidebar.width-collapsed`（72px，比這個窄就應該直接收合，不是縮小），新增 `component.sidebar.width-max`（400px）為上限，不做磁吸／預設密度。
+- **Kanban column `collapsed`**：2026-07-23 一度實作（縱向窄條，寬度沿用 Sidebar collapsed 的 72px），隨後使用者確認這不是實際需求——原本只是沿用批次畢業時記錄的舊擱置清單，沒有重新確認是否仍然必要，屬於流程疏失。已整個移除（HTML／CSS／JS／token 皆已撤銷），Everline 範圍內不包含這個狀態。
 
 ## Sidebar / Navigation rail
 
@@ -39,7 +43,7 @@
 ### 狀態、互動與內容
 
 - 已畫出：`expanded` 內的 `default`／`hover`／`selected`／`disabled` 導覽項目；`collapsed` 內的 `default`／`selected` 圖示項目，以及一個 notification 徽章示範。
-- 擱置：`resizing`（拖曳調整寬度的互動，無法由靜態向量表達）。
+- `resizing`：2026-07-23 實作（見上方「跨元件設計決策」），拖曳把手＋鍵盤調整，72–400px。
 
 ### 無障礙
 
@@ -83,7 +87,7 @@
 ### 狀態、互動與內容
 
 - 已畫出：`default`、`hover`、`selected`（`border-selected` 描邊）、`disabled`、`error`（沿用 Inline alert 的 4px 語意色指示條語彙，不新發明一套錯誤視覺）。
-- 擱置：`dragging`（見上方「跨元件擱置事項」）。
+- `dragging`：2026-07-23 實作（見上方「跨元件設計決策」），降低不透明度＋border-focus 描邊，不使用陰影。
 
 ### 無障礙
 
@@ -105,7 +109,7 @@
 
 - 已畫出：`default`、`hover`、`selected`、`disabled` 列；`grouped`（含分區標題列，此手法之後 Data table／Kanban column 沿用）。
 - 明確拆為兩種變體以區分「row action」與「item selection」：(a) 選取型 List 使用前導勾選框；(b) 操作型 List 使用列尾獨立圖示按鈕（例如刪除），點擊該按鈕不觸發整列選取。
-- 擱置：`empty`、`loading`（見上方「跨元件擱置事項」）。
+- `empty`：2026-07-23 實作（見上方「跨元件設計決策」），沿用 Kanban 的 empty-state 樣式。`loading`：仍擱置，等 Progress/Loading 元件（issue #9）完成。
 
 ### 無障礙
 
@@ -126,7 +130,7 @@
 ### 狀態、互動與內容
 
 - 已畫出：表頭列（含一個 `sorted` 欄位排序指示，`component.data-table.sort-indicator-color`）、`default`／`hover`／`selected` 資料列（前導勾選框＋ list-item token）。
-- 擱置：`pagination`、`loading`、`empty`、列層級 `error`（見上方「跨元件擱置事項」；`error` 額外需要先決定是列層級還是欄位層級才能定義視覺）。
+- `pagination`、`empty`：2026-07-23 實作（見上方「跨元件設計決策」）；密度變體本輪不做，維持單一 48px 列高。`loading`：仍擱置，等 Progress/Loading 元件（issue #9）完成。列層級 `error`：仍未定義，需先決定是列層級還是欄位層級才能定義視覺，不在本輪範圍。
 
 ### 無障礙
 
@@ -149,7 +153,7 @@
 
 - 已畫出：`default`（狀態圓點＋標題＋2 個標籤，基本欄位）、`hover`、`selected`、`done`、`blocked`（狀態圓點顏色變化）、一個含候選欄位（截止日＋指派人頭像佔位）的變體。
 - `done`／`blocked` 的狀態圓點顏色僅使用既有已核准色階（`action-primary`／`action-danger`），不新增未核准的成功色（綠色）；`done` 暫用 `action-primary` 表示，待 success 語意色確認後可能需要調整。
-- 擱置：`dragging`（見上方「跨元件擱置事項」）。
+- `dragging`：2026-07-23 實作（見上方「跨元件設計決策」），與 Card 共用同一套視覺（降低不透明度＋border-focus 描邊）。Kanban column 內的 Task card 已可實際拖曳到別的欄位。
 
 ### 無障礙
 
@@ -171,7 +175,7 @@
 ### 狀態、互動與內容
 
 - 已畫出：`normal`（標題＋數量徽章＋2-3 張已定案的 Task card）、`empty`（極簡文字/圖示佔位，非完整 illustration）、`limit-reached`（數量徽章切換為 `limit-badge-color` / danger 色，欄內 Task card 數量須與徽章一致，例如 5/5 就要畫滿 5 張，讓欄位視覺上真的「滿了」——歷史 SVG 快照裡這個狀態只畫了 1 張卡配 5/5 徽章，數字與內容對不上，是繪製時的疏漏；`works/html/batch2/` 已於 2026-07-23 補齊為 5 張卡，SVG 本身依規則不再更新，保留原樣為歷史紀錄）。
-- 擱置：`drag-over`、`collapsed`、`loading`（見上方「跨元件擱置事項」；`collapsed` 建議之後與 Sidebar 的 collapsed rail 一併設計，兩者都是「縱向窄條」處理方式）。
+- `drag-over`：2026-07-23 實作（見上方「跨元件設計決策」）。`collapsed`：評估後確認不是實際需求，已撤銷，不在 Everline 範圍內。`loading`：仍擱置，等 Progress/Loading 元件（issue #9）完成。
 
 ### 無障礙
 
