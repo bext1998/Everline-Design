@@ -34,6 +34,16 @@
 - 2026-07-23：處理 GitHub issue #13（第二批遺留的跨元件設計決策），實作進 `works/html/batch2/`：(1) 拖曳／拖放視覺——不用陰影，改用降低不透明度（新增 `opacity.dragging` = 0.85）＋既有 `border-focus` 描邊；Kanban column 已可實際把 Task card 拖到別的欄位，`limit-reached` 欄位達上限會拒絕放下。(2) List／Data table 補上 `empty` 範例，沿用 Kanban 既有的 empty-state 樣式。(3) Data table 新增基本分頁控制（上一頁／下一頁＋頁碼），密度變體本輪不做。(4) Sidebar 新增可拖曳／鍵盤調整寬度的把手，新增 `component.sidebar.width-max`（400px）token，最小寬度沿用既有 `width-collapsed`。Loading 仍明確擱置，依賴尚未完成的 issue #9（Progress/Loading）。決定與範圍寫回 `docs/design-system-v0.1-batch2-draft.md`；已用 headless Chrome 重新渲染並確認頁面載入無 JS console 錯誤。
 - 2026-07-23：Kanban column `collapsed` 狀態原本一併實作了（縱向窄條，寬度沿用 Sidebar collapsed 的 72px，點擊展開／收合），但這個項目是直接沿用批次畢業時舊文件裡記錄的擱置清單，沒有重新跟使用者確認是否仍是實際需求——使用者事後確認並不需要這個狀態。已整個撤銷：`works/html/batch2/` 的 HTML／CSS／JS 與 `tokens/everline-draft.tokens.json` 的 `component.kanban-column.width-collapsed` 皆已移除，`docs/design-system-v0.1-batch2-draft.md` 同步記錄。教訓：舊 backlog／擱置清單裡的項目，重新處理前要先確認是否仍然需要，不能直接當成已核准需求執行。
 - 2026-07-24：修正 `.empty-state` 共用樣式的間距問題。`display: grid` 沒有設 `gap`，導致 icon 圓圈跟底下文字完全零間距、擠在一起——這個 class 被 Kanban／List／Data table 三處共用，同一個問題三處都會出現。已加上 `gap: var(--everline-space-2)`（16px），一次修正三處。已用 headless Chrome 重新渲染並逐一截圖核對三個位置的間距。
+- 2026-07-24：逐一核對 `tokens/everline-draft.tokens.json` 每個 batch 2 相關宣告值跟 `works/html/batch2/styles.css` 實際套用結果，不是只比對 git 同步狀態。找到 8 處落差並修正：
+  1. `color.semantic.foreground-subdued`（#4d4d4d 實色中灰）這個 token 完全沒被使用過——JSON 指定要用在 Sidebar 分類標題、List 分組標題、Data table 表頭、Task card 截止日 4 處，CSS 全部誤用了 `foreground-disabled`（#f2f2f2 疊 55% 透明度，視覺上是完全不同的效果）。已改為實際套用 `foreground-subdued`，並拿掉這 4 處原本疊加的 `opacity.disabled`（該 opacity 是設計來搭配 foreground-disabled 用的，不該疊在 foreground-subdued 上，疊了會太淡看不清楚）。
+  2. `component.sidebar.padding`：token 寫 16px，CSS 用了 8px，已改為 16px。
+  3. `component.list-item.gap`：token 寫 8px，CSS 用了 16px（`.list-item` 與 `.list-item label` 兩處都是），已改為 8px。
+  4. `component.toolbar.item-gap`（8px）：CSS 完全沒有 `gap` 屬性，icon button 直接貼在一起；已加上 `gap: 8px`，並移除 `.toolbar__divider` 原本自帶的左右 margin（避免跟新增的 gap 疊加變成雙倍間距）。
+  5. `component.list.group-header-height`（40px）：`.list-group` 原本沒有明確設高度，靠 padding 湊；已改為明確 `height: 40px` 並用 flex 置中文字。
+  6. `component.kanban-column.header-height`（48px）與 `component.kanban-column.header-background`（background-surface）：Kanban 欄位標題列原本沒有明確高度、也直接透出欄位本身的深色背景，沒有跟 token 宣告的「標題列要有自己的較淺背景」對上。已改為標題列自帶 `background-surface` 背景＋固定 48px 高度＋上緣圓角，欄位本體與內容區改為各自負責左右內距。
+  7. `component.data-table.header-height`（48px）：CSS 變數有宣告但從未被引用，表頭高度實際上是借用 `list-item-height`（剛好也是 48px，數值上沒錯但變數對不上）；已把 `th`／`td` 的高度來源拆開，各自對應自己的 token。
+  8. `component.task-card.assignee-avatar-size`（24px）：候選規格說截止日欄位要搭配指派人頭像佔位圖，但畢業後的 HTML/CSS 版本只剩文字「指派給 TZ」，頭像圓形完全沒實作；已補上 24px 圓形＋姓名縮寫的頭像佔位元素。
+  逐項都用 headless Chrome 重新渲染＋像素採樣核對過（例如 Kanban 標題列背景色實測跨越 y 座標 48px 整、文字顏色採樣落在 foreground-subdued 而非 foreground-disabled 的數值範圍），不是只看一次截圖過眼。
 
 ## 已確認觀察
 
