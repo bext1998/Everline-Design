@@ -7,7 +7,7 @@
 - Everline 是 Taylor Kanban 與未來延伸產品共用的圖形介面設計語言與設計系統基礎。
 - 本倉庫目前以規格、設計研究、向量原始檔與視覺資產管理為主，不是可執行應用程式，也不是已完成的前端元件庫。
 - 工作目標是讓設計原則、token、元件、圖示、品牌資產與匯出結果可規範、可追蹤且可持續維護，而不是只保存單次繪圖成果。
-- `docs/spec.md` 是主要規格與事實來源。執行工作前，先讀 `docs/HANDOFF.md` 快速掌握現況，再依任務需要閱讀 `README.md`、`docs/STATUS.md`、GitHub Issues（元件層級待辦與下一步規劃）與 `references/gui-components-reference.md`。
+- `docs/spec.md` 是主要規格與事實來源。執行工作前，先讀 `docs/STATUS.md` 快速掌握現況，再依任務需要閱讀 `README.md`、GitHub Issues（元件層級待辦與下一步規劃）與 `references/gui-components-reference.md`。
 
 ## 指示與事實優先順序
 
