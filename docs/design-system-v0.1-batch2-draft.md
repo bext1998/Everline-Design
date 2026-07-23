@@ -1,8 +1,8 @@
 # Everline v0.1 設計系統草稿 — 第二批
 
-狀態：`candidate`
+狀態：`candidate`（HTML/CSS 權威來源：`works/html/batch2/index.html`；SVG 保留為歷史快照）
 建立日期：2026-07-20
-候選向量稿：`works/everline-components-batch2.svg`（獨立於第一批的 `works/everline-components-master.svg`，同層檔案，非取代關係）
+候選向量稿：`works/everline-components-batch2.svg`（2026-07-23 起為歷史視覺快照）；候選規格權威來源：`works/html/batch2/index.html`。
 延伸文件：本檔案延伸 `docs/design-system-v0.1-draft.md` 的「已確認規則」「Token 命名慣例」「圖示系統」「堆疊順序」「動效」等跨元件規則，不重複列出；只記錄第二批（Sidebar/Navigation rail、Toolbar、Card/Tile、List、Data table、Task card、Kanban column）各元件的專屬規格。
 
 本文件章節順序依實際繪製順序排列：Task card 排在 Kanban column 之前，因為 Kanban column 的 `normal` 狀態需要放入已定案的 Task card，避免畫兩次。這與 `docs/TODO.md` 清單上「Kanban column 在 Task card 之前」的順序不同，屬於刻意調整，不是遺漏。
@@ -19,9 +19,9 @@
 
 以下三個問題會同時影響本批多個元件，本輪刻意擱置、不臨場自創答案：
 
-- **拖曳／拖放中視覺**：Card 的 `dragging`、Kanban column 的 `drag-over`、Task card 的 `dragging`。需要先決定 Everline「低裝飾、不先引入陰影」原則在拖曳這種強調「正在被抬起」的情境下要不要例外。
-- **空狀態／載入中佔位**：List、Data table、Kanban column 的 `empty`／`loading`。適合集中設計一次共用的佔位語言，而不是三個元件各自長出不同版本。
-- **密度／分頁**：Data table 的 `pagination` 與列高密度、Sidebar 的 `resizing`。
+- **拖曳／拖放中視覺**：Card 的 `dragging`、Kanban column 的 `drag-over`、Task card 的 `dragging`。本次 HTML/CSS 畢業未納入，待獨立決定 Everline「低裝飾、不先引入陰影」原則在此情境是否例外。
+- **空狀態／載入中佔位**：List、Data table、Kanban column 的 `empty`／`loading`。本次僅保留已審查的 Kanban `empty`；共用 loading／其他 empty 視覺仍待集中設計。
+- **密度／分頁**：Data table 的 `pagination` 與列高密度、Sidebar 的 `resizing`，本次未納入。
 
 ## Sidebar / Navigation rail
 
@@ -56,7 +56,7 @@
 
 ### 結構與變體
 
-- 標準高度 48px（`component.toolbar.height`），緊湊高度 40px（`component.toolbar.compact-height`）。
+- 標準高度 48px（`component.toolbar.height`），緊湊高度 40px（`component.toolbar.compact-height`）；40px 只用於高頻 Toolbar compact，Sidebar／List／Data table 等導覽與資料列維持 48px。
 - 以 Icon button 群組＋ 1px 分隔線（`component.toolbar.divider`）組成。
 
 ### 狀態、互動與內容
@@ -104,7 +104,7 @@
 ### 狀態、互動與內容
 
 - 已畫出：`default`、`hover`、`selected`、`disabled` 列；`grouped`（含分區標題列，此手法之後 Data table／Kanban column 沿用）。
-- 明確並排畫出兩種寫法以區分「row action」與「item selection」：(a) 整列可點擊選取＋前導勾選框；(b) 列尾獨立圖示按鈕動作（例如刪除），點擊該按鈕不觸發整列選取。
+- 明確拆為兩種變體以區分「row action」與「item selection」：(a) 選取型 List 使用前導勾選框；(b) 操作型 List 使用列尾獨立圖示按鈕（例如刪除），點擊該按鈕不觸發整列選取。
 - 擱置：`empty`、`loading`（見上方「跨元件擱置事項」）。
 
 ### 無障礙
@@ -165,11 +165,12 @@
 
 ### 結構與變體
 
-- 欄位寬度候選 320px（`component.kanban-column.width`），圓角 16px，標題列高 48px（含標題與數量徽章）。卡片間距沿用 `component.list-item.row-gap`（`component.kanban-column.card-gap`）。
+- 欄位寬度 288px（`component.kanban-column.width`；2026-07-23 由 320px 校正，320 原是 SVG 原始檔裡欄位排列的間距基準 [欄寬 288px＋32px 間距]，誤寫成欄寬本身，已依審查通過的 SVG 實際繪製寬度重新量測校正），圓角 16px，標題列高 48px（含標題與數量徽章）。卡片間距沿用 `component.list-item.row-gap`（`component.kanban-column.card-gap`）。
+- 欄位本體背景需與內部 Task card 背景明顯區分（`component.kanban-column.background` = `color.base.gray-850` #262626，深於 Task card 用的 `background-surface` #333），卡片才會視覺上「浮」在欄位上、看得出彼此的分界，不能兩者共用同一色。2026-07-23 新增：此值是從已審查通過的 SVG 反查回來補上的 token，SVG 一直有這個對比、只是先前沒被收進 token 表，導致 `works/html/batch2/` 誤用了跟 Task card 相同的 `background-surface`，欄位與卡片、卡片與卡片之間完全沒有可辨識的分界。
 
 ### 狀態、互動與內容
 
-- 已畫出：`normal`（標題＋數量徽章＋2-3 張已定案的 Task card）、`empty`（極簡文字/圖示佔位，非完整 illustration）、`limit-reached`（數量徽章切換為 `limit-badge-color` / danger 色）。
+- 已畫出：`normal`（標題＋數量徽章＋2-3 張已定案的 Task card）、`empty`（極簡文字/圖示佔位，非完整 illustration）、`limit-reached`（數量徽章切換為 `limit-badge-color` / danger 色，欄內 Task card 數量須與徽章一致，例如 5/5 就要畫滿 5 張，讓欄位視覺上真的「滿了」——歷史 SVG 快照裡這個狀態只畫了 1 張卡配 5/5 徽章，數字與內容對不上，是繪製時的疏漏；`works/html/batch2/` 已於 2026-07-23 補齊為 5 張卡，SVG 本身依規則不再更新，保留原樣為歷史紀錄）。
 - 擱置：`drag-over`、`collapsed`、`loading`（見上方「跨元件擱置事項」；`collapsed` 建議之後與 Sidebar 的 collapsed rail 一併設計，兩者都是「縱向窄條」處理方式）。
 
 ### 無障礙
@@ -178,7 +179,7 @@
 
 ## 校準清單
 
-- 待確認：本文件所有尺寸數值（256/72px 側欄寬度、320px 看板欄寬、各元件間距）皆為未經視覺驗證的候選值，繪製與渲染後可能調整。
+- 待確認：本文件所有尺寸數值（256/72px 側欄寬度、各元件間距）皆為未經視覺驗證的候選值，繪製與渲染後可能調整；看板欄寬已於 2026-07-23 依審查通過的 SVG 實際寬度校正為 288px（見上方「結構與變體」）。
 - 待確認：`component.task-card.status-dot-done` 暫用 `action-primary` 表示完成，success 語意色確認後需重新檢視是否改色。
 - 待確認：Sidebar 的 notification 徽章應使用 primary 還是 danger 語意色，本批未決定。
 - 待確認：List 並排畫出的兩種選取／動作寫法，何者作為預設、何者作為特殊情境，需使用者審查後決定。

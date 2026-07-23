@@ -1,6 +1,6 @@
 # Everline 元件待辦清單
 
-最後更新：2026-07-19
+最後更新：2026-07-23
 
 ## 文件用途
 
@@ -49,21 +49,21 @@ v0.1 目標：補齊 25 類，使初版元件總數達到 32 類。
 - [x] Alert / Inline notification
 - [x] Toast
 
-第一批已全數完成 candidate 草稿；第二批 7 類已完成 SVG candidate 草稿（2026-07-20，待使用者審查），第三批共 8 類尚未開始。
+第一批已全數完成 candidate 草稿；第二批 7 類已於 2026-07-23 畢業為 HTML/CSS 候選規格，第三批共 8 類尚未開始。
 
 ### 第二批：產品結構與資料元件
 
-第二批 SVG 候選稿位於獨立批次檔案 `works/everline-components-batch2.svg`（不併入 `works/everline-components-master.svg`）；經人類審查確認沒問題後才轉為 `works/html/` 的 HTML/CSS 候選規格（轉換即「畢業」，SVG 版本變歷史快照）。規格詳見 `docs/design-system-v0.1-batch2-draft.md`；共用 `component.list-item.*` token 已套用於 List／Data table／Kanban column。
+第二批 HTML/CSS 候選規格位於 `works/html/batch2/`（轉換即「畢業」）；`works/everline-components-batch2.svg` 保留為歷史視覺快照。規格詳見 `docs/design-system-v0.1-batch2-draft.md`；共用 `component.list-item.*` token 已套用於 List／Data table／Kanban column。
 
-- [x] Sidebar / Navigation rail（candidate，2026-07-20，`works/everline-components-batch2.svg`；expanded／collapsed 兩種模式，resizing 未畫出）
-- [x] Toolbar（candidate，同上；default／selected／disabled／compact，overflow 僅畫觸發鈕）
-- [x] Card / Tile（candidate，同上；default／hover／selected／disabled／error，dragging 未畫出）
-- [x] List（candidate，同上；並排示範 row selection 與 row action 兩種寫法，empty／loading 未畫出）
-- [x] Data table（candidate，同上；單一列高，density／pagination 未定義）
-- [x] Task card（candidate，同上；基本欄位＋候選欄位（截止日／指派人頭像佔位，非正式 Avatar 元件）皆已畫出，dragging 未畫出）
-- [x] Kanban column（candidate，同上；已確認納入 Everline 範圍，須依「處處是圓」原則改為圓角容器＋卡片間距，不可沿用 `works/illustrator/TaylorConceptMockup1.ai` 的表格式直角排版——該概念圖僅作結構參考，非樣式來源；normal／empty／limit-reached 已畫出，drag-over／collapsed／loading 未畫出）
+- [x] Sidebar / Navigation rail（HTML/CSS candidate，2026-07-23，`works/html/batch2/`；expanded／collapsed 兩種模式，resizing 未實作）
+- [x] Toolbar（HTML/CSS candidate，同上；default／selected／disabled／compact，overflow 僅畫觸發鈕）
+- [x] Card / Tile（HTML/CSS candidate，同上；default／hover／selected／disabled／error，dragging 未實作）
+- [x] List（HTML/CSS candidate，同上；選取型與操作型變體，empty／loading 未實作）
+- [x] Data table（HTML/CSS candidate，同上；單一列高、排序與選取可操作，density／pagination 未定義）
+- [x] Task card（HTML/CSS candidate，同上；基本欄位＋候選欄位（截止日／指派人頭像佔位，非正式 Avatar 元件），dragging 未實作）
+- [x] Kanban column（HTML/CSS candidate，同上；normal／empty／limit-reached 可切換，drag-over／collapsed／loading 未實作）
 
-以上 7 類 SVG candidate 已於 2026-07-20 經使用者審查通過（審查中修正的問題見 `docs/STATUS.md`）。審查通過只代表 SVG 視覺定案，尚未轉為 HTML/CSS（「畢業」），該轉換另約時間再進行，不在本次範圍。
+以上 7 類 SVG candidate 已於 2026-07-20 經使用者審查通過（審查中修正的問題見 `docs/STATUS.md`），並於 2026-07-23 轉為 HTML/CSS 候選規格；SVG 僅保留歷史快照。
 
 ### 第三批：桌面工具與補充能力
 

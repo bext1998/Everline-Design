@@ -18,6 +18,7 @@
       "gray-800": { "$type": "color", "$value": "#444444", "$description": "Observed subdued foreground and border candidate." },
       "gray-700": { "$type": "color", "$value": "#4D4D4D", "$description": "Observed gray swatch." },
       "gray-600": { "$type": "color", "$value": "#666666", "$description": "Observed disabled and input surface." },
+      "gray-850": { "$type": "color", "$value": "#262626", "$description": "Batch 2 candidate (added 2026-07-23, backfilled from an existing SVG value). Recessed container shade sitting between canvas (#1A1A1A) and gray-900/surface (#333333), used in the approved batch-2 SVG exclusively for Kanban column bodies so cards read as sitting on top of the column rather than blending into it. Never formalized into the token file when the SVG was drawn, which caused works/html/batch2/ to reuse background-surface for both the column and its cards, flattening the two into one indistinguishable color." },
       "white": { "$type": "color", "$value": "#FFFFFF", "$description": "Observed high-emphasis foreground." },
       "off-white": { "$type": "color", "$value": "#F2F2F2", "$description": "Observed switch thumb and light foreground." },
       "blue": { "$type": "color", "$value": "#598AE8", "$description": "Observed primary and focus color." },
@@ -312,8 +313,9 @@
     },
     "kanban-column": {
       "$description": "Batch 2 candidate (2026-07-20). Must render as individually-rounded cards with gaps — never the flat/table layout referenced in works/TaylorConceptMockup1.svg, which is a structural reference only, not a style source.",
-      "width": { "$type": "dimension", "$value": { "value": 320, "unit": "px" }, "$description": "Candidate reference width; unverified." },
+      "width": { "$type": "dimension", "$value": { "value": 288, "unit": "px" }, "$description": "Corrected 2026-07-23 to match the value actually drawn and user-approved in the 2026-07-20 SVG review (pixel-measured from exports/everline-components-batch2.png); the prior 320px was an unverified candidate that was never what got reviewed. 288 still satisfies the 8px scale grid (288 = 36 x 8)." },
       "radius": { "$type": "dimension", "$value": "{radius.lg}" },
+      "background": { "$type": "color", "$value": "{color.base.gray-850}", "$description": "Added 2026-07-23. Column body fill, deliberately darker than component.card/task-card's background-surface so Task cards visually separate from the column instead of blending into it — backfilled from the approved SVG, which used this shade but never had it captured as a token (see color.base.gray-850)." },
       "header-height": { "$type": "dimension", "$value": "{size.control-md}" },
       "header-background": { "$type": "color", "$value": "{color.semantic.background-surface}" },
       "card-gap": { "$type": "dimension", "$value": "{component.list-item.row-gap}" },

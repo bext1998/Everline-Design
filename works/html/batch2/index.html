@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Everline v0.1 — 第二批 HTML/CSS 候選元件</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="catalog" aria-labelledby="page-title">
+      <header class="catalog-header">
+        <div>
+          <p class="eyebrow">Everline v0.1 · 第二批元件型錄</p>
+          <h1 id="page-title">Everline Design Language — Components Batch 2 HTML/CSS Candidate</h1>
+          <p class="lede">Sidebar/Navigation rail、Toolbar、Card/Tile、List、Data table、Task card、Kanban column</p>
+          <p class="trace">Graduated from <code>works/everline-components-batch2.svg</code>（歷史視覺快照）· sibling batch to <code>works/everline-components-master.svg</code> · 此 HTML/CSS 為目前候選規格權威來源，不是產品元件庫。</p>
+        </div>
+        <p class="candidate-badge"><span aria-hidden="true"></span> CANDIDATE · NOT FROZEN</p>
+      </header>
+
+      <aside class="scope-note" aria-labelledby="scope-title">
+        <h2 id="scope-title">本輪範圍</h2>
+        <p>已實作互動：選取、鍵盤焦點與排序；Sidebar expanded／collapsed 與 Kanban normal／empty／limit-reached 以型錄並排展示。未實作：dragging／drag-over、loading、List／Data table empty、pagination、密度、Sidebar resizing、Kanban collapsed。</p>
+      </aside>
+
+      <section class="component-section" aria-labelledby="sidebar-title">
+        <div class="section-heading"><div><p class="eyebrow">Navigation</p><h2 id="sidebar-title">Sidebar / Navigation rail</h2><p>one component, two modes · expanded 256px · collapsed 72px · 項目高度 48px</p></div></div>
+        <div class="sidebar-examples">
+          <div class="sidebar-example">
+            <nav class="sidebar sidebar--expanded" aria-label="展開模式工作區導覽">
+              <p class="sidebar__label">分類</p>
+              <a class="nav-item" href="#sidebar-title"><span class="nav-icon" aria-hidden="true"></span><span class="nav-item__label">看板</span></a>
+              <a class="nav-item" href="#toolbar-title"><span class="nav-icon" aria-hidden="true"></span><span class="nav-item__label">資產庫</span></a>
+              <a class="nav-item" href="#list-title" aria-current="page"><span class="nav-icon" aria-hidden="true"></span><span class="nav-item__label">元件庫</span></a>
+              <a class="nav-item" href="#" aria-disabled="true" tabindex="-1"><span class="nav-icon" aria-hidden="true"></span><span class="nav-item__label">封存區</span></a>
+            </nav>
+            <p class="example-label">expanded</p>
+          </div>
+          <div class="sidebar-example">
+            <nav class="sidebar sidebar--collapsed" aria-label="收合模式工作區導覽">
+              <a class="nav-item" href="#sidebar-title" aria-label="看板"><span class="nav-icon" aria-hidden="true"></span><span class="nav-item__label">看板</span></a>
+              <a class="nav-item" href="#toolbar-title" aria-current="page" aria-label="資產庫，目前頁面"><span class="nav-icon" aria-hidden="true"></span><span class="nav-item__label">資產庫</span></a>
+              <a class="nav-item" href="#list-title" aria-label="元件庫，有未讀通知"><span class="nav-icon" aria-hidden="true"></span><span class="nav-item__label">元件庫</span><span class="notification" aria-hidden="true"></span></a>
+            </nav>
+            <p class="example-label">collapsed</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="component-section" aria-labelledby="toolbar-title">
+        <div class="section-heading"><div><p class="eyebrow">Actions</p><h2 id="toolbar-title">Toolbar</h2><p>標準高度 48px · compact 高度 40px · icon button 群組與分隔線</p></div></div>
+        <div class="toolbar-examples">
+          <div class="toolbar" role="toolbar" aria-label="標準工具列" data-toolbar>
+            <button class="icon-button" type="button" aria-label="確認" aria-pressed="false"><span aria-hidden="true">✓</span></button>
+            <button class="icon-button" type="button" aria-label="新增" aria-pressed="true"><span aria-hidden="true">＋</span></button>
+            <button class="icon-button" type="button" aria-label="刪除" disabled><span aria-hidden="true">×</span></button>
+            <span class="toolbar__divider" aria-hidden="true"></span>
+            <button class="icon-button" type="button" aria-label="更多操作" aria-pressed="false"><span aria-hidden="true">•••</span></button>
+          </div>
+          <div class="toolbar toolbar--compact" role="toolbar" aria-label="緊湊工具列" data-toolbar>
+            <button class="icon-button" type="button" aria-label="確認" aria-pressed="false"><span aria-hidden="true">✓</span></button>
+            <button class="icon-button" type="button" aria-label="新增" aria-pressed="true"><span aria-hidden="true">＋</span></button>
+            <span class="toolbar__divider" aria-hidden="true"></span>
+            <button class="icon-button" type="button" aria-label="更多操作" aria-pressed="false"><span aria-hidden="true">•••</span></button>
+          </div>
+        </div>
+      </section>
+
+      <section class="component-section" aria-labelledby="card-title">
+        <div class="section-heading"><div><p class="eyebrow">Container</p><h2 id="card-title">Card / Tile</h2><p>16px 圓角 · 24px 內距 · 與 Task card 有明確用途邊界</p></div></div>
+        <div class="card-grid">
+          <button class="content-card" type="button" aria-pressed="false"><strong>預設卡片</strong><span>可點擊並切換 selected</span></button>
+          <button class="content-card" type="button" aria-pressed="true"><strong>已選取卡片</strong><span><b aria-hidden="true">✓</b> 已選取</span></button>
+          <div class="content-card content-card--error" role="group" aria-label="錯誤卡片"><strong>錯誤卡片</strong><span>需要人工處理</span></div>
+          <button class="content-card" type="button" disabled><strong>停用卡片</strong><span>目前無法操作</span></button>
+        </div>
+      </section>
+
+      <section class="component-section" aria-labelledby="list-title">
+        <div class="section-heading"><div><p class="eyebrow">Collection</p><h2 id="list-title">List</h2><p>48px 列高 · 個別圓角列與 4px 間距 · 選取與動作變體分開</p></div></div>
+        <div class="list-grid">
+          <div><h3>選取型 List</h3><ul class="list" aria-label="可選取檔案">
+            <li class="list-item"><label><input type="checkbox"><span class="checkmark" aria-hidden="true"></span><span>draft-proposal.fig</span></label></li>
+            <li class="list-item"><label><input type="checkbox"><span class="checkmark" aria-hidden="true"></span><span>kanban-icons.ai</span></label></li>
+            <li class="list-item"><label><input type="checkbox" checked><span class="checkmark" aria-hidden="true"></span><span>token-export.json</span></label></li>
+            <li class="list-item"><label><input type="checkbox" disabled><span class="checkmark" aria-hidden="true"></span><span>archived-v0.svg</span></label></li>
+          </ul></div>
+          <div><h3>操作型 List</h3><ul class="list" aria-label="可操作檔案">
+            <li class="list-item"><span>everline_p1.ai</span><button class="icon-button icon-button--small" type="button" aria-label="刪除 everline_p1.ai">×</button></li>
+            <li class="list-item"><span>component-board.svg</span><button class="icon-button icon-button--small" type="button" aria-label="刪除 component-board.svg">×</button></li>
+          </ul><p class="caption">列尾按鈕不會改變整列選取狀態。</p></div>
+          <div><h3>Grouped</h3><ul class="list" aria-label="分組檔案"><li class="list-group">今天</li><li class="list-item"><label><input type="checkbox"><span class="checkmark" aria-hidden="true"></span><span>meeting-notes.md</span></label></li><li class="list-group">本週稍早</li><li class="list-item"><label><input type="checkbox"><span class="checkmark" aria-hidden="true"></span><span>roadmap.pdf</span></label></li></ul></div>
+        </div>
+      </section>
+
+      <section class="component-section" aria-labelledby="table-title">
+        <div class="section-heading"><div><p class="eyebrow">Structured data</p><h2 id="table-title">Data table</h2><p>48px 表頭與資料列 · 單一密度 · 原生表格語意</p></div></div>
+        <div class="table-wrap"><table><thead><tr><th scope="col"><span class="sr-only">選取</span></th><th scope="col">名稱</th><th scope="col" aria-sort="none"><button class="sort-button" type="button" data-sort>狀態 <span aria-hidden="true">↕</span></button></th><th scope="col">更新時間</th></tr></thead><tbody>
+          <tr><td><input aria-label="選取 看板 A — Sprint 12" type="checkbox"></td><td>看板 A — Sprint 12</td><td>進行中</td><td>2 小時前</td></tr>
+          <tr><td><input aria-label="選取 看板 B — 資產整理" type="checkbox"></td><td>看板 B — 資產整理</td><td>封存</td><td>1 天前</td></tr>
+          <tr><td><input aria-label="選取 看板 C — 元件審查" type="checkbox" checked></td><td>看板 C — 元件審查</td><td>進行中</td><td>剛剛</td></tr>
+        </tbody></table></div>
+      </section>
+
+      <section class="component-section" aria-labelledby="task-card-title">
+        <div class="section-heading"><div><p class="eyebrow">Task</p><h2 id="task-card-title">Task card</h2><p>狀態、標題與標籤為基本欄位；截止日與指派人是候選欄位</p></div></div>
+        <div class="task-grid">
+          <button class="task-card" type="button" aria-pressed="false"><span class="task-status" aria-hidden="true"></span><strong>重新設計登入頁</strong><span class="tag">前端</span><span class="tag">P1</span></button>
+          <button class="task-card" type="button" aria-pressed="true"><span class="task-status" aria-hidden="true"></span><strong>重新設計登入頁</strong><span class="tag">前端</span><span class="sr-only">已選取</span></button>
+          <article class="task-card task-card--done"><span class="task-status" aria-hidden="true"></span><strong>重新設計登入頁</strong><span class="tag">已完成</span><span class="task-state-text">已完成</span></article>
+          <article class="task-card task-card--blocked"><span class="task-status" aria-hidden="true"></span><strong>API 回應格式待確認</strong><span class="tag">已阻擋</span><span class="task-state-text">已阻擋</span></article>
+          <article class="task-card"><span class="task-status" aria-hidden="true"></span><strong>重新設計登入頁</strong><span class="tag">前端</span><span class="task-meta">截止 7/25 · 指派給 TZ</span></article>
+        </div>
+      </section>
+
+      <section class="component-section" aria-labelledby="kanban-title">
+        <div class="section-heading"><div><p class="eyebrow">Workflow</p><h2 id="kanban-title">Kanban column</h2><p>288px 欄寬 · 圓角欄位與 Task card 間距 · 不採表格式直角排版</p></div></div>
+        <div class="kanban-examples">
+          <div class="kanban-example">
+            <section class="kanban-column" aria-labelledby="kanban-normal-title">
+              <header><h3 id="kanban-normal-title">進行中</h3><span class="count-badge">3</span></header>
+              <div class="kanban-content">
+                <article class="task-card"><span class="task-status task-status--done" aria-hidden="true"></span><strong>重新設計登入頁</strong><span class="tag">前端</span></article>
+                <article class="task-card"><span class="task-status" aria-hidden="true"></span><strong>補齊無障礙檢查</strong><span class="tag">QA</span></article>
+                <article class="task-card task-card--blocked"><span class="task-status" aria-hidden="true"></span><strong>API 回應格式待確認</strong><span class="tag">已阻擋</span></article>
+              </div>
+            </section>
+            <p class="example-label">normal</p>
+          </div>
+          <div class="kanban-example">
+            <section class="kanban-column" aria-labelledby="kanban-empty-title">
+              <header><h3 id="kanban-empty-title">待辦</h3><span class="count-badge">0</span></header>
+              <div class="kanban-content"><div class="empty-state"><span aria-hidden="true">＋</span><p>目前沒有任務</p></div></div>
+            </section>
+            <p class="example-label">empty</p>
+          </div>
+          <div class="kanban-example">
+            <section class="kanban-column" aria-labelledby="kanban-limit-title">
+              <header><h3 id="kanban-limit-title">審查中</h3><span class="count-badge count-badge--limit">5/5</span></header>
+              <div class="kanban-content">
+                <article class="task-card"><span class="task-status task-status--done" aria-hidden="true"></span><strong>Token 命名複查</strong><span class="tag">審查</span></article>
+                <article class="task-card"><span class="task-status" aria-hidden="true"></span><strong>圖示對齊複查</strong><span class="tag">審查</span></article>
+                <article class="task-card"><span class="task-status" aria-hidden="true"></span><strong>色彩對比複查</strong><span class="tag">審查</span></article>
+                <article class="task-card"><span class="task-status" aria-hidden="true"></span><strong>無障礙標籤複查</strong><span class="tag">審查</span></article>
+                <article class="task-card"><span class="task-status" aria-hidden="true"></span><strong>元件命名複查</strong><span class="tag">審查</span></article>
+              </div>
+            </section>
+            <p class="example-label">limit-reached</p>
+          </div>
+        </div>
+      </section>
+    </main>
+    <script src="prototype.js"></script>
+  </body>
+</html>
