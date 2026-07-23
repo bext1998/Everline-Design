@@ -329,7 +329,7 @@
       "status-dot-blocked": { "$type": "color", "$value": "{color.semantic.action-danger}" },
       "tag-gap": { "$type": "dimension", "$value": "{space.1}" },
       "due-date-foreground": { "$type": "color", "$value": "{color.semantic.foreground-subdued}" },
-      "assignee-avatar-size": { "$type": "dimension", "$value": { "value": 24, "unit": "px" }, "$description": "Lightweight ad-hoc avatar placeholder for the assignee candidate field — deliberately not component.avatar.*; Avatar/Avatar group remains a second-phase candidate, out of v0.1 scope per docs/TODO.md." }
+      "assignee-avatar-size": { "$type": "dimension", "$value": { "value": 24, "unit": "px" }, "$description": "Lightweight ad-hoc avatar placeholder for the assignee candidate field — deliberately not component.avatar.*; Avatar/Avatar group remains a second-phase candidate, out of v0.1 scope (tracked in GitHub Issues, not this file)." }
     }
   },
   "font": {

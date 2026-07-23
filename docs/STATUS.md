@@ -6,7 +6,7 @@
 
 - 狀態：`in-progress`
 - 原因：目前已有可辨識的設計來源與預覽，但元件規格、審核狀態與 Taylor Kanban 技術整合仍未完成；第三批（8 類）尚未開始。
-- 累計進度（2026-07-23）：第一批 17 類、第二批 7 類（已畢業為 `works/html/batch2/` HTML/CSS 候選規格）皆已有 candidate；兩批合計 25 類（皆未通過 `docs/TODO.md`「每個元件的完成檢查」12 項標準，仍是 candidate／草稿狀態，非正式定稿）。第三批（桌面工具與補充能力，共 8 類）與第二階段候選（19 類，非必做）尚未開始，下一步排序見 `docs/NEXT_ACTION.md`。
+- 累計進度（2026-07-23）：第一批 17 類、第二批 7 類（已畢業為 `works/html/batch2/` HTML/CSS 候選規格）皆已有 candidate；兩批合計 25 類，皆仍是 candidate／草稿狀態，尚未逐項確認用途、狀態、無障礙、來源追溯等完整規格條件，非正式定稿。第三批（桌面工具與補充能力，共 8 類）與第二階段候選（19 類，非必做）尚未開始，下一步排序見 GitHub Issues（`gh issue list`）。
 
 ## 目前狀態
 
@@ -29,6 +29,7 @@
 - 2026-07-23：修正第二批 HTML/CSS 型錄與已審查 SVG 歷史快照的呈現差異：Sidebar 恢復 expanded／collapsed 並排，Kanban column 恢復 normal／empty／limit-reached 三欄並排；Sidebar 通知改為依附 nav item 的 8px token 圓點；List 補齊自訂 checkbox 樣式；標頭補回 7 類元件清單與 batch2／master 來源關聯。已用 headless Chrome 於 1920px、1440px 重新渲染並逐區目視核對，QA 截圖為 `tmp/qa-batch2/final-1920.png`、`tmp/qa-batch2/final-1440.png`。
 - 2026-07-23：修正 Kanban column 寬度 token 錯誤。像素量測 `exports/everline-components-batch2.png`（已審查通過的 SVG 視覺）確認欄位實際寬度為 288px；`tokens/everline-draft.tokens.json` 的 `component.kanban-column.width` 先前寫的候選值 320px 是 SVG 原始檔裡欄位排列間距（288px 欄寬＋32px 間距＝320px 版位），被誤植為欄寬本身，導致 HTML/CSS 版本（`works/html/batch2/styles.css`）比審查通過的視覺寬約 11%。已將 token 與 CSS 變數皆校正為 288px，`docs/design-system-v0.1-batch2-draft.md` 同步更新；用 headless Chrome 重新渲染並以像素掃描核對三欄寬度皆為 288px（不只是目視比對），截圖已覆蓋 `tmp/qa-batch2/final-1920.png`。
 - 2026-07-23：修正 Kanban column `limit-reached` 狀態內容矛盾。核對 `works/everline-components-batch2.svg` 原始碼發現：該狀態徽章寫死 `5/5`（代表已達上限），但欄位內只畫了 1 張 Task card，數字與實際內容從繪製當下就對不上，導致「已達上限」的欄位看起來比「進行中」（3 張卡）還空。這是歷史 SVG 快照本身的疏漏，依規則不回頭更新 SVG；已在權威來源 `works/html/batch2/index.html` 把該欄位補齊為 5 張卡（沿用既有 Task card 樣式與「審查」標籤），讓畫面與徽章一致，並同步補了 `docs/design-system-v0.1-batch2-draft.md` 的狀態說明。已用 headless Chrome 重新渲染核對，截圖覆蓋 `tmp/qa-batch2/final-1920.png`。
+- 2026-07-23：`docs/TODO.md` 刪除、`docs/NEXT_ACTION.md` 刪除，元件層級待辦改用 GitHub Issues 追蹤，避免文件與 Issues 兩邊都要維護、內容互相飄移。刪除前保留一筆原記錄於 TODO.md 的既有決定：色票已整理為 color token 候選（見 `tokens/everline-draft.tokens.json`）；`exports/` 已建立並存放對應匯出圖；Title bar / Window chrome 已確認納入 Everline 範圍但標記為選擇性（optional）元件。同時精簡 `docs/spec.md` 的「工程防護層」（拿掉套用軟體工程規格範本但實際上無法執行的 Contract／Acceptance Criteria／Test Plan／Drift Risk Analysis，只留 FROZEN Decisions 與 Open Questions）。
 - 2026-07-23：修正 Kanban column 內 Task card 完全沒有可辨識分界的問題。用像素採樣核對 `works/html/batch2/styles.css` 發現 `.kanban-column` 跟 `.task-card` 共用同一條 CSS 規則、抓了同一個 `background-surface`（#333）token，欄位本體、卡片、卡片間隙全部渲染成同一個顏色，畫面上完全黏成一片。回查 `works/everline-components-batch2.svg` 原始碼確認：審查通過的版本本來就用了兩種深淺（欄位 `#262626`／卡片 `#333`）做出對比，只是這個 `#262626` 當時沒有被收進 token 表。已新增 `color.base.gray-850`（#262626）與 `component.kanban-column.background` 兩個 token（`tokens/everline-draft.tokens.json`），並讓 `.kanban-column` 改用這個較深的背景，跟 Task card 的 `background-surface` 區分開來；`docs/design-system-v0.1-batch2-draft.md` 同步記錄。修正後用像素掃描核對卡片與欄位間確實出現深色分隔（而非只靠肉眼判斷），截圖覆蓋 `tmp/qa-batch2/final-1920.png`、`final-1440.png`。
 
 ## 已確認觀察

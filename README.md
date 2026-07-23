@@ -41,7 +41,6 @@ Everline Design/
 │  ├─ HANDOFF.md               # 給下一個 agent session 的快速接手筆記
 │  ├─ spec.md                 # 主要規格與工程契約
 │  ├─ STATUS.md               # 已確認的現況與限制
-│  ├─ NEXT_ACTION.md          # 下一個設計整理階段
 │  ├─ design-system-v0.1-draft.md # 候選 token 與元件規格（第一批）
 │  ├─ design-system-v0.1-batch2-draft.md # 候選元件規格（第二批）
 │  ├─ lucide-icons/           # Lucide 圖示研究素材（本機參考快取，見下方說明）
@@ -81,9 +80,9 @@ Everline Design/
 ## 文件入口
 
 - [`docs/HANDOFF.md`](docs/HANDOFF.md)：給下一個接手者（agent 或人）的快速現況筆記，最先讀這個。
-- [`docs/spec.md`](docs/spec.md)：專案目的、目標與非目標、資產工作流、工程契約、驗收條件和未決問題。
+- [`docs/spec.md`](docs/spec.md)：專案目的、目標與非目標、資產工作流、FROZEN Decisions 和未決問題。
 - [`docs/STATUS.md`](docs/STATUS.md)：目前已確認的設計狀態與限制。
-- [`docs/NEXT_ACTION.md`](docs/NEXT_ACTION.md)：下一階段預計整理的元件、狀態與 token 候選。
+- GitHub Issues：元件層級待辦、下一階段規劃與待決問題（取代原本的 `docs/TODO.md`、`docs/NEXT_ACTION.md`）。
 - [`references/gui-components-reference.md`](references/gui-components-reference.md)：GUI 元件研究、來源索引與授權注意事項；不是正式元件規格。
 
 開始修改專案前，建議依上述順序閱讀，以免將規劃中內容誤認為已完成成果。

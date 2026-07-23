@@ -5,7 +5,7 @@
 候選向量稿：`works/everline-components-batch2.svg`（2026-07-23 起為歷史視覺快照）；候選規格權威來源：`works/html/batch2/index.html`。
 延伸文件：本檔案延伸 `docs/design-system-v0.1-draft.md` 的「已確認規則」「Token 命名慣例」「圖示系統」「堆疊順序」「動效」等跨元件規則，不重複列出；只記錄第二批（Sidebar/Navigation rail、Toolbar、Card/Tile、List、Data table、Task card、Kanban column）各元件的專屬規格。
 
-本文件章節順序依實際繪製順序排列：Task card 排在 Kanban column 之前，因為 Kanban column 的 `normal` 狀態需要放入已定案的 Task card，避免畫兩次。這與 `docs/TODO.md` 清單上「Kanban column 在 Task card 之前」的順序不同，屬於刻意調整，不是遺漏。
+本文件章節順序依實際繪製順序排列：Task card 排在 Kanban column 之前，因為 Kanban column 的 `normal` 狀態需要放入已定案的 Task card，避免畫兩次。這與元件待辦清單上「Kanban column 在 Task card 之前」的原始順序不同，屬於刻意調整，不是遺漏。
 
 ## 已解決的開放問題：共用 list-item token
 
