@@ -3,9 +3,10 @@
   <title id="title">Everline v0.1 components batch 2 sheet</title>
   <desc id="desc">Second-batch candidate vector sheet: Sidebar/Navigation rail, Toolbar, Card/Tile, List, Data table, Task card, Kanban column.</desc>
   <metadata>
-    sibling-of: works/everline-components-master.svg (2026-07-19) — not a supersession; batch 1's 18 components remain there unchanged;
+    sibling-of: works/everline-components-master.svg (2026-07-19) — not a supersession; batch 1's 17 components remain there unchanged;
     spec-reference: docs/design-system-v0.1-batch2-draft.md;
-    status: candidate; created: 2026-07-20; do-not-treat-as-frozen;
+    superseded-by: works/html/batch2/index.html (2026-07-23) — the HTML/CSS candidate is the maintained specification source for all seven batch-2 components; this SVG is kept as a historical visual snapshot and must not be updated;
+    status: historical SVG candidate; created: 2026-07-20; do-not-treat-as-frozen;
     note: section order is Sidebar, Toolbar, Card/Tile, List, Data table, Task card, Kanban column — Task card is drawn before Kanban column (differs from docs/TODO.md checklist order) because Kanban column's normal state embeds Task card;
     structural-reference-only (not a style source): works/TaylorConceptMockup1.svg — its flat/table layout is not reused here, see docs/design-system-v0.1-batch2-draft.md Kanban column section for the 處處是圓 requirement.
   </metadata>
