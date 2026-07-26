@@ -63,6 +63,7 @@
     "duration-fast": { "$type": "duration", "$value": { "value": 120, "unit": "ms" }, "$description": "Micro-interactions: hover, pressed feedback." },
     "duration-base": { "$type": "duration", "$value": { "value": 200, "unit": "ms" }, "$description": "Open/close transitions: dropdown, menu, tooltip, modal." },
     "duration-slow": { "$type": "duration", "$value": { "value": 320, "unit": "ms" }, "$description": "Reserved for larger layout shifts; not yet used by any drawn component." },
+    "duration-loop": { "$type": "duration", "$value": { "value": 900, "unit": "ms" }, "$description": "Batch 3 candidate (2026-07-27), added for component.spinner's continuous rotation. Deliberately NOT reusing duration-slow (320ms): every existing duration-* token times a one-shot open/close transition, and 320ms for a full 360° spin reads as a fast, jittery flicker rather than a calm rotation. This is the first continuously-looping animation Everline has drawn, so it gets its own shared primitive (reusable by future loop animations, e.g. skeleton shimmer) instead of forcing an ill-fitting reuse of a differently-purposed value." },
     "easing-standard": { "$type": "cubicBezier", "$value": [0.2, 0, 0, 1], "$description": "Candidate ease-out curve; unvalidated." },
     "reduced-motion-rule": { "$type": "string", "$value": "prefers-reduced-motion: replace all open/close and hover transitions with an instant state change; never delay keyboard interaction on an animation.", "$description": "Generalizes the reduced-motion note already written for Split button to apply to every animated component (Modal, Tooltip, Menu, Select, Toast)." }
   },
@@ -332,6 +333,27 @@
       "tag-gap": { "$type": "dimension", "$value": "{space.1}" },
       "due-date-foreground": { "$type": "color", "$value": "{color.semantic.foreground-subdued}" },
       "assignee-avatar-size": { "$type": "dimension", "$value": { "value": 24, "unit": "px" }, "$description": "Lightweight ad-hoc avatar placeholder for the assignee candidate field — deliberately not component.avatar.*; Avatar/Avatar group remains a second-phase candidate, out of v0.1 scope (tracked in GitHub Issues, not this file)." }
+    },
+    "spinner": {
+      "$description": "Batch 3 candidate (2026-07-27, GitHub issue #5). Indeterminate-only circular loading indicator, three sizes. Backfilled from the reviewed works/everline-components-batch3.svg candidate — sizes deliberately reuse existing scale/size tokens instead of inventing new numbers, since the drawn diameters already matched them exactly.",
+      "size-sm": { "$type": "dimension", "$value": "{size.icon-md}", "$description": "24px. Inline usage next to text (e.g. a loading row label)." },
+      "size-md": { "$type": "dimension", "$value": "{scale.component-heights.sm}", "$description": "40px. Standalone/default usage." },
+      "size-lg": { "$type": "dimension", "$value": "{scale.component-heights.xl}", "$description": "64px. Full-page/blocking usage." },
+      "stroke-width-sm": { "$type": "dimension", "$value": { "value": 3, "unit": "px" } },
+      "stroke-width-md": { "$type": "dimension", "$value": { "value": 4, "unit": "px" } },
+      "stroke-width-lg": { "$type": "dimension", "$value": { "value": 5, "unit": "px" }, "$description": "Distinct from icon.stroke-width (2px, for flat line icons) — a spinner ring needs a heavier stroke to stay legible while rotating, roughly scaling with its diameter." },
+      "track-color": { "$type": "color", "$value": "{color.base.gray-700}", "$description": "Same direct base-color reference pattern already used by component.text-input.placeholder." },
+      "indicator-color": { "$type": "color", "$value": "{color.semantic.action-primary}" },
+      "rotation-duration": { "$type": "duration", "$value": "{motion.duration-loop}" },
+      "overlay-backdrop-color": { "$type": "color", "$value": "{component.modal.backdrop-color}", "$description": "Full-page variant only; reuses Modal's exact backdrop treatment (combine with opacity.backdrop) rather than inventing a second dimming value." }
+    },
+    "progress": {
+      "$description": "Batch 3 candidate (2026-07-27, GitHub issue #5). Horizontal progress bar: determinate, indeterminate and error variants. Backfilled from works/everline-components-batch3.svg. No fixed width token — a progress bar's width is set by its container (modal, toolbar, etc.), same reasoning already applied to component.text-input having no width token.",
+      "height": { "$type": "dimension", "$value": "{space.1}", "$description": "8px." },
+      "radius": { "$type": "dimension", "$value": "{radius.pill}" },
+      "track-color": { "$type": "color", "$value": "{color.base.gray-700}" },
+      "fill-primary": { "$type": "color", "$value": "{color.semantic.action-primary}" },
+      "fill-danger": { "$type": "color", "$value": "{color.semantic.action-danger}" }
     }
   },
   "font": {

@@ -1,0 +1,102 @@
+:root {
+  --everline-color-semantic-background-canvas: #1a1a1a;
+  --everline-color-semantic-background-surface: #333;
+  --everline-color-semantic-foreground-primary: #f2f2f2;
+  --everline-color-semantic-foreground-inverse: #fff;
+  --everline-color-semantic-foreground-disabled: #f2f2f2;
+  --everline-color-semantic-action-primary: #598ae8;
+  --everline-color-semantic-action-danger: #c1272d;
+  --everline-color-semantic-border-default: #444;
+  --everline-color-semantic-border-focus: #598ae8;
+  --everline-color-base-gray-700: #4d4d4d;
+  --everline-space-1: 8px; --everline-space-2: 16px; --everline-space-3: 24px; --everline-space-4: 32px; --everline-space-5: 40px;
+  --everline-radius-sm: 8px; --everline-radius-pill: 999px;
+  --everline-border-width-default: 1px; --everline-border-width-focus: 2px;
+  --everline-opacity-disabled: .55; --everline-opacity-backdrop: .45;
+  --everline-motion-duration-base: 200ms; --everline-motion-duration-loop: 900ms; --everline-motion-easing-standard: cubic-bezier(.2, 0, 0, 1);
+  --everline-component-spinner-size-sm: 24px; --everline-component-spinner-size-md: 40px; --everline-component-spinner-size-lg: 64px;
+  --everline-component-spinner-stroke-width-sm: 3px; --everline-component-spinner-stroke-width-md: 4px; --everline-component-spinner-stroke-width-lg: 5px;
+  --everline-component-spinner-track-color: var(--everline-color-base-gray-700);
+  --everline-component-spinner-indicator-color: var(--everline-color-semantic-action-primary);
+  --everline-component-spinner-rotation-duration: var(--everline-motion-duration-loop);
+  --everline-component-spinner-overlay-backdrop-color: #000;
+  --everline-component-progress-height: var(--everline-space-1);
+  --everline-component-progress-radius: var(--everline-radius-pill);
+  --everline-component-progress-track-color: var(--everline-color-base-gray-700);
+  --everline-component-progress-fill-primary: var(--everline-color-semantic-action-primary);
+  --everline-component-progress-fill-danger: var(--everline-color-semantic-action-danger);
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--everline-color-semantic-background-canvas); color: var(--everline-color-semantic-foreground-primary); font-family: "Noto Sans TC", system-ui, sans-serif; line-height: 1.5; }
+button { color: inherit; font: inherit; }
+button:focus-visible, [role="status"]:focus-visible { outline: var(--everline-border-width-focus) solid var(--everline-color-semantic-border-focus); outline-offset: 2px; }
+.catalog { max-width: 1920px; margin: 0 auto; padding: var(--everline-space-4); }
+.catalog-header { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--everline-space-3); border-bottom: var(--everline-border-width-default) solid var(--everline-color-semantic-border-default); padding-bottom: var(--everline-space-3); }
+h1, h2, p { margin: 0; } h1 { font-size: 32px; line-height: 1.25; } h2 { font-size: 24px; line-height: 1.35; }
+.eyebrow, .lede, .trace, .example-label { color: var(--everline-color-semantic-foreground-disabled); font-size: 14px; opacity: var(--everline-opacity-disabled); }
+.eyebrow { text-transform: uppercase; letter-spacing: .05em; }
+.lede, .trace { margin-top: var(--everline-space-1); }
+.trace code { color: inherit; font-family: inherit; }
+.candidate-badge { display: flex; align-items: center; gap: var(--everline-space-1); border: var(--everline-border-width-default) solid var(--everline-color-semantic-action-primary); border-radius: var(--everline-radius-pill); padding: var(--everline-space-1) var(--everline-space-2); font-weight: 700; font-size: 14px; white-space: nowrap; }
+.candidate-badge span { width: 12px; height: 12px; background: var(--everline-color-semantic-action-primary); border-radius: 50%; }
+.scope-note { background: var(--everline-color-semantic-background-surface); border-left: 4px solid var(--everline-color-semantic-action-primary); border-radius: var(--everline-radius-sm); margin: var(--everline-space-4) 0; padding: var(--everline-space-2) var(--everline-space-3); }
+.scope-note p { color: var(--everline-color-semantic-foreground-primary); margin-top: var(--everline-space-1); }
+.scope-note code { font-family: inherit; }
+.component-section { border-bottom: var(--everline-border-width-default) solid var(--everline-color-semantic-border-default); padding: var(--everline-space-5) 0; }
+.component-section:last-child { border: 0; }
+.section-heading { margin-bottom: var(--everline-space-3); }
+.section-heading p { margin-top: var(--everline-space-1); color: var(--everline-color-semantic-foreground-disabled); font-size: 14px; opacity: var(--everline-opacity-disabled); }
+.section-heading code { font-family: inherit; }
+.example-label { margin-top: var(--everline-space-2); }
+
+.link-button { background: transparent; border: 0; color: var(--everline-color-semantic-action-primary); cursor: pointer; padding: 0; text-decoration: underline; }
+
+/* Spinner — classic border-spin technique: a full ring in the track color, */
+/* with the top edge recolored to the indicator color, rotated continuously. */
+.spinner { border-radius: 50%; border-style: solid; border-color: var(--everline-component-spinner-track-color); border-top-color: var(--everline-component-spinner-indicator-color); display: inline-block; animation: everline-spin var(--everline-component-spinner-rotation-duration) linear infinite; }
+.spinner--sm { width: var(--everline-component-spinner-size-sm); height: var(--everline-component-spinner-size-sm); border-width: var(--everline-component-spinner-stroke-width-sm); }
+.spinner--md { width: var(--everline-component-spinner-size-md); height: var(--everline-component-spinner-size-md); border-width: var(--everline-component-spinner-stroke-width-md); }
+.spinner--lg { width: var(--everline-component-spinner-size-lg); height: var(--everline-component-spinner-size-lg); border-width: var(--everline-component-spinner-stroke-width-lg); }
+@keyframes everline-spin { to { transform: rotate(360deg); } }
+
+.spinner-examples { align-items: start; display: flex; flex-wrap: wrap; gap: var(--everline-space-5); }
+.spinner-example { display: grid; justify-items: center; }
+.loading-inline { align-items: center; display: flex; gap: var(--everline-space-1); margin: 0; }
+.loading-overlay-demo { background: var(--everline-color-semantic-background-canvas); border: var(--everline-border-width-default) solid var(--everline-color-semantic-border-default); border-radius: var(--everline-radius-sm); height: 220px; position: relative; width: 360px; max-width: 100%; }
+.loading-overlay { align-content: center; background: color-mix(in srgb, var(--everline-component-spinner-overlay-backdrop-color) calc(var(--everline-opacity-backdrop) * 100%), transparent); display: grid; gap: var(--everline-space-2); height: 100%; justify-items: center; width: 100%; }
+.loading-overlay p { margin: 0; }
+.loading-demo-content { align-content: center; display: grid; gap: var(--everline-space-2); height: 100%; justify-items: center; }
+.loading-demo-content p { margin: 0; color: var(--everline-color-semantic-foreground-disabled); opacity: var(--everline-opacity-disabled); }
+/* .loading-overlay/.loading-demo-content set display:grid unconditionally, which otherwise
+   overrides the browser's default [hidden] { display: none } at equal specificity — without
+   this, toggling the `hidden` attribute in prototype.js wouldn't actually hide either state. */
+.loading-overlay[hidden], .loading-demo-content[hidden] { display: none; }
+
+/* Progress bar */
+.progress-examples { display: grid; gap: var(--everline-space-4); grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); max-width: 1120px; }
+.progress-label { font-size: 14px; font-weight: 600; margin-bottom: var(--everline-space-1); }
+.progress-label--danger { align-items: center; color: var(--everline-color-semantic-action-danger); display: flex; gap: var(--everline-space-1); }
+.error-icon { align-items: center; background: var(--everline-color-semantic-action-danger); border-radius: 50%; color: var(--everline-color-semantic-foreground-inverse); display: inline-flex; flex: 0 0 16px; font-size: 11px; font-weight: 700; height: 16px; justify-content: center; width: 16px; }
+.progress { background: var(--everline-component-progress-track-color); border-radius: var(--everline-component-progress-radius); height: var(--everline-component-progress-height); overflow: hidden; position: relative; }
+.progress__fill { background: var(--everline-component-progress-fill-primary); border-radius: inherit; height: 100%; transition: width var(--everline-motion-duration-base) var(--everline-motion-easing-standard); }
+.progress--danger .progress__fill { background: var(--everline-component-progress-fill-danger); }
+.progress--indeterminate .progress__fill { animation: everline-progress-indeterminate 1.2s ease-in-out infinite; left: -30%; position: absolute; width: 30%; }
+@keyframes everline-progress-indeterminate { 0% { left: -30%; } 100% { left: 130%; } }
+
+@media (max-width: 760px) {
+  .catalog { padding: var(--everline-space-2); }
+  .catalog-header { flex-direction: column; }
+  .candidate-badge { white-space: normal; }
+  .loading-overlay-demo { width: 100%; }
+}
+
+/* Batch 2's global reduced-motion rule forces every animation/transition to ~0ms, which is
+   correct for one-shot open/close transitions but wrong here: an *infinite* animation at
+   0.01ms duration doesn't stop, it flickers at an extreme rate. Spinner and indeterminate
+   progress are Everline's first continuously-looping animations, so they need an explicit
+   stop (freeze on a static frame) instead of just a shorter duration. */
+@media (prefers-reduced-motion: reduce) {
+  .spinner { animation: none !important; }
+  .progress--indeterminate .progress__fill { animation: none !important; left: 35%; }
+}

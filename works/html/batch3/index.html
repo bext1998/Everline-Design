@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Everline v0.1 — 第三批 HTML/CSS 候選元件</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="catalog" aria-labelledby="page-title">
+      <header class="catalog-header">
+        <div>
+          <p class="eyebrow">Everline v0.1 · 第三批元件型錄（1/8）</p>
+          <h1 id="page-title">Everline Design Language — Components Batch 3 HTML/CSS Candidate</h1>
+          <p class="lede">Progress / Spinner / Loading（GitHub issue #5）</p>
+          <p class="trace">Graduated from <code>works/everline-components-batch3.svg</code>（歷史視覺快照）· sibling batch to <code>works/everline-components-master.svg</code>、<code>works/everline-components-batch2.svg</code> · 此 HTML/CSS 為目前候選規格權威來源，不是產品元件庫。</p>
+        </div>
+        <p class="candidate-badge"><span aria-hidden="true"></span> CANDIDATE · NOT FROZEN</p>
+      </header>
+
+      <aside class="scope-note" aria-labelledby="scope-title">
+        <h2 id="scope-title">本輪範圍</h2>
+        <p>第三批（8 類）目前僅完成第 1 個元件：Progress / Spinner / Loading。已實作互動：spinner 以 CSS <code>animation</code> 持續旋轉（非 SVG 快照）、determinate 進度條會自動示範 0→100% 的真實 <code>width</code> 過渡、indeterminate 進度條以持續滑動的區段示意、error 進度條有「重試」示範、full-page loading 有「取消」／「重新示範」示範。<code>prefers-reduced-motion</code>：批次二既有的全域規則把所有動畫時長硬壓到 0.01ms，這對「一次性開闔轉場」正確，但套用在這裡的持續循環動畫（旋轉、滑動）上會變成極速閃爍而不是停止，本檔案另外覆寫為直接停在靜態畫面（見 styles.css 對應註解）。依 GitHub issue #13 的決議，本元件審查通過後已回填 loading 視覺到 <code>works/html/batch2/</code> 的 List／Data table／Kanban column（同一批 PR 完成，見 docs/design-system-v0.1-batch2-draft.md 跨元件設計決策，以及該檔案為權威來源，此處不重複維護狀態）。</p>
+      </aside>
+
+      <section class="component-section" aria-labelledby="spinner-title">
+        <div class="section-heading"><div><p class="eyebrow">Feedback</p><h2 id="spinner-title">Spinner</h2><p>indeterminate only · 24 / 40 / 64px 三種尺寸 · CSS <code>animation</code> 持續旋轉</p></div></div>
+        <div class="spinner-examples">
+          <div class="spinner-example">
+            <div class="spinner spinner--md" role="status" aria-label="載入中"></div>
+            <p class="example-label">standalone（default）</p>
+          </div>
+          <div class="spinner-example spinner-example--inline">
+            <p class="loading-inline"><span class="spinner spinner--sm" role="status" aria-label="載入中"></span><span>載入中…</span></p>
+            <p class="example-label">inline</p>
+          </div>
+          <div class="spinner-example spinner-example--full-page">
+            <div class="loading-overlay-demo" data-loading-demo>
+              <div class="loading-overlay" data-loading-overlay>
+                <div class="spinner spinner--lg" role="status" aria-label="正在同步看板資料"></div>
+                <p>正在同步看板資料…</p>
+                <button type="button" class="link-button" data-loading-cancel>取消</button>
+              </div>
+              <div class="loading-demo-content" data-loading-content hidden>
+                <p>（示意：已取消，載入停止）</p>
+                <button type="button" class="link-button" data-loading-replay>重新示範</button>
+              </div>
+            </div>
+            <p class="example-label">full-page（示意用固定尺寸容器，非真實整頁）</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="component-section" aria-labelledby="progress-title">
+        <div class="section-heading"><div><p class="eyebrow">Feedback</p><h2 id="progress-title">Progress bar</h2><p>8px 高 · pill 圓角 · determinate / indeterminate / error</p></div></div>
+        <div class="progress-examples">
+          <div class="progress-example">
+            <p class="progress-label" data-progress-label>匯出設計稿…</p>
+            <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="匯出進度" data-progress-demo>
+              <div class="progress__fill" data-progress-fill></div>
+            </div>
+            <p class="example-label"><span data-progress-percent>0%</span> · determinate（自動示範進度變化）</p>
+          </div>
+          <div class="progress-example">
+            <p class="progress-label">正在載入…</p>
+            <div class="progress progress--indeterminate" role="progressbar" aria-label="正在載入" aria-valuetext="處理中">
+              <div class="progress__fill"></div>
+            </div>
+            <p class="example-label">indeterminate</p>
+          </div>
+          <div class="progress-example">
+            <p class="progress-label progress-label--danger" data-error-label><span class="error-icon" aria-hidden="true">!</span>上傳失敗</p>
+            <div class="progress progress--danger" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40" aria-label="上傳進度（失敗）" data-error-progress>
+              <div class="progress__fill" data-error-fill style="width: 40%"></div>
+            </div>
+            <p class="example-label"><button type="button" class="link-button" data-error-retry>重試</button> · error</p>
+          </div>
+        </div>
+      </section>
+    </main>
+    <script src="prototype.js"></script>
+  </body>
+</html>

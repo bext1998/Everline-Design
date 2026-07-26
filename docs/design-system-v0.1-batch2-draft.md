@@ -21,7 +21,7 @@ GitHub issue #13 收斂了畢業時擱置的跨元件問題。逐項決定如下
 
 - **拖曳／拖放中視覺**（Card 的 `dragging`、Kanban column 的 `drag-over`、Task card 的 `dragging`）：Everline「低裝飾、不先引入陰影」原則**不例外**——拖曳中的元素不使用陰影，改用降低不透明度（`opacity.dragging` = 0.85，刻意比 `opacity.disabled` 0.55 淺，因為拖曳中的元素仍是互動焦點，不是不可用）＋沿用既有 `border-focus` 描邊。drag-over 的放下目標（Kanban column）用 2px 虛線外框標示，並在卡片會插入的位置顯示一條 `action-primary` 高亮細線。Kanban column 已實作真實的原生拖放（可把 Task card 拖到別的欄位），`limit-reached` 欄位在達到 `data-kanban-max` 上限時會拒絕放下。
 - **空狀態佔位**（List、Data table、Kanban column 的 `empty`）：三個元件共用同一套視覺語言——沿用 Kanban 已審查的 `empty-state` 樣式（圓圈圖示＋簡短文字），只換圖示與文案，不各自發明版本。List／Data table 已各補一個 empty 範例。
-- **Loading**：**本次仍未實作，明確擱置**——依賴 Progress/Loading 元件（issue #9，尚未完成）；等該元件定案後才決定怎麼套進 List／Data table／Kanban column，不在這裡另外設計一套視覺語言。
+- **Loading**：**2026-07-27 已回填**——Progress/Loading 元件（issue #5；先前誤寫為 issue #9，該號碼現已改指 Slider 元件，與此無關）完成並審查通過後，直接沿用其 spinner 視覺，套進既有 `empty-state` 容器（只換圖示與文案：icon 換成 `.spinner`，文字改「載入中…」），沒有另外設計一套視覺語言。細節與 token 見 `docs/design-system-v0.1-batch3-draft.md`。
 - **Data table 密度／分頁**：v0.1 範圍收斂為單一密度（維持既有 48px 列高，不做 compact/comfortable 等密度變體）＋基本分頁（上一頁／下一頁圖示按鈕＋頁碼文字）。分頁只做控制項狀態展示，本批未接上真實分頁資料。
 - **Data table 列層級 `error`**：仍未定義，不在本次 #13 範圍內（原文件誤把它跟上面三項並列，但它其實是 Data table 自己的獨立問題，需要先決定是列層級還是欄位層級才能設計視覺，留待之後另開項目）。
 - **Sidebar `resizing`**：新增拖曳把手（`.sidebar-resize-handle`，右緣 8px 熱區），滑鼠拖曳＋鍵盤 ArrowLeft/ArrowRight 皆可調整寬度；最小寬度沿用 `component.sidebar.width-collapsed`（72px，比這個窄就應該直接收合，不是縮小），新增 `component.sidebar.width-max`（400px）為上限，不做磁吸／預設密度。
@@ -109,7 +109,7 @@ GitHub issue #13 收斂了畢業時擱置的跨元件問題。逐項決定如下
 
 - 已畫出：`default`、`hover`、`selected`、`disabled` 列；`grouped`（含分區標題列，此手法之後 Data table／Kanban column 沿用）。
 - 明確拆為兩種變體以區分「row action」與「item selection」：(a) 選取型 List 使用前導勾選框；(b) 操作型 List 使用列尾獨立圖示按鈕（例如刪除），點擊該按鈕不觸發整列選取。
-- `empty`：2026-07-23 實作（見上方「跨元件設計決策」），沿用 Kanban 的 empty-state 樣式。`loading`：仍擱置，等 Progress/Loading 元件（issue #9）完成。
+- `empty`：2026-07-23 實作（見上方「跨元件設計決策」），沿用 Kanban 的 empty-state 樣式。`loading`：2026-07-27 已回填，沿用同一 `empty-state` 容器，圖示換成 Progress/Loading 元件的 spinner（見上方「跨元件設計決策」）。
 
 ### 無障礙
 
@@ -130,7 +130,7 @@ GitHub issue #13 收斂了畢業時擱置的跨元件問題。逐項決定如下
 ### 狀態、互動與內容
 
 - 已畫出：表頭列（含一個 `sorted` 欄位排序指示，`component.data-table.sort-indicator-color`）、`default`／`hover`／`selected` 資料列（前導勾選框＋ list-item token）。
-- `pagination`、`empty`：2026-07-23 實作（見上方「跨元件設計決策」）；密度變體本輪不做，維持單一 48px 列高。`loading`：仍擱置，等 Progress/Loading 元件（issue #9）完成。列層級 `error`：仍未定義，需先決定是列層級還是欄位層級才能定義視覺，不在本輪範圍。
+- `pagination`、`empty`：2026-07-23 實作（見上方「跨元件設計決策」）；密度變體本輪不做，維持單一 48px 列高。`loading`：2026-07-27 已回填，同一 `empty-state` 容器＋spinner。列層級 `error`：仍未定義，需先決定是列層級還是欄位層級才能定義視覺，不在本輪範圍。
 
 ### 無障礙
 
@@ -175,7 +175,7 @@ GitHub issue #13 收斂了畢業時擱置的跨元件問題。逐項決定如下
 ### 狀態、互動與內容
 
 - 已畫出：`normal`（標題＋數量徽章＋2-3 張已定案的 Task card）、`empty`（極簡文字/圖示佔位，非完整 illustration）、`limit-reached`（數量徽章切換為 `limit-badge-color` / danger 色，欄內 Task card 數量須與徽章一致，例如 5/5 就要畫滿 5 張，讓欄位視覺上真的「滿了」——歷史 SVG 快照裡這個狀態只畫了 1 張卡配 5/5 徽章，數字與內容對不上，是繪製時的疏漏；`works/html/batch2/` 已於 2026-07-23 補齊為 5 張卡，SVG 本身依規則不再更新，保留原樣為歷史紀錄）。
-- `drag-over`：2026-07-23 實作（見上方「跨元件設計決策」）。`collapsed`：評估後確認不是實際需求，已撤銷，不在 Everline 範圍內。`loading`：仍擱置，等 Progress/Loading 元件（issue #9）完成。
+- `drag-over`：2026-07-23 實作（見上方「跨元件設計決策」）。`collapsed`：評估後確認不是實際需求，已撤銷，不在 Everline 範圍內。`loading`：2026-07-27 已回填，同一 `empty-state` 容器＋spinner，示範欄不含數量徽章與拖放接線（loading 中的欄位本來就不該接受放下）。
 
 ### 無障礙
 
