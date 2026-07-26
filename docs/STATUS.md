@@ -7,7 +7,7 @@
 ## 收尾狀態
 
 - 狀態：`in-progress`
-- 原因：目前已有可辨識的設計來源與預覽，但元件規格、審核狀態與 Taylor Kanban 技術整合仍未完成；第三批（8 類）尚未開始。
+- 原因：目前已有可辨識的設計來源與預覽，但元件規格、審核狀態與 Taylor Kanban 技術整合仍未完成；第三批（8 類）進行中，細節見下方累計進度。
 - 累計進度：第一批 17 類（`works/everline-components-master.svg`）、第二批 7 類、第三批 1/8 類（Progress / Spinner / Loading，issue #5，已畢業為 `works/html/batch3/` HTML/CSS 候選規格）皆已有 candidate；三批合計 25 類皆仍是 candidate／草稿狀態，尚未逐項確認用途、狀態、無障礙、來源追溯等完整規格條件（見 `AGENTS.md` 元件規格的 12 項完成檢查），非正式定稿。第三批其餘 7 類（issue #6-#12）與第二階段候選（19 類，非必做）尚未開始。
 - 2026-07-27：Progress/Loading 元件同時回填了第二批 List／Data table／Kanban column 先前擱置的 `loading` 狀態（`works/html/batch2/`），沿用同一 spinner 視覺套進既有 `empty-state` 容器，未另立新視覺語言；過程中順手修正了 batch2 既有的全域 `prefers-reduced-motion` 規則對「持續循環動畫」（spinner 旋轉）不適用的問題（原規則會讓動畫變成極速閃爍，而不是正確地停在靜態畫面）。
 - 待辦、規劃與跨元件擱置決策一律追蹤在 GitHub Issues（`gh issue list`），不在此文件重複列。
