@@ -20,7 +20,7 @@
 
       <aside class="scope-note" aria-labelledby="scope-title">
         <h2 id="scope-title">本輪範圍</h2>
-        <p>已實作互動：選取、鍵盤焦點、排序、Task card 拖曳於 Kanban 欄位間搬移、Sidebar 拖曳調整寬度；Sidebar expanded／collapsed 與 Kanban normal／empty／limit-reached 以型錄並排展示。未實作：loading（等 Progress/Loading 元件完成後才套用）、Data table 密度變體（v0.1 僅單一密度＋基本分頁）。Kanban column 的 collapsed 狀態評估後決定不做，不在 Everline 範圍內。</p>
+        <p>已實作互動：選取、鍵盤焦點、排序、Task card 拖曳於 Kanban 欄位間搬移、Sidebar 拖曳調整寬度；Sidebar expanded／collapsed 與 Kanban normal／empty／limit-reached 以型錄並排展示。Data table 密度變體（v0.1 僅單一密度＋基本分頁）與 Kanban column 的 collapsed 狀態（評估後決定不做，不在 Everline 範圍內）維持原判斷。<strong>2026-07-27 更新</strong>：List、Data table、Kanban column 的 `loading` 狀態已回填——直接沿用 Progress/Loading 元件（見 <code>works/html/batch3/</code>，issue #5）的 spinner，套進既有 `empty-state` 容器（只換圖示與文案，不另外設計視覺），詳見各元件小節。</p>
       </aside>
 
       <section class="component-section" aria-labelledby="sidebar-title">
@@ -93,6 +93,7 @@
           </ul><p class="caption">列尾按鈕不會改變整列選取狀態。</p></div>
           <div><h3>Grouped</h3><ul class="list" aria-label="分組檔案"><li class="list-group">今天</li><li class="list-item"><label><input type="checkbox"><span class="checkmark" aria-hidden="true"></span><span>meeting-notes.md</span></label></li><li class="list-group">本週稍早</li><li class="list-item"><label><input type="checkbox"><span class="checkmark" aria-hidden="true"></span><span>roadmap.pdf</span></label></li></ul></div>
           <div class="list-empty"><h3>Empty</h3><div class="empty-state"><span aria-hidden="true">＋</span><p>目前沒有檔案</p></div></div>
+          <div class="list-empty"><h3>Loading</h3><div class="empty-state"><div class="spinner spinner--md" role="status" aria-label="載入中"></div><p>載入中…</p></div></div>
         </div>
       </section>
 
@@ -110,6 +111,9 @@
         </nav>
         <div class="table-wrap"><h3>Empty</h3><table><thead><tr><th scope="col"><span class="sr-only">選取</span></th><th scope="col">名稱</th><th scope="col">狀態</th><th scope="col">更新時間</th></tr></thead><tbody>
           <tr class="table-empty"><td colspan="4"><div class="empty-state"><span aria-hidden="true">＋</span><p>目前沒有資料</p></div></td></tr>
+        </tbody></table></div>
+        <div class="table-wrap"><h3>Loading</h3><table><thead><tr><th scope="col"><span class="sr-only">選取</span></th><th scope="col">名稱</th><th scope="col">狀態</th><th scope="col">更新時間</th></tr></thead><tbody>
+          <tr class="table-empty"><td colspan="4"><div class="empty-state"><div class="spinner spinner--md" role="status" aria-label="載入中"></div><p>載入中…</p></div></td></tr>
         </tbody></table></div>
       </section>
 
@@ -159,6 +163,13 @@
               </div>
             </section>
             <p class="example-label">limit-reached</p>
+          </div>
+          <div class="kanban-example">
+            <section class="kanban-column" aria-labelledby="kanban-loading-title">
+              <header><h3 id="kanban-loading-title">封存區</h3></header>
+              <div class="kanban-content"><div class="empty-state"><div class="spinner spinner--md" role="status" aria-label="載入中"></div><p>載入中…</p></div></div>
+            </section>
+            <p class="example-label">loading</p>
           </div>
         </div>
       </section>
