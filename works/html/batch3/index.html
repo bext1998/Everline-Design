@@ -20,7 +20,7 @@
 
       <aside class="scope-note" aria-labelledby="scope-title">
         <h2 id="scope-title">本輪範圍</h2>
-        <p>第三批（8 類）目前僅完成第 1 個元件：Progress / Spinner / Loading。已實作互動：spinner 以 CSS <code>animation</code> 持續旋轉（非 SVG 快照）、determinate 進度條會自動示範 0→100% 的真實 <code>width</code> 過渡、indeterminate 進度條以持續滑動的區段示意、error 進度條有「重試」示範、full-page loading 有「取消」／「重新示範」示範。<code>prefers-reduced-motion</code>：批次二既有的全域規則把所有動畫時長硬壓到 0.01ms，這對「一次性開闔轉場」正確，但套用在這裡的持續循環動畫（旋轉、滑動）上會變成極速閃爍而不是停止，本檔案另外覆寫為直接停在靜態畫面（見 styles.css 對應註解）。未實作：把這裡的 loading 視覺套進 <code>works/html/batch2/</code> 的 List／Data table／Kanban column（依 GitHub issue #13 的決議，等本元件審查通過後才處理，見 docs/design-system-v0.1-batch2-draft.md 跨元件設計決策）。</p>
+        <p>第三批（8 類）目前僅完成第 1 個元件：Progress / Spinner / Loading。已實作互動：spinner 以 CSS <code>animation</code> 持續旋轉（非 SVG 快照）、determinate 進度條會自動示範 0→100% 的真實 <code>width</code> 過渡、indeterminate 進度條以持續滑動的區段示意、error 進度條有「重試」示範、full-page loading 有「取消」／「重新示範」示範。<code>prefers-reduced-motion</code>：批次二既有的全域規則把所有動畫時長硬壓到 0.01ms，這對「一次性開闔轉場」正確，但套用在這裡的持續循環動畫（旋轉、滑動）上會變成極速閃爍而不是停止，本檔案另外覆寫為直接停在靜態畫面（見 styles.css 對應註解）。依 GitHub issue #13 的決議，本元件審查通過後已回填 loading 視覺到 <code>works/html/batch2/</code> 的 List／Data table／Kanban column（同一批 PR 完成，見 docs/design-system-v0.1-batch2-draft.md 跨元件設計決策，以及該檔案為權威來源，此處不重複維護狀態）。</p>
       </aside>
 
       <section class="component-section" aria-labelledby="spinner-title">

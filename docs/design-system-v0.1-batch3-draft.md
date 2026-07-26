@@ -46,10 +46,11 @@
 - Determinate progress bar 需要 `aria-valuenow`／`aria-valuemin`／`aria-valuemax` 三者皆備；indeterminate 依規範不寫 `aria-valuenow`。
 - 長時間流程建議提供文字狀態與取消策略（參考 `references/gui-components-reference.md` 對 Progress/Loading 的既有備註）。
 - 持續動畫需尊重 `prefers-reduced-motion`，且必須是「停止」而非「縮短到近乎瞬間」（見上）。
+- **2026-07-27 PR review 修正**：`prefers-reduced-motion` 的處理不能只靠 CSS。Determinate progress 的自動示範迴圈與 error 重試的爬升動畫都是 JS（`setTimeout`/`setInterval`）持續改變 `width`／`aria-valuenow`，CSS 的 `animation`/`transition` reduced-motion 覆寫完全管不到這種由 JS 驅動的持續變化——實測會出現「畫面上動畫確實停了，但數值還在一直跳」的落差。修正方式：JS 端也要用 `window.matchMedia('(prefers-reduced-motion: reduce)')` 自行判斷，reduced motion 時直接跳過持續迴圈、停在靜態值，不能假設 CSS 那層已經處理好。之後任何新增「JS 驅動的持續性示範/動畫」都要比照辦理，不能只加 CSS 覆寫就視為完成。
 
-## 跨批次回填（尚未執行）
+## 跨批次回填
 
-Issue #5 的範圍包含把本元件的 loading 視覺套進第二批 List、Data table、Kanban column（GitHub issue #13 當時明確擱置、等本元件定案後才處理，見 `docs/design-system-v0.1-batch2-draft.md` 跨元件設計決策）。本節僅記錄意圖，實際回填待下一步在 `works/html/batch2/` 執行後，於該文件對應章節更新，不在本文件重複維護。
+Issue #5 的範圍包含把本元件的 loading 視覺套進第二批 List、Data table、Kanban column（GitHub issue #13 當時明確擱置、等本元件定案後才處理，見 `docs/design-system-v0.1-batch2-draft.md` 跨元件設計決策）。**已於同一 PR 完成**：`works/html/batch2/` 的 List、Data table、Kanban column 皆已套用本元件的 spinner（沿用既有 `empty-state` 容器，只換圖示與文案），細節與 token 對照見 `docs/design-system-v0.1-batch2-draft.md` 對應章節，該檔案為狀態權威來源，此處不重複維護。
 
 ## 校準清單
 
