@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="760" viewBox="0 0 1920 760" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="960" viewBox="0 0 1920 960" role="img" aria-labelledby="title desc">
   <title id="title">Everline v0.1 components batch 3 sheet</title>
-  <desc id="desc">Third-batch candidate vector sheet, component 1 of 8: Progress / Spinner / Loading.</desc>
+  <desc id="desc">Third-batch candidate vector sheet, components 1-2 of 8: Progress / Spinner / Loading; Search field.</desc>
   <metadata>
     sibling-of: works/everline-components-master.svg (2026-07-19), works/everline-components-batch2.svg (2026-07-20) — independent batch, not a supersession of either;
-    spec-reference: docs/design-system-v0.1-batch3-draft.md (not yet created — write after this candidate is reviewed);
-    status: candidate SVG awaiting human review; created: 2026-07-27; do-not-treat-as-frozen;
-    scope: batch 3 (8 components) is drawn incrementally, one GitHub issue at a time; this file currently holds only component 1/8 — Progress / Spinner / Loading (issue #5). Components 2-8 (issues #6-#12) will be appended to this same file as each is worked, mirroring how everline-components-master.svg and everline-components-batch2.svg accumulated their components;
-    backfill-note: issue #5 also requires this component to backfill the `loading` state left deliberately unimplemented for List, Data table and Kanban column (see docs/design-system-v0.1-batch2-draft.md 跨元件設計決策, GitHub issue #13). That backfill is intentionally NOT done in this file — per issue #13's own framing, it happens later in works/html/batch2/ only after this candidate is reviewed, approved, and graduated, so this sheet only needs to decide the loading visual language itself;
-    token-gap: tokens/everline-draft.tokens.json has no component.progress.* or component.spinner.* entries yet. This candidate reuses existing color.semantic.action-primary (#598AE8) / action-danger (#C1272D) and color.base.gray-700 (#4D4D4D) directly, plus the existing motion.duration-slow (320ms) candidate as the rotation-cycle reference. New component tokens are proposed only after this candidate is approved, per AGENTS.md's token-before-use rule — see 校準清單 note at the bottom of this sheet for the exact candidate values to formalize.
+    spec-reference: docs/design-system-v0.1-batch3-draft.md (updated for each component after its candidate is reviewed);
+    status: component 2/8 (Search field) is candidate SVG awaiting human review; component 1/8 (Progress/Spinner/Loading) already reviewed and graduated; created: 2026-07-27; do-not-treat-as-frozen for the pending component;
+    scope: batch 3 (8 components) is drawn incrementally, one GitHub issue at a time; this file now holds components 1-2/8 — Progress / Spinner / Loading (issue #5, graduated) and Search field (issue #6, pending review). Components 3-8 (issues #7-#12) will be appended to this same file as each is worked, mirroring how everline-components-master.svg and everline-components-batch2.svg accumulated their components;
+    backfill-note: issue #5 also requires the progress/spinner component to backfill the `loading` state left deliberately unimplemented for List, Data table and Kanban column (see docs/design-system-v0.1-batch2-draft.md 跨元件設計決策, GitHub issue #13). Already completed in works/html/batch2/, unrelated to Search field;
+    token-gap: component.progress.*/component.spinner.* were added to tokens/everline-draft.tokens.json after issue #5's candidate was approved. Search field (issue #6) is designed to need only one new group, component.search-field.*, and only for icon/clear-button layout metrics — every color and the field height/radius/background reuse component.text-input's existing values directly (see search-field-note below and 校準清單 under the Search field group). New tokens are proposed only after this candidate is approved, per AGENTS.md's token-before-use rule;
+    search-field-note: Search field (issue #6) deliberately extends component.text-input's structure (48px height, radius.control, background-subdued, gray-700 placeholder/icon tone, border-focus) instead of inventing a parallel token namespace, per the issue's own scope note ("延伸既有 Text input 的 token 與結構"). Scope is intentionally narrow (低複雜度): only empty/filled/focused/disabled states plus a leading search icon and a content-conditional trailing clear button — no error/readonly variant, since those aren't typical for a search field and Text input itself only specifies them as future work.
   </metadata>
   <defs>
     <style>
@@ -24,11 +25,11 @@
     </style>
   </defs>
 
-  <rect width="1920" height="760" fill="#1a1a1a"/>
+  <rect width="1920" height="960" fill="#1a1a1a"/>
 
   <g id="board-heading" class="ui">
     <text class="title" x="48" y="58">Everline Design Language — Components Batch 3 Sheet</text>
-    <text class="note" x="48" y="88">v0.1 candidate · 第三批 1/8：Progress / Spinner / Loading（issue #5）· sibling to master.svg 與 batch2.svg</text>
+    <text class="note" x="48" y="88">v0.1 candidate · 第三批 1-2/8：Progress/Spinner/Loading（issue #5，已畢業）、Search field（issue #6，候選審查中）· sibling to master.svg 與 batch2.svg</text>
     <g transform="translate(1630 32)">
       <rect width="236" height="40" rx="20" fill="#333" stroke="#598ae8" stroke-width="2"/>
       <circle cx="22" cy="20" r="6" fill="#598ae8"/>
@@ -105,6 +106,65 @@
 
     <text class="note" x="0" y="488">loading 尚未套用到 List／Data table／Kanban column（待此候選稿審查通過後另行決定套用方式，見 docs/design-system-v0.1-batch2-draft.md 跨元件決策與 issue #13）</text>
     <text class="caption" x="0" y="512" fill="#666">校準候選：spinner size-sm/md/lg = 24/40/64px；track = gray-700 #4d4d4d；fill = action-primary／action-danger；rotation duration 候選 motion.duration-slow（320ms）</text>
+  </g>
+
+  <!-- ===================== Search field ===================== -->
+
+  <g id="c-search-field" class="ui" transform="translate(48 700)">
+    <text class="section" x="0" y="0">Search field</text>
+    <text class="note" x="0" y="28">延伸 Text input 結構：前導搜尋圖示＋尾端清除按鈕（有內容時才出現）· 48 px 高 · radius 24 px · icon 16px</text>
+
+    <g transform="translate(0 56)">
+      <g id="search-empty" transform="translate(0 0)">
+        <rect width="320" height="48" rx="24" fill="#666"/>
+        <g transform="translate(16 16)">
+          <circle cx="6" cy="6" r="5" class="icon" stroke="#4d4d4d"/>
+          <path class="icon" d="M10 10l5 5" stroke="#4d4d4d"/>
+        </g>
+        <text class="body" x="40" y="30" fill="#4d4d4d">搜尋…</text>
+        <text class="caption" x="160" y="68" text-anchor="middle">empty</text>
+      </g>
+
+      <g id="search-filled" transform="translate(344 0)">
+        <rect width="320" height="48" rx="24" fill="#666"/>
+        <g transform="translate(16 16)">
+          <circle cx="6" cy="6" r="5" class="icon" stroke="#4d4d4d"/>
+          <path class="icon" d="M10 10l5 5" stroke="#4d4d4d"/>
+        </g>
+        <text class="body" x="40" y="30" fill="#f2f2f2">看板規劃</text>
+        <g transform="translate(288 16)">
+          <path class="icon" d="M3 3l10 10 M13 3l-10 10" stroke="#4d4d4d"/>
+        </g>
+        <text class="caption" x="160" y="68" text-anchor="middle">filled（含清除按鈕）</text>
+      </g>
+
+      <g id="search-focused" transform="translate(688 0)">
+        <rect x="1" y="1" width="318" height="46" rx="23" fill="#666" stroke="#598ae8" stroke-width="2"/>
+        <g transform="translate(16 16)">
+          <circle cx="6" cy="6" r="5" class="icon" stroke="#4d4d4d"/>
+          <path class="icon" d="M10 10l5 5" stroke="#4d4d4d"/>
+        </g>
+        <text class="body" x="40" y="30" fill="#f2f2f2">看板規劃</text>
+        <g transform="translate(288 16)">
+          <path class="icon" d="M3 3l10 10 M13 3l-10 10" stroke="#4d4d4d"/>
+        </g>
+        <text class="caption" x="160" y="68" text-anchor="middle">focused</text>
+      </g>
+
+      <g id="search-disabled" transform="translate(1032 0)">
+        <rect width="320" height="48" rx="24" fill="#666"/>
+        <g transform="translate(16 16)">
+          <circle cx="6" cy="6" r="5" class="icon" stroke="#f2f2f2" stroke-opacity="0.55"/>
+          <path class="icon" d="M10 10l5 5" stroke="#f2f2f2" stroke-opacity="0.55"/>
+        </g>
+        <text class="body" x="40" y="30" fill="#f2f2f2" fill-opacity="0.55">搜尋…</text>
+        <text class="caption" x="160" y="68" text-anchor="middle">disabled</text>
+      </g>
+    </g>
+
+    <text class="note" x="0" y="150">清除按鈕僅在有內容（filled／focused）時顯示；disabled 即使殘留文字也隱藏清除按鈕，避免暗示欄位仍可互動。</text>
+    <text class="note" x="0" y="174">圖示與 placeholder 皆用 gray-700（與 Text input 的 placeholder token 相同色階）；disabled 圖示與文字改用既有 foreground-disabled（off-white + opacity.disabled 0.55），與 select-disabled／button-disabled 手法一致。</text>
+    <text class="caption" x="0" y="198" fill="#666">校準候選：icon-size 16px（size.icon-sm）；icon-inset／clear-button-inset 16px（space.2）；icon 與文字間距 8px（space.1）；filled/focused 尾端保留寬度 = 16+16+8 = 40px；empty（無按鈕）尾端沿用既有 text-input.padding-inline 24px（space.3）</text>
   </g>
 
 </svg>
