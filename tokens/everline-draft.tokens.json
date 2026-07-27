@@ -188,6 +188,23 @@
       "background": { "$type": "color", "$value": "{color.semantic.background-subdued}" },
       "scrollbar": { "$type": "color", "$value": "{color.base.gray-700}" }
     },
+    "search-field": {
+      "$description": "Batch 3 candidate (2026-07-27, GitHub issue #6, component 2/8). Extends component.text-input's structure (height/radius/background/foreground/placeholder/border-focus all identical values) with a leading search icon and a content-conditional trailing clear button. Every value below was verified against the reviewed candidate in works/everline-components-batch3.svg (c-search-field group) before being added, per AGENTS.md's token-before-use rule. No width token, same reasoning already applied to component.text-input (width set by container).",
+      "height": { "$type": "dimension", "$value": "{size.control-md}" },
+      "radius": { "$type": "dimension", "$value": "{radius.control}" },
+      "background": { "$type": "color", "$value": "{color.semantic.background-subdued}" },
+      "foreground": { "$type": "color", "$value": "{color.semantic.foreground-primary}" },
+      "placeholder": { "$type": "color", "$value": "{color.base.gray-700}" },
+      "icon-color": { "$type": "color", "$value": "{color.base.gray-700}", "$description": "Same tone as placeholder — the search icon is decorative/muted, not a state indicator, so it doesn't get its own color identity." },
+      "border-width-focus": { "$type": "dimension", "$value": "{border.width-focus}" },
+      "border-focus": { "$type": "color", "$value": "{color.semantic.border-focus}" },
+      "icon-size": { "$type": "dimension", "$value": "{size.icon-sm}" },
+      "icon-inset": { "$type": "dimension", "$value": "{space.2}", "$description": "Distance from the field's edge to the search icon, and from the field's edge to the clear button." },
+      "content-gap": { "$type": "dimension", "$value": "{space.1}" },
+      "padding-inline-start": { "$type": "dimension", "$value": { "value": 40, "unit": "px" }, "$description": "Reserves room for the leading search icon: icon-inset (16px) + icon-size (16px) + content-gap (8px) = 40px. Always applied (the search icon is never hidden)." },
+      "padding-inline-end": { "$type": "dimension", "$value": "{space.3}", "$description": "Trailing padding when the field is empty (no clear button) — same value component.text-input.padding-inline already uses." },
+      "padding-inline-end-filled": { "$type": "dimension", "$value": { "value": 40, "unit": "px" }, "$description": "Trailing padding once a clear button is present (filled/focused-with-content), mirroring padding-inline-start's derivation (icon-inset + icon-size + content-gap)." }
+    },
     "select": {
       "$description": "Batch 1 candidate (2026-07-19). Reuses text-input-like trigger and split-button-like menu surface.",
       "trigger-height": { "$type": "dimension", "$value": "{size.control-md}" },

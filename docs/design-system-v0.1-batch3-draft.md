@@ -1,11 +1,11 @@
 # Everline v0.1 設計系統草稿 — 第三批
 
-狀態：`candidate`（HTML/CSS 權威來源：`works/html/batch3/index.html`；SVG 保留為歷史快照）
+狀態：`candidate`（HTML/CSS 權威來源：`works/html/batch3/index.html`；已畢業元件對應的 SVG 群組保留為歷史快照，其餘元件仍在候選稿階段）
 建立日期：2026-07-27
-候選向量稿：`works/everline-components-batch3.svg`（2026-07-27 起為歷史視覺快照，僅含本檔案記錄的元件）；候選規格權威來源：`works/html/batch3/index.html`。
+候選向量稿：`works/everline-components-batch3.svg`——只有本檔案記錄、已畢業元件對應的 SVG 群組（目前為 Progress/Spinner/Loading、Search field）自 2026-07-27 起為歷史視覺快照、不再更新；檔案本身仍是第三批其餘元件持續追加中的 active sheet，不是整份退役。候選規格權威來源：`works/html/batch3/index.html`。
 延伸文件：本檔案延伸 `docs/design-system-v0.1-draft.md` 與 `docs/design-system-v0.1-batch2-draft.md` 的跨元件規則，不重複列出；只記錄第三批已完成元件的專屬規格。
 
-範圍說明：第三批（8 類，桌面工具與補充能力）採逐一元件、逐一 GitHub issue 完成，不像第一、二批一次繪製整批。本檔案目前僅涵蓋第 1/8 個元件：Progress / Spinner / Loading（issue #5）。其餘 7 個元件（issue #6-#12）完成時會依序追加到本檔案，而不是另開新檔——沿用批次一、二「同批次共用一份規格文件」的慣例。
+範圍說明：第三批（8 類，桌面工具與補充能力）採逐一元件、逐一 GitHub issue 完成，不像第一、二批一次繪製整批。本檔案目前涵蓋第 1-2/8 個元件：Progress / Spinner / Loading（issue #5）、Search field（issue #6）。其餘 6 個元件（issue #7-#12）完成時會依序追加到本檔案，而不是另開新檔——沿用批次一、二「同批次共用一份規格文件」的慣例。
 
 ## Progress / Spinner / Loading
 
@@ -52,8 +52,39 @@
 
 Issue #5 的範圍包含把本元件的 loading 視覺套進第二批 List、Data table、Kanban column（GitHub issue #13 當時明確擱置、等本元件定案後才處理，見 `docs/design-system-v0.1-batch2-draft.md` 跨元件設計決策）。**已於同一 PR 完成**：`works/html/batch2/` 的 List、Data table、Kanban column 皆已套用本元件的 spinner（沿用既有 `empty-state` 容器，只換圖示與文案），細節與 token 對照見 `docs/design-system-v0.1-batch2-draft.md` 對應章節，該檔案為狀態權威來源，此處不重複維護。
 
+## Search field
+
+狀態：`candidate`（第三批 2/8，2026-07-27，GitHub issue #6，已畢業為 HTML/CSS；`works/html/batch3/index.html` 為候選規格權威來源，`works/everline-components-batch3.svg` 對應區塊為歷史快照，不再更新）
+
+### 用途與邊界
+
+單行搜尋輸入，用於在清單、看板、資產面板等內容集合中即時篩選或觸發搜尋。刻意延伸既有 Text input 的結構與 token（高度、radius、背景、placeholder 色、focus 邊框皆直接沿用），不另立一套元件語言——差異只在於前導搜尋圖示與內容出現時的尾端清除按鈕。不適用於需要送出按鈕、進階篩選條件組合或多欄位查詢的情境；那類需求應另外設計，不應把本元件硬套上去。
+
+### 結構與變體
+
+- 沿用 `component.text-input` 的核心量測：高度 48px（`component.search-field.height` = `size.control-md`）、radius 24px（`component.search-field.radius` = `radius.control`）、背景 `background-subdued`；寬度由容器控制，同 Text input 既有慣例，無寬度 token。
+- 前導搜尋圖示：16px（`component.search-field.icon-size` = `size.icon-sm`），左側內縮 16px（`icon-inset` = `space.2`），與文字間距 8px（`content-gap` = `space.1`），圖示與 placeholder 同色（`icon-color` = `placeholder` = `color.base.gray-700`）——圖示是裝飾性元素，不用來傳達狀態，因此不需要獨立色彩身分。
+- 尾端清除按鈕：僅在欄位有內容時出現（filled／focused-with-content），16px ✕ 圖示，內縮與間距對稱於前導圖示（同樣 16px inset + 8px gap）。空欄位時沒有清除按鈕，尾端內距沿用既有 `component.text-input.padding-inline`（24px，`component.search-field.padding-inline-end` = `space.3`）；有清除按鈕時尾端內距改為 40px（`padding-inline-end-filled`，= icon-inset + icon-size + content-gap，與前導側的 `padding-inline-start` 對稱推導）。
+- Focused：2px 藍色描邊（`border-focus` / `border-width-focus`，值與 Text input 相同），繪製手法沿用 Text input 既有的內縮 stroke 技巧（`rx` 隨描邊寬度微調，避免描邊溢出元件邊界），不是新技法。
+
+### 狀態、互動與內容
+
+- 候選稿涵蓋 empty、filled（含清除按鈕）、focused、disabled 四種狀態。刻意不含 error、readonly——這兩者不是搜尋欄的典型情境（Text input 本身也僅視為未來待補項目，見上方 Text input 小節），若之後有具體產品情境需要，再另行設計。
+- 清除按鈕點擊後應清空輸入值、將焦點留在欄位內（不應把焦點移出），並重新觸發篩選（若有即時篩選邏輯）；HTML/CSS 畢業階段須確認鍵盤可達（可用 Tab 到達、Enter／Space 觸發）。
+- disabled：即使欄位內殘留文字，也必須隱藏清除按鈕——顯示清除按鈕會暗示欄位仍可互動，與 disabled 語意矛盾。圖示與文字改用既有 `foreground-disabled`（off-white + `opacity.disabled` 0.55），手法與 `select-disabled`／`button-disabled` 一致，不另立 disabled 專屬顏色。
+- Placeholder（例如「搜尋…」）僅供範例，不能取代欄位的可存取名稱；若搜尋範圍不明顯，應搭配額外文字說明搜尋對象（例如「搜尋任務」而非單純「搜尋」）。
+
+### 無障礙
+
+- 欄位需要程式可辨識的可存取名稱（`aria-label` 或關聯的 `<label>`），不能只靠 placeholder 傳達用途。
+- 清除按鈕需要獨立的可存取名稱（例如 `aria-label="清除搜尋"`），且必須是可鍵盤操作的互動元素（`<button>`），不能只用純圖示 `<span>` 加點擊事件。
+- Focus、disabled 不只靠色彩區分（focus 有邊框變化、disabled 有內容變暗＋游標樣式變化），呼應 Text input 既有的無障礙要求。
+- 圖示對比與可讀性待字型定稿後與 Text input 一併重新測量，不在本次候選稿範圍內單獨驗證。
+
 ## 校準清單
 
 - 待確認：`component.progress` 沒有寬度 token 是否需要在真實產品情境（例如 Modal 內、Toolbar 內）補一個 `width-reference` 候選值——目前判斷為「由容器決定」已足夠，比照 text-input 的既有慣例。
 - 待確認：indeterminate progress bar 的滑動週期（1.2s）與 spinner 旋轉週期（900ms）皆為候選節奏，未經產品／使用者長時間觀察驗證是否過快或過慢。
 - 待確認：full-page loading 的「取消」是否需要一個對應的語意 token（例如 `component.spinner.cancel-foreground`）而不是直接沿用 `action-primary`——目前直接沿用，尚未有反例。
+- 待確認（Search field）：清除按鈕目前只在候選稿畫出 16px 圖示本身，未定義獨立的可點擊熱區尺寸 token；HTML/CSS 畢業階段會用 `<button>` 搭配 padding 撐開熱區，但目前判斷不需要為此新增設計 token（沒有对應的視覺量測依據），留待有反例時再補。
+- 待確認（Search field）：即時篩選（每次按鍵觸發）與需要送出鍵／debounce 的搜尋行為未定案，屬於互動節奏而非視覺規格，留待實際串接搜尋邏輯時再確認。

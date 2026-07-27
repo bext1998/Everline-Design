@@ -8,12 +8,14 @@
   --everline-color-semantic-action-danger: #c1272d;
   --everline-color-semantic-border-default: #444;
   --everline-color-semantic-border-focus: #598ae8;
+  --everline-color-semantic-background-subdued: #666;
   --everline-color-base-gray-700: #4d4d4d;
   --everline-space-1: 8px; --everline-space-2: 16px; --everline-space-3: 24px; --everline-space-4: 32px; --everline-space-5: 40px;
-  --everline-radius-sm: 8px; --everline-radius-pill: 999px;
+  --everline-radius-sm: 8px; --everline-radius-control: 24px; --everline-radius-pill: 999px;
   --everline-border-width-default: 1px; --everline-border-width-focus: 2px;
-  --everline-opacity-disabled: .55; --everline-opacity-backdrop: .45;
+  --everline-opacity-disabled: .55; --everline-opacity-backdrop: .45; --everline-opacity-hover-overlay: .06;
   --everline-motion-duration-base: 200ms; --everline-motion-duration-loop: 900ms; --everline-motion-easing-standard: cubic-bezier(.2, 0, 0, 1);
+  --everline-size-icon-sm: 16px;
   --everline-component-spinner-size-sm: 24px; --everline-component-spinner-size-md: 40px; --everline-component-spinner-size-lg: 64px;
   --everline-component-spinner-stroke-width-sm: 3px; --everline-component-spinner-stroke-width-md: 4px; --everline-component-spinner-stroke-width-lg: 5px;
   --everline-component-spinner-track-color: var(--everline-color-base-gray-700);
@@ -25,6 +27,20 @@
   --everline-component-progress-track-color: var(--everline-color-base-gray-700);
   --everline-component-progress-fill-primary: var(--everline-color-semantic-action-primary);
   --everline-component-progress-fill-danger: var(--everline-color-semantic-action-danger);
+  --everline-component-search-field-height: 48px;
+  --everline-component-search-field-radius: var(--everline-radius-control);
+  --everline-component-search-field-background: var(--everline-color-semantic-background-subdued);
+  --everline-component-search-field-foreground: var(--everline-color-semantic-foreground-primary);
+  --everline-component-search-field-placeholder: var(--everline-color-base-gray-700);
+  --everline-component-search-field-icon-color: var(--everline-color-base-gray-700);
+  --everline-component-search-field-border-width-focus: var(--everline-border-width-focus);
+  --everline-component-search-field-border-focus: var(--everline-color-semantic-border-focus);
+  --everline-component-search-field-icon-size: var(--everline-size-icon-sm);
+  --everline-component-search-field-icon-inset: var(--everline-space-2);
+  --everline-component-search-field-content-gap: var(--everline-space-1);
+  --everline-component-search-field-padding-inline-start: 40px;
+  --everline-component-search-field-padding-inline-end: var(--everline-space-3);
+  --everline-component-search-field-padding-inline-end-filled: 40px;
 }
 
 * { box-sizing: border-box; }
@@ -84,11 +100,38 @@ h1, h2, p { margin: 0; } h1 { font-size: 32px; line-height: 1.25; } h2 { font-si
 .progress--indeterminate .progress__fill { animation: everline-progress-indeterminate 1.2s ease-in-out infinite; left: -30%; position: absolute; width: 30%; }
 @keyframes everline-progress-indeterminate { 0% { left: -30%; } 100% { left: 130%; } }
 
+/* Search field — extends Text input's own metrics (height/radius/background/foreground/
+   placeholder/focus values are identical, see tokens/everline-draft.tokens.json
+   component.search-field.*). Icon and clear button are absolutely positioned so the input
+   itself stays a plain flex-filled text field; focus uses :focus-within (box-shadow, which
+   doesn't affect layout, unlike a real border) instead of a hand-drawn "focused" state. */
+.search-field { align-items: center; background: var(--everline-component-search-field-background); border-radius: var(--everline-component-search-field-radius); display: flex; height: var(--everline-component-search-field-height); padding-inline: var(--everline-component-search-field-padding-inline-start) var(--everline-component-search-field-padding-inline-end); position: relative; width: 320px; max-width: 100%; }
+.search-field:focus-within { box-shadow: inset 0 0 0 var(--everline-component-search-field-border-width-focus) var(--everline-component-search-field-border-focus); }
+.search-field.has-value { padding-inline-end: var(--everline-component-search-field-padding-inline-end-filled); }
+.search-field__icon { color: var(--everline-component-search-field-icon-color); left: var(--everline-component-search-field-icon-inset); pointer-events: none; position: absolute; top: 50%; transform: translateY(-50%); }
+.search-field__input { background: transparent; border: 0; color: var(--everline-component-search-field-foreground); flex: 1; font: inherit; min-width: 0; padding: 0; }
+.search-field__input:focus { outline: none; }
+.search-field__input::placeholder { color: var(--everline-component-search-field-placeholder); opacity: 1; }
+.search-field__input::-webkit-search-cancel-button { display: none; }
+.search-field__clear { align-items: center; background: transparent; border: 0; border-radius: 50%; color: var(--everline-component-search-field-icon-color); cursor: pointer; display: flex; height: 32px; justify-content: center; padding: 0; position: absolute; right: calc(var(--everline-component-search-field-icon-inset) - 8px); top: 50%; transform: translateY(-50%); width: 32px; }
+.search-field__clear:hover, .search-field__clear:focus-visible { background: rgba(255, 255, 255, var(--everline-opacity-hover-overlay)); }
+.search-field__clear[hidden] { display: none; }
+.search-field:has(.search-field__input:disabled) { cursor: not-allowed; }
+.search-field:has(.search-field__input:disabled) .search-field__icon,
+.search-field:has(.search-field__input:disabled) .search-field__input {
+  color: var(--everline-color-semantic-foreground-disabled);
+  opacity: var(--everline-opacity-disabled);
+}
+.search-field:has(.search-field__input:disabled) .search-field__input::placeholder { color: var(--everline-color-semantic-foreground-disabled); opacity: 1; }
+.search-field__input:disabled { cursor: not-allowed; }
+.search-field-examples { align-items: start; display: flex; flex-wrap: wrap; gap: var(--everline-space-4); }
+
 @media (max-width: 760px) {
   .catalog { padding: var(--everline-space-2); }
   .catalog-header { flex-direction: column; }
   .candidate-badge { white-space: normal; }
   .loading-overlay-demo { width: 100%; }
+  .search-field { width: 100%; }
 }
 
 /* Batch 2's global reduced-motion rule forces every animation/transition to ~0ms, which is

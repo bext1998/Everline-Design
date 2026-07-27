@@ -83,3 +83,29 @@
     }, 350);
   });
 })();
+
+// Search field — clear button only exists as content, so its visibility (and the wrapper's
+// wider trailing padding) is driven by the input's actual value, not a separate hand-toggled
+// state. A disabled field never gets a clear button at all (see the disabled example markup),
+// per the spec decision that a disabled field must not imply it's still interactive.
+(() => {
+  document.querySelectorAll('[data-search-input]').forEach((input) => {
+    const wrapper = input.closest('.search-field');
+    const clearButton = wrapper.querySelector('[data-search-clear]');
+    const sync = () => {
+      const hasValue = input.value.length > 0;
+      clearButton.hidden = !hasValue;
+      wrapper.classList.toggle('has-value', hasValue);
+    };
+    input.addEventListener('input', sync);
+    clearButton.addEventListener('click', () => {
+      input.value = '';
+      // Dispatch a real bubbling 'input' event instead of calling sync() directly — setting
+      // .value programmatically fires no native event, so any product-side live-filter logic
+      // bound to 'input' would never rerun and the results would stay stale after clearing.
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      input.focus();
+    });
+    sync();
+  });
+})();
