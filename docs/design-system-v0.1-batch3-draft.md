@@ -1,8 +1,8 @@
 # Everline v0.1 設計系統草稿 — 第三批
 
-狀態：`candidate`（HTML/CSS 權威來源：`works/html/batch3/index.html`；SVG 保留為歷史快照）
+狀態：`candidate`（HTML/CSS 權威來源：`works/html/batch3/index.html`；已畢業元件對應的 SVG 群組保留為歷史快照，其餘元件仍在候選稿階段）
 建立日期：2026-07-27
-候選向量稿：`works/everline-components-batch3.svg`（2026-07-27 起為歷史視覺快照，僅含本檔案記錄的元件）；候選規格權威來源：`works/html/batch3/index.html`。
+候選向量稿：`works/everline-components-batch3.svg`——只有本檔案記錄、已畢業元件對應的 SVG 群組（目前為 Progress/Spinner/Loading、Search field）自 2026-07-27 起為歷史視覺快照、不再更新；檔案本身仍是第三批其餘元件持續追加中的 active sheet，不是整份退役。候選規格權威來源：`works/html/batch3/index.html`。
 延伸文件：本檔案延伸 `docs/design-system-v0.1-draft.md` 與 `docs/design-system-v0.1-batch2-draft.md` 的跨元件規則，不重複列出；只記錄第三批已完成元件的專屬規格。
 
 範圍說明：第三批（8 類，桌面工具與補充能力）採逐一元件、逐一 GitHub issue 完成，不像第一、二批一次繪製整批。本檔案目前涵蓋第 1-2/8 個元件：Progress / Spinner / Loading（issue #5）、Search field（issue #6）。其餘 6 個元件（issue #7-#12）完成時會依序追加到本檔案，而不是另開新檔——沿用批次一、二「同批次共用一份規格文件」的慣例。
