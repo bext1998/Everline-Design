@@ -54,7 +54,7 @@ Issue #5 的範圍包含把本元件的 loading 視覺套進第二批 List、Dat
 
 ## Search field
 
-狀態：`candidate`（第三批 2/8，2026-07-27，GitHub issue #6，候選稿已經人類審查通過，尚未畢業為 HTML/CSS）
+狀態：`candidate`（第三批 2/8，2026-07-27，GitHub issue #6，已畢業為 HTML/CSS；`works/html/batch3/index.html` 為候選規格權威來源，`works/everline-components-batch3.svg` 對應區塊為歷史快照，不再更新）
 
 ### 用途與邊界
 

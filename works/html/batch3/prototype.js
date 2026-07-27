@@ -100,7 +100,10 @@
     input.addEventListener('input', sync);
     clearButton.addEventListener('click', () => {
       input.value = '';
-      sync();
+      // Dispatch a real bubbling 'input' event instead of calling sync() directly — setting
+      // .value programmatically fires no native event, so any product-side live-filter logic
+      // bound to 'input' would never rerun and the results would stay stale after clearing.
+      input.dispatchEvent(new Event('input', { bubbles: true }));
       input.focus();
     });
     sync();

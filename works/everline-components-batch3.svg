@@ -5,8 +5,8 @@
   <metadata>
     sibling-of: works/everline-components-master.svg (2026-07-19), works/everline-components-batch2.svg (2026-07-20) — independent batch, not a supersession of either;
     spec-reference: docs/design-system-v0.1-batch3-draft.md (updated for each component after its candidate is reviewed);
-    status: component 2/8 (Search field) is candidate SVG awaiting human review; component 1/8 (Progress/Spinner/Loading) already reviewed and graduated; created: 2026-07-27; do-not-treat-as-frozen for the pending component;
-    scope: batch 3 (8 components) is drawn incrementally, one GitHub issue at a time; this file now holds components 1-2/8 — Progress / Spinner / Loading (issue #5, graduated) and Search field (issue #6, pending review). Components 3-8 (issues #7-#12) will be appended to this same file as each is worked, mirroring how everline-components-master.svg and everline-components-batch2.svg accumulated their components;
+    status: components 1-2/8 (Progress/Spinner/Loading, Search field) are both reviewed and graduated; this SVG sheet is now a historical visual snapshot for both — superseded-by: works/html/batch3/index.html (candidate spec authority for components 1-2/8, not this file); created: 2026-07-27; do-not-treat-as-frozen (historical snapshot, not a frozen decision);
+    scope: batch 3 (8 components) is drawn incrementally, one GitHub issue at a time; this file now holds components 1-2/8 — Progress / Spinner / Loading (issue #5, graduated) and Search field (issue #6, graduated). Components 3-8 (issues #7-#12) will be appended to this same file as each is worked, mirroring how everline-components-master.svg and everline-components-batch2.svg accumulated their components;
     backfill-note: issue #5 also requires the progress/spinner component to backfill the `loading` state left deliberately unimplemented for List, Data table and Kanban column (see docs/design-system-v0.1-batch2-draft.md 跨元件設計決策, GitHub issue #13). Already completed in works/html/batch2/, unrelated to Search field;
     token-gap: component.progress.*/component.spinner.* were added to tokens/everline-draft.tokens.json after issue #5's candidate was approved. Search field (issue #6) is designed to need only one new group, component.search-field.*, and only for icon/clear-button layout metrics — every color and the field height/radius/background reuse component.text-input's existing values directly (see search-field-note below and 校準清單 under the Search field group). New tokens are proposed only after this candidate is approved, per AGENTS.md's token-before-use rule;
     search-field-note: Search field (issue #6) deliberately extends component.text-input's structure (48px height, radius.control, background-subdued, gray-700 placeholder/icon tone, border-focus) instead of inventing a parallel token namespace, per the issue's own scope note ("延伸既有 Text input 的 token 與結構"). Scope is intentionally narrow (低複雜度): only empty/filled/focused/disabled states plus a leading search icon and a content-conditional trailing clear button — no error/readonly variant, since those aren't typical for a search field and Text input itself only specifies them as future work.
@@ -29,7 +29,7 @@
 
   <g id="board-heading" class="ui">
     <text class="title" x="48" y="58">Everline Design Language — Components Batch 3 Sheet</text>
-    <text class="note" x="48" y="88">v0.1 candidate · 第三批 1-2/8：Progress/Spinner/Loading（issue #5，已畢業）、Search field（issue #6，候選審查中）· sibling to master.svg 與 batch2.svg</text>
+    <text class="note" x="48" y="88">v0.1 candidate · 第三批 1-2/8：Progress/Spinner/Loading（issue #5，已畢業）、Search field（issue #6，已畢業）· 本頁為歷史快照，權威來源見 works/html/batch3/index.html · sibling to master.svg 與 batch2.svg</text>
     <g transform="translate(1630 32)">
       <rect width="236" height="40" rx="20" fill="#333" stroke="#598ae8" stroke-width="2"/>
       <circle cx="22" cy="20" r="6" fill="#598ae8"/>
