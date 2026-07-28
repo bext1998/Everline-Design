@@ -50,6 +50,7 @@
   --everline-component-breadcrumb-item-padding-inline: var(--everline-space-1);
   --everline-component-breadcrumb-item-gap: var(--everline-space-4);
   --everline-component-breadcrumb-hover-radius: var(--everline-radius-sm);
+  --everline-component-breadcrumb-hover-background: #ffffff;
   --everline-component-breadcrumb-ellipsis-size: 32px;
   --everline-component-breadcrumb-ellipsis-dot-size: 4px;
   --everline-component-breadcrumb-ellipsis-dot-gap: 10px;
@@ -168,12 +169,12 @@ h1, h2, p { margin: 0; } h1 { font-size: 32px; line-height: 1.25; } h2 { font-si
    item never actually hides. */
 .breadcrumb li[hidden] { display: none; }
 .breadcrumb__item { border-radius: var(--everline-component-breadcrumb-hover-radius); color: var(--everline-component-breadcrumb-foreground-default); line-height: 32px; padding-inline: var(--everline-component-breadcrumb-item-padding-inline); text-decoration: none; }
-a.breadcrumb__item:hover, a.breadcrumb__item:focus-visible, .breadcrumb__item--hover-demo { background: rgba(255, 255, 255, var(--everline-opacity-hover-overlay)); color: var(--everline-component-breadcrumb-foreground-hover); }
+a.breadcrumb__item:hover, a.breadcrumb__item:focus-visible, .breadcrumb__item--hover-demo { background: color-mix(in srgb, var(--everline-component-breadcrumb-hover-background) calc(var(--everline-opacity-hover-overlay) * 100%), transparent); color: var(--everline-component-breadcrumb-foreground-hover); }
 a.breadcrumb__item:focus-visible { outline: var(--everline-border-width-focus) solid var(--everline-color-semantic-border-focus); outline-offset: -2px; }
 .breadcrumb__item--current { color: var(--everline-component-breadcrumb-foreground-current); cursor: default; font-weight: var(--everline-font-weight-semibold); }
 .breadcrumb__sep { align-items: center; color: var(--everline-component-breadcrumb-separator-color); display: inline-flex; height: 32px; justify-content: center; margin-inline: calc((var(--everline-component-breadcrumb-item-gap) - var(--everline-component-breadcrumb-separator-size)) / 2); width: var(--everline-component-breadcrumb-separator-size); }
 .breadcrumb__ellipsis { align-items: center; background: transparent; border: 0; border-radius: var(--everline-component-breadcrumb-hover-radius); color: var(--everline-component-breadcrumb-separator-color); cursor: pointer; display: inline-flex; gap: calc(var(--everline-component-breadcrumb-ellipsis-dot-gap) - var(--everline-component-breadcrumb-ellipsis-dot-size)); height: var(--everline-component-breadcrumb-ellipsis-size); justify-content: center; padding: 0; width: var(--everline-component-breadcrumb-ellipsis-size); }
-.breadcrumb__ellipsis:hover, .breadcrumb__ellipsis:focus-visible { background: rgba(255, 255, 255, var(--everline-opacity-hover-overlay)); color: var(--everline-component-breadcrumb-foreground-hover); }
+.breadcrumb__ellipsis:hover, .breadcrumb__ellipsis:focus-visible { background: color-mix(in srgb, var(--everline-component-breadcrumb-hover-background) calc(var(--everline-opacity-hover-overlay) * 100%), transparent); color: var(--everline-component-breadcrumb-foreground-hover); }
 .breadcrumb__ellipsis:focus-visible { outline: var(--everline-border-width-focus) solid var(--everline-color-semantic-border-focus); outline-offset: -2px; }
 .breadcrumb__ellipsis span { background: currentColor; border-radius: 50%; height: var(--everline-component-breadcrumb-ellipsis-dot-size); width: var(--everline-component-breadcrumb-ellipsis-dot-size); }
 
