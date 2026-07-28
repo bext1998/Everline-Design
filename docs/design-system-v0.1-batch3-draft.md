@@ -2,7 +2,7 @@
 
 狀態：`candidate`（HTML/CSS 權威來源：`works/html/batch3/index.html`；已畢業元件對應的 SVG 群組保留為歷史快照，其餘元件仍在候選稿階段）
 建立日期：2026-07-27
-候選向量稿：`works/everline-components-batch3.svg`——只有本檔案記錄、已畢業元件對應的 SVG 群組（目前為 Progress/Spinner/Loading、Search field）自 2026-07-27 起為歷史視覺快照、不再更新；檔案本身仍是第三批其餘元件持續追加中的 active sheet，不是整份退役。候選規格權威來源：`works/html/batch3/index.html`。
+候選向量稿：`works/everline-components-batch3.svg`——只有本檔案記錄、已畢業元件對應的 SVG 群組（目前為 Progress/Spinner/Loading、Search field、Breadcrumb、Number input）自其各自畢業日起為歷史視覺快照、不再更新；檔案本身仍是第三批其餘元件持續追加中的 active sheet，不是整份退役。候選規格權威來源：`works/html/batch3/index.html`。
 延伸文件：本檔案延伸 `docs/design-system-v0.1-draft.md` 與 `docs/design-system-v0.1-batch2-draft.md` 的跨元件規則，不重複列出；只記錄第三批已完成元件的專屬規格。
 
 範圍說明：第三批（8 類，桌面工具與補充能力）採逐一元件、逐一 GitHub issue 完成，不像第一、二批一次繪製整批。本檔案目前涵蓋第 1-4/8 個元件，皆已畢業：Progress / Spinner / Loading（issue #5）、Search field（issue #6）、Breadcrumb（issue #7）、Number input / Spin button（issue #8）。其餘 4 個元件（issue #9-#12）完成時會依序追加到本檔案，而不是另開新檔——沿用批次一、二「同批次共用一份規格文件」的慣例。
@@ -153,7 +153,7 @@ Issue #5 的範圍包含把本元件的 loading 視覺套進第二批 List、Dat
 - 待確認（Search field）：即時篩選（每次按鍵觸發）與需要送出鍵／debounce 的搜尋行為未定案，屬於互動節奏而非視覺規格，留待實際串接搜尋邏輯時再確認。
 - 待確認（Breadcrumb）：省略號展開後的選單樣式（沿用 Menu 元件、或另一種輕量清單呈現）尚未決定，候選稿只畫出摺疊前的靜態排列。
 - 待確認（Breadcrumb）：摺疊觸發條件（層級數門檻、或依實際版面寬度動態判斷）屬於互動邏輯，未在候選稿定案。
-- 待確認（Breadcrumb）：省略號 32px 命中區是候選值，非既有 token（接近但不等於 `size.tag-md` 40px），畢業前需與其他小型互動元素的命中區慣例交叉核對。
+- 已驗證（Breadcrumb，2026-07-29）：省略號 32px 命中區與其他小型互動元素的命中區慣例交叉核對完成——與 `scale.component-heights.xs`（32px）、`component.checkbox.size`／`component.radio.size`（皆 32px）數值一致；`component.breadcrumb.ellipsis-size` 已改為直接引用 `scale.component-heights.xs`，不再是獨立候選字面值。
 - 待確認（Number input）：加減按鈕的數值步進值（step）未定案，屬於產品情境參數而非視覺規格。
-- 待確認（Number input）：欄位候選寬度 80px 未經實際 2-3 位數字型渲染核對，畢業前需確認不會在較大字級或特定語系下截斷。
+- 已驗證（Number input，2026-07-29）：欄位寬度 80px 已用 canvas `measureText` 對照畢業後欄位的實際 computed font 核對——3 位數（"999"）在基準 16px 字級下量測寬度僅 26.6px，即使字級放大到 24px（1.5 倍，本系統 h2 字級）也只有 40px，皆遠低於 80px 欄位寬度，`scrollWidth` 與 `clientWidth` 在兩種字級下皆相等（無內容溢位）；不會在合理字級範圍內截斷。
 - 待確認（Number input）：是否需要支援小數、負數等特殊數值格式，目前候選稿僅示範整數、非負的日常計數情境。

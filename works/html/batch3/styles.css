@@ -156,8 +156,9 @@ h1, h2, p { margin: 0; } h1 { font-size: 32px; line-height: 1.25; } h2 { font-si
 
 /* Breadcrumb — each <li> is display:contents so its child (link/span/button) becomes the actual
    flex item; no manually-measured slot widths (that was an SVG-only concern) — padding-inline on
-   each item plus margin-inline on each separator reproduces the reviewed candidate's spacing:
-   8px item padding + 8px separator margin on either side of a 16px chevron = 32px between items. */
+   each item; the separator's margin-inline is derived from item-gap and separator-size (not
+   item-padding-inline, which only sizes an item's own hit-area padding) so item-gap remains the
+   single source of truth for the 32px slot between adjoining items. */
 .breadcrumb-examples { display: flex; flex-direction: column; gap: var(--everline-space-3); }
 .breadcrumb ol { align-items: center; display: flex; flex-wrap: wrap; list-style: none; margin: 0; padding: 0; }
 .breadcrumb li { display: contents; }
@@ -170,8 +171,8 @@ h1, h2, p { margin: 0; } h1 { font-size: 32px; line-height: 1.25; } h2 { font-si
 a.breadcrumb__item:hover, a.breadcrumb__item:focus-visible, .breadcrumb__item--hover-demo { background: rgba(255, 255, 255, var(--everline-opacity-hover-overlay)); color: var(--everline-component-breadcrumb-foreground-hover); }
 a.breadcrumb__item:focus-visible { outline: var(--everline-border-width-focus) solid var(--everline-color-semantic-border-focus); outline-offset: -2px; }
 .breadcrumb__item--current { color: var(--everline-component-breadcrumb-foreground-current); cursor: default; font-weight: var(--everline-font-weight-semibold); }
-.breadcrumb__sep { align-items: center; color: var(--everline-component-breadcrumb-separator-color); display: inline-flex; height: 32px; justify-content: center; margin-inline: var(--everline-component-breadcrumb-item-padding-inline); width: var(--everline-component-breadcrumb-separator-size); }
-.breadcrumb__ellipsis { align-items: center; background: transparent; border: 0; border-radius: var(--everline-component-breadcrumb-hover-radius); color: var(--everline-component-breadcrumb-separator-color); cursor: pointer; display: inline-flex; gap: 3px; height: var(--everline-component-breadcrumb-ellipsis-size); justify-content: center; padding: 0; width: var(--everline-component-breadcrumb-ellipsis-size); }
+.breadcrumb__sep { align-items: center; color: var(--everline-component-breadcrumb-separator-color); display: inline-flex; height: 32px; justify-content: center; margin-inline: calc((var(--everline-component-breadcrumb-item-gap) - var(--everline-component-breadcrumb-separator-size)) / 2); width: var(--everline-component-breadcrumb-separator-size); }
+.breadcrumb__ellipsis { align-items: center; background: transparent; border: 0; border-radius: var(--everline-component-breadcrumb-hover-radius); color: var(--everline-component-breadcrumb-separator-color); cursor: pointer; display: inline-flex; gap: calc(var(--everline-component-breadcrumb-ellipsis-dot-gap) - var(--everline-component-breadcrumb-ellipsis-dot-size)); height: var(--everline-component-breadcrumb-ellipsis-size); justify-content: center; padding: 0; width: var(--everline-component-breadcrumb-ellipsis-size); }
 .breadcrumb__ellipsis:hover, .breadcrumb__ellipsis:focus-visible { background: rgba(255, 255, 255, var(--everline-opacity-hover-overlay)); color: var(--everline-component-breadcrumb-foreground-hover); }
 .breadcrumb__ellipsis:focus-visible { outline: var(--everline-border-width-focus) solid var(--everline-color-semantic-border-focus); outline-offset: -2px; }
 .breadcrumb__ellipsis span { background: currentColor; border-radius: 50%; height: var(--everline-component-breadcrumb-ellipsis-dot-size); width: var(--everline-component-breadcrumb-ellipsis-dot-size); }
@@ -182,12 +183,18 @@ a.breadcrumb__item:focus-visible { outline: var(--everline-border-width-focus) s
 .number-input-examples { align-items: start; display: flex; flex-wrap: wrap; gap: var(--everline-space-4); }
 .number-input { align-items: center; display: flex; gap: var(--everline-component-number-input-gap); }
 .number-input__btn { align-items: center; background: var(--everline-component-number-input-button-background); border: 0; border-radius: var(--everline-component-number-input-button-radius); color: var(--everline-component-number-input-button-icon-color); cursor: pointer; display: flex; flex: 0 0 auto; height: var(--everline-component-number-input-button-size); justify-content: center; padding: 0; width: var(--everline-component-number-input-button-size); }
+.number-input__btn svg { height: var(--everline-component-number-input-button-icon-size); width: var(--everline-component-number-input-button-icon-size); }
 .number-input__btn:hover:not(:disabled), .number-input__btn:focus-visible:not(:disabled) { box-shadow: inset 0 0 0 999px rgba(255, 255, 255, var(--everline-opacity-hover-overlay)); }
 .number-input__btn:focus-visible { outline: var(--everline-border-width-focus) solid var(--everline-color-semantic-border-focus); outline-offset: 2px; }
-.number-input__btn:disabled { background: var(--everline-component-number-input-button-background-disabled); color: var(--everline-component-number-input-button-icon-color-disabled); cursor: not-allowed; opacity: var(--everline-opacity-disabled); }
+/* Disabled background stays the solid button-background-disabled fill (per the approved SVG);
+   only the icon color is muted, pre-mixed with that same solid background via color-mix so the
+   opacity.disabled multiplier fades the icon without also fading the button's own fill — plain
+   `opacity` on the whole button would incorrectly blend its solid background into the page
+   background behind it instead. */
+.number-input__btn:disabled { background: var(--everline-component-number-input-button-background-disabled); color: color-mix(in srgb, var(--everline-component-number-input-button-icon-color-disabled) calc(var(--everline-opacity-disabled) * 100%), var(--everline-component-number-input-button-background-disabled)); cursor: not-allowed; }
 .number-input__field { background: var(--everline-component-number-input-field-background); border: 0; border-radius: var(--everline-component-number-input-field-radius); box-sizing: border-box; color: var(--everline-component-number-input-field-foreground); font: inherit; height: var(--everline-component-number-input-height); text-align: center; width: var(--everline-component-number-input-field-width); }
 .number-input__field:focus { box-shadow: inset 0 0 0 var(--everline-component-number-input-field-border-width-focus) var(--everline-component-number-input-field-border-focus); outline: none; }
-.number-input__field:disabled { color: var(--everline-component-number-input-field-foreground-disabled); cursor: not-allowed; opacity: var(--everline-opacity-disabled); }
+.number-input__field:disabled { color: color-mix(in srgb, var(--everline-component-number-input-field-foreground-disabled) calc(var(--everline-opacity-disabled) * 100%), var(--everline-component-number-input-field-background)); cursor: not-allowed; }
 .number-input__field::-webkit-inner-spin-button, .number-input__field::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 .number-input__field { -moz-appearance: textfield; }
 
