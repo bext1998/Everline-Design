@@ -2,10 +2,10 @@
 
 狀態：`candidate`（HTML/CSS 權威來源：`works/html/batch3/index.html`；已畢業元件對應的 SVG 群組保留為歷史快照，其餘元件仍在候選稿階段）
 建立日期：2026-07-27
-候選向量稿：`works/everline-components-batch3.svg`——只有本檔案記錄、已畢業元件對應的 SVG 群組（目前為 Progress/Spinner/Loading、Search field）自 2026-07-27 起為歷史視覺快照、不再更新；檔案本身仍是第三批其餘元件持續追加中的 active sheet，不是整份退役。候選規格權威來源：`works/html/batch3/index.html`。
+候選向量稿：`works/everline-components-batch3.svg`——只有本檔案記錄、已畢業元件對應的 SVG 群組（目前為 Progress/Spinner/Loading、Search field、Breadcrumb、Number input）自其各自畢業日起為歷史視覺快照、不再更新；檔案本身仍是第三批其餘元件持續追加中的 active sheet，不是整份退役。候選規格權威來源：`works/html/batch3/index.html`。
 延伸文件：本檔案延伸 `docs/design-system-v0.1-draft.md` 與 `docs/design-system-v0.1-batch2-draft.md` 的跨元件規則，不重複列出；只記錄第三批已完成元件的專屬規格。
 
-範圍說明：第三批（8 類，桌面工具與補充能力）採逐一元件、逐一 GitHub issue 完成，不像第一、二批一次繪製整批。本檔案目前涵蓋第 1-2/8 個元件：Progress / Spinner / Loading（issue #5）、Search field（issue #6）。其餘 6 個元件（issue #7-#12）完成時會依序追加到本檔案，而不是另開新檔——沿用批次一、二「同批次共用一份規格文件」的慣例。
+範圍說明：第三批（8 類，桌面工具與補充能力）採逐一元件、逐一 GitHub issue 完成，不像第一、二批一次繪製整批。本檔案目前涵蓋第 1-4/8 個元件，皆已畢業：Progress / Spinner / Loading（issue #5）、Search field（issue #6）、Breadcrumb（issue #7）、Number input / Spin button（issue #8）。其餘 4 個元件（issue #9-#12）完成時會依序追加到本檔案，而不是另開新檔——沿用批次一、二「同批次共用一份規格文件」的慣例。
 
 ## Progress / Spinner / Loading
 
@@ -81,6 +81,69 @@ Issue #5 的範圍包含把本元件的 loading 視覺套進第二批 List、Dat
 - Focus、disabled 不只靠色彩區分（focus 有邊框變化、disabled 有內容變暗＋游標樣式變化），呼應 Text input 既有的無障礙要求。
 - 圖示對比與可讀性待字型定稿後與 Text input 一併重新測量，不在本次候選稿範圍內單獨驗證。
 
+## Breadcrumb
+
+狀態：`candidate`（第三批 3/8，2026-07-28，GitHub issue #7，**已畢業**——`works/everline-components-batch3.svg` 的 `c-breadcrumb` 群組經人工審查通過，現為歷史快照；`works/html/batch3/index.html` 為候選規格權威來源）
+
+### 用途與邊界
+
+顯示目前頁面在階層結構中的位置，並支援回溯至任一上層。純結構型導覽元件，無外部相依，複雜度低。適用於多層專案、文件、設計資產分類等有明確樹狀／路徑結構的情境；不適用於同層內容切換（那是 Tabs 的職責）、也不用來取代主要導覽（Sidebar／Top bar）。
+
+### 結構與變體
+
+- 一列文字項目，項目之間以 chevron-right 圖示分隔（16px，`size.icon-sm`，gray-700 描邊，非填色圖示，沿用 `.icon` 既有繪製技法），chevron 置中於相鄰兩項目命中區之間的間距內，不緊貼任一側。
+- 每個項目（含目前頁）文字皆水平置中於自己的命中區內，不是緊貼 chevron 靠左排列——命中區寬度隨文字內容而異，左右各保留約 8px 內距（與 hover 底色範圍一致，見下方狀態小節），2026-07-28 審查回饋修正，取代最初的靠左候選稿。
+- 每個非目前頁項目皆為可點擊連結；最後一項固定為「目前頁」，不可點擊、不參與 hover，視覺上與其餘項目明確區隔（見下方狀態小節）。
+- Collapsed（摺疊）：層級過深或版面寬度不足時，中間項目摺疊為一個省略號（⋯）觸發元素（候選稿以 32px 命中區內三個小圓點示意），保留首項與目前頁固定顯示；點擊／鍵盤觸發省略號應展開被摺疊的項目（候選稿不畫出展開後選單，屬於後續待補的互動細節）。
+- 不使用固定 `height` token——比照 Tabs（同屬文字列導覽元件、無獨立高度 token）與 Text input「寬度由容器決定」的既有慣例，項目的可點擊命中區由候選稿手繪的 hover 底色範圍（約 32px 高）示意，非正式 token。
+
+### 狀態、互動與內容
+
+- `default`：非目前頁項目，文字色 `foreground-subdued`（gray-700），可點擊。
+- `current`：目前頁（固定為最後一項），文字色 `foreground-primary`、字重 `font.weight-semibold`（600），非連結、無 hover、無尾隨 chevron；不得與 `default` 用同一套互動語意呈現，避免使用者誤以為目前頁仍可點擊。
+- `hover`：滑鼠或鍵盤 focus 停留於 `default` 項目時，文字轉為 `foreground-primary`，並疊加 6% 白色圓角底色（沿用 Tabs／Menu／List-item 既有的 `opacity.hover-overlay` 技法，非新技法）。
+- `collapsed`：中間項目摺疊為省略號按鈕；候選稿只示意摺疊後的靜態排列，展開互動、鍵盤可達性與被摺疊項目的清單呈現方式，畢業到 HTML/CSS 階段才需要確認並實作。
+- 項目文字內容應為簡短的頁面／層級名稱，不承載完整句子；過長文字的截斷策略由產品層決定，本元件不內建 `max-width`。
+
+### 無障礙
+
+- 整個元件需要 `nav` + `aria-label`（例如「麵包屑導覽」），內部使用 `ol`／`li` 結構表達有序階層，不是純樣式性的 `div` 列表。
+- 目前頁項目需標記 `aria-current="page"`，且不得是可聚焦的連結元素。
+- 省略號展開觸發元素需為可鍵盤操作的按鈕（`<button>`），並有獨立的可存取名稱（例如 `aria-label="顯示更多路徑"`）。
+- Hover、current 不只靠色彩區分（hover 有底色、current 有字重變化），呼應既有無障礙要求；圖示對比與可讀性待字型定稿後與其他文字列元件一併重新測量。
+
+## Number input / Spin button
+
+狀態：`candidate`（第三批 4/8，2026-07-28，GitHub issue #8，**已畢業**——`works/everline-components-batch3.svg` 的 `c-number-input` 群組經人工審查通過，現為歷史快照；`works/html/batch3/index.html` 為候選規格權威來源）
+
+### 用途與邊界
+
+輸入與調整一個離散數值（例如數量、頁碼、優先級排序）。延伸既有 Text input＋Icon button 的樣式與 token，不另立一套元件語言。適用於範圍明確、以小步進為主的數值輸入；不適用於連續範圍調整（那是 Slider 的職責）或需要複雜格式（貨幣、單位換算）的輸入情境，那類需求應另外設計。
+
+### 結構與變體
+
+- 三個各自獨立圓角／圓形的子元素並排、以 8px 間距區隔（處處是圓，不貼合成單一直角外框，比照 List-item 既有的行間距處理手法）：減少按鈕（左）、數值欄位（中）、增加按鈕（右）。
+- 減少／增加按鈕：48×48px 圓形，沿用 Icon button 既有結構（`component.icon-button.size`／`icon-size`／`radius`）與 `neutral` 底色（`background-surface`）；圖示為 24px 減號／加號線條圖，`foreground-primary` 描邊，2px 粗細（與 `icon.stroke-width` 一致）。
+- 數值欄位：沿用 Text input 的核心量測——高度 48px、`radius.control`、`background-subdued`；候選寬度 80px（僅供 2-3 位數顯示，未鎖定既有 8px scale 之外的特殊比例，是本元件唯一的新候選尺寸）；數值文字置中對齊（有別於 Text input 預設的靠左對齊，因為左右都有對稱的加減按鈕，置中在視覺上更平衡，是目前公認的通用慣例）。
+- Focused：欄位 2px 藍色描邊（`border-focus`／`border-width-focus`），繪製手法沿用 Text input／Search field 既有的內縮 stroke 技巧；按鈕本身不隨欄位 focus 改變外觀。
+
+### 狀態、互動與內容
+
+- `default`：欄位與兩個按鈕皆可互動。
+- `focused`：欄位取得焦點，顯示 2px 藍色描邊。
+- `min reached`：數值已達下限，只停用減少按鈕（視覺同 Icon button 既有 `disabled` 變體：底色轉 `background-subdued`、圖示改用 `foreground-disabled` + `opacity.disabled`）；欄位與增加按鈕維持可互動。
+- `max reached`：數值已達上限，只停用增加按鈕；欄位與減少按鈕維持可互動。
+- `disabled`：整個元件停用，欄位與兩個按鈕同時套用停用視覺；欄位文字改用既有 `foreground-disabled` + `opacity.disabled`（與 Search field disabled 圖示同技法）。
+- 點擊減少／增加按鈕應以固定步進值調整數值（候選稿未定案步進值，留待實際產品情境確認）；直接在欄位輸入數值也應是有效互動方式，兩種輸入路徑最終結果需一致（不能只靠按鈕才能達到邊界值）。
+- 鍵盤：方向鍵 ↑/↓ 調整數值是常見慣例，候選稿僅示意視覺，實際鍵盤互動於畢業階段以原生 `<input type="number">` 或等效互動驗證，不在本輪候選稿範圍內逐一畫出。
+
+### 無障礙
+
+- 欄位需要程式可辨識的可存取名稱（`aria-label` 或關聯的 `<label>`），不能只靠鄰近的加減按鈕暗示欄位用途。
+- 減少／增加按鈕需要獨立的可存取名稱（例如 `aria-label="減少數量"`／`aria-label="增加數量"`），呼應 Icon button 既有的無障礙要求。
+- `min reached`／`max reached` 時對應按鈕需可被輔助科技識別為不可互動（原生 `disabled` 或 `aria-disabled`），且不應無回饋地吞掉點擊。
+- Focus、disabled 不只靠色彩區分（focus 有邊框變化、disabled 有內容變暗），呼應 Text input／Search field 既有的無障礙要求。
+
 ## 校準清單
 
 - 待確認：`component.progress` 沒有寬度 token 是否需要在真實產品情境（例如 Modal 內、Toolbar 內）補一個 `width-reference` 候選值——目前判斷為「由容器決定」已足夠，比照 text-input 的既有慣例。
@@ -88,3 +151,9 @@ Issue #5 的範圍包含把本元件的 loading 視覺套進第二批 List、Dat
 - 待確認：full-page loading 的「取消」是否需要一個對應的語意 token（例如 `component.spinner.cancel-foreground`）而不是直接沿用 `action-primary`——目前直接沿用，尚未有反例。
 - 待確認（Search field）：清除按鈕目前只在候選稿畫出 16px 圖示本身，未定義獨立的可點擊熱區尺寸 token；HTML/CSS 畢業階段會用 `<button>` 搭配 padding 撐開熱區，但目前判斷不需要為此新增設計 token（沒有对應的視覺量測依據），留待有反例時再補。
 - 待確認（Search field）：即時篩選（每次按鍵觸發）與需要送出鍵／debounce 的搜尋行為未定案，屬於互動節奏而非視覺規格，留待實際串接搜尋邏輯時再確認。
+- 待確認（Breadcrumb）：省略號展開後的選單樣式（沿用 Menu 元件、或另一種輕量清單呈現）尚未決定，候選稿只畫出摺疊前的靜態排列。
+- 待確認（Breadcrumb）：摺疊觸發條件（層級數門檻、或依實際版面寬度動態判斷）屬於互動邏輯，未在候選稿定案。
+- 已驗證（Breadcrumb，2026-07-29）：省略號 32px 命中區與其他小型互動元素的命中區慣例交叉核對完成——與 `scale.component-heights.xs`（32px）、`component.checkbox.size`／`component.radio.size`（皆 32px）數值一致；`component.breadcrumb.ellipsis-size` 已改為直接引用 `scale.component-heights.xs`，不再是獨立候選字面值。
+- 待確認（Number input）：加減按鈕的數值步進值（step）未定案，屬於產品情境參數而非視覺規格。
+- 已驗證（Number input，2026-07-29）：欄位寬度 80px 已用 canvas `measureText` 對照畢業後欄位的實際 computed font 核對——3 位數（"999"）在基準 16px 字級下量測寬度僅 26.6px，即使字級放大到 24px（1.5 倍，本系統 h2 字級）也只有 40px，皆遠低於 80px 欄位寬度，`scrollWidth` 與 `clientWidth` 在兩種字級下皆相等（無內容溢位）；不會在合理字級範圍內截斷。
+- 待確認（Number input）：是否需要支援小數、負數等特殊數值格式，目前候選稿僅示範整數、非負的日常計數情境。

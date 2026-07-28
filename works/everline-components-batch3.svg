@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="960" viewBox="0 0 1920 960" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1870" viewBox="0 0 1920 1870" role="img" aria-labelledby="title desc">
   <title id="title">Everline v0.1 components batch 3 sheet</title>
-  <desc id="desc">Third-batch candidate vector sheet, components 1-2 of 8: Progress / Spinner / Loading; Search field.</desc>
+  <desc id="desc">Third-batch candidate vector sheet, components 1-4 of 8: Progress / Spinner / Loading; Search field; Breadcrumb; Number input / Spin button.</desc>
   <metadata>
     sibling-of: works/everline-components-master.svg (2026-07-19), works/everline-components-batch2.svg (2026-07-20) — independent batch, not a supersession of either;
     spec-reference: docs/design-system-v0.1-batch3-draft.md (updated for each component after its candidate is reviewed);
-    status: components 1-2/8 (Progress/Spinner/Loading, Search field) are both reviewed and graduated — their SVG groups (c-progress-spinner-loading, c-search-field) are frozen historical snapshots and must not be updated further; superseded-by: works/html/batch3/index.html (candidate spec authority for components 1-2/8 only, not the rest of this file). This file as a whole is NOT retired — unlike everline-components-batch2.svg (fully superseded once all 7 of its components graduated), batch 3 is drawn incrementally one issue at a time, so this sheet stays the active drawing surface for the not-yet-graduated components 3-8/8; created: 2026-07-27; do-not-treat-as-frozen applies only to components 3-8/8, not yet drawn;
-    scope: batch 3 (8 components) is drawn incrementally, one GitHub issue at a time; this file now holds components 1-2/8 — Progress / Spinner / Loading (issue #5, graduated, frozen snapshot) and Search field (issue #6, graduated, frozen snapshot). Components 3-8 (issues #7-#12) will still be appended to this same file as each is worked — graduating a component freezes only that component's own SVG group, not the whole sheet. This is the first Everline sheet to mix frozen (graduated) and active (not-yet-drawn) groups in one file — everline-components-master.svg has no graduated components yet (per AGENTS.md, batch 1 isn't required to graduate to HTML/CSS until a component is specifically picked), so it isn't a precedent for this per-group-freeze pattern, only for the general "sheet accumulates components across sessions" structure;
+    status: components 1-4/8 (Progress/Spinner/Loading, Search field, Breadcrumb, Number input/Spin button) are all reviewed and graduated — their SVG groups (c-progress-spinner-loading, c-search-field, c-breadcrumb, c-number-input) are frozen historical snapshots and must not be updated further; superseded-by: works/html/batch3/index.html (candidate spec authority for components 1-4/8 only, not the rest of this file). Breadcrumb (issue #7) went through a 2026-07-28 human review round before approval that replaced its initial flush-left item layout with per-item centered hit-area slots (measured via Chrome getBBox, not eyeballed) and fixed a section-spacing bug between the Loading and Search field groups — see docs/design-system-v0.1-batch3-draft.md for the resulting spec. This file as a whole is NOT retired — unlike everline-components-batch2.svg (fully superseded once all 7 of its components graduated), batch 3 is drawn incrementally one issue at a time, so this sheet stays the active drawing surface for the not-yet-graduated components; created: 2026-07-27; do-not-treat-as-frozen applies only to components 5-8/8, not yet drawn;
+    scope: batch 3 (8 components) is drawn incrementally, one GitHub issue at a time; this file now holds components 1-4/8, all graduated and frozen — Progress / Spinner / Loading (issue #5), Search field (issue #6), Breadcrumb (issue #7), Number input / Spin button (issue #8). Components 5-8 (issues #9-#12) will still be appended to this same file as each is worked — graduating a component freezes only that component's own SVG group, not the whole sheet. This is the first Everline sheet to mix frozen (graduated) and active (not-yet-drawn) groups in one file — everline-components-master.svg has no graduated components yet (per AGENTS.md, batch 1 isn't required to graduate to HTML/CSS until a component is specifically picked), so it isn't a precedent for this per-group-freeze pattern, only for the general "sheet accumulates components across sessions" structure;
     backfill-note: issue #5 also requires the progress/spinner component to backfill the `loading` state left deliberately unimplemented for List, Data table and Kanban column (see docs/design-system-v0.1-batch2-draft.md 跨元件設計決策, GitHub issue #13). Already completed in works/html/batch2/, unrelated to Search field;
-    token-gap: component.progress.*/component.spinner.* were added to tokens/everline-draft.tokens.json after issue #5's candidate was approved. Search field (issue #6) is designed to need only one new group, component.search-field.*, and only for icon/clear-button layout metrics — every color and the field height/radius/background reuse component.text-input's existing values directly (see search-field-note below and 校準清單 under the Search field group). New tokens are proposed only after this candidate is approved, per AGENTS.md's token-before-use rule;
+    token-gap: component.progress.*/component.spinner.* were added after issue #5's candidate was approved; component.search-field.* after issue #6's; component.breadcrumb.*/component.number-input.* after issues #7/#8's candidates were approved on 2026-07-28 — all four followed the same token-before-use rule (raw pixel values with a 校準候選 caption in this sheet until human review passed, tokens formalized only afterward, see tokens/everline-draft.tokens.json for the resulting entries);
     search-field-note: Search field (issue #6) deliberately extends component.text-input's structure (48px height, radius.control, background-subdued, gray-700 placeholder/icon tone, border-focus) instead of inventing a parallel token namespace, per the issue's own scope note ("延伸既有 Text input 的 token 與結構"). Scope is intentionally narrow (低複雜度): only empty/filled/focused/disabled states plus a leading search icon and a content-conditional trailing clear button — no error/readonly variant, since those aren't typical for a search field and Text input itself only specifies them as future work.
   </metadata>
   <defs>
@@ -25,11 +25,11 @@
     </style>
   </defs>
 
-  <rect width="1920" height="960" fill="#1a1a1a"/>
+  <rect width="1920" height="1870" fill="#1a1a1a"/>
 
   <g id="board-heading" class="ui">
     <text class="title" x="48" y="58">Everline Design Language — Components Batch 3 Sheet</text>
-    <text class="note" x="48" y="88">v0.1 candidate · 第三批 1-2/8：Progress/Spinner/Loading（issue #5，已畢業）、Search field（issue #6，已畢業）· 本頁為歷史快照，權威來源見 works/html/batch3/index.html · sibling to master.svg 與 batch2.svg</text>
+    <text class="note" x="48" y="88">v0.1 candidate · 第三批 1-4/8 已畢業（Progress/Spinner/Loading issue #5、Search field issue #6、Breadcrumb issue #7、Number input/Spin button issue #8，權威來源見 works/html/batch3/index.html）· sibling to master.svg 與 batch2.svg</text>
     <g transform="translate(1630 32)">
       <rect width="236" height="40" rx="20" fill="#333" stroke="#598ae8" stroke-width="2"/>
       <circle cx="22" cy="20" r="6" fill="#598ae8"/>
@@ -110,7 +110,7 @@
 
   <!-- ===================== Search field ===================== -->
 
-  <g id="c-search-field" class="ui" transform="translate(48 700)">
+  <g id="c-search-field" class="ui" transform="translate(48 770)">
     <text class="section" x="0" y="0">Search field</text>
     <text class="note" x="0" y="28">延伸 Text input 結構：前導搜尋圖示＋尾端清除按鈕（有內容時才出現）· 48 px 高 · radius 24 px · icon 16px</text>
 
@@ -165,6 +165,142 @@
     <text class="note" x="0" y="150">清除按鈕僅在有內容（filled／focused）時顯示；disabled 即使殘留文字也隱藏清除按鈕，避免暗示欄位仍可互動。</text>
     <text class="note" x="0" y="174">圖示與 placeholder 皆用 gray-700（與 Text input 的 placeholder token 相同色階）；disabled 圖示與文字改用既有 foreground-disabled（off-white + opacity.disabled 0.55），與 select-disabled／button-disabled 手法一致。</text>
     <text class="caption" x="0" y="198" fill="#666">校準候選：icon-size 16px（size.icon-sm）；icon-inset／clear-button-inset 16px（space.2）；icon 與文字間距 8px（space.1）；filled/focused 尾端保留寬度 = 16+16+8 = 40px；empty（無按鈕）尾端沿用既有 text-input.padding-inline 24px（space.3）</text>
+  </g>
+
+  <!-- ===================== Breadcrumb ===================== -->
+
+  <g id="c-breadcrumb" class="ui" transform="translate(48 1040)">
+    <text class="section" x="0" y="0">Breadcrumb</text>
+    <text class="note" x="0" y="28">純結構型導覽 · 項目以 chevron 分隔 · 最後一項為目前頁（非連結）· 過深層級以省略號摺疊中間項目 · 已畢業，見 works/html/batch3/index.html</text>
+
+    <!-- Each item occupies its own hit-area "slot" (invisible unless hover), text centered within — not
+         flush-left after the chevron. Slot width = measured text width (via getBBox in Chrome, same engine
+         as this file's own rendering) + 8px padding each side; the inter-item gap is a fixed 32px with the
+         chevron centered in it. This keeps the visual gap from any item's text edge to its nearest chevron
+         a uniform 21px everywhere, verified by measurement, not eyeballed. Slots (local x):
+         資產庫 (measured 48px text) [0,64] centre32 · chevron centre80 ·
+         設計系統 (measured 64px text) [96,176] centre136 · chevron centre192 ·
+         元件庫 (measured 48px text) [208,272] centre240 · chevron centre288 ·
+         Breadcrumb/current (measured 97.7px text, semibold) [304,417.7] centre361 -->
+
+    <!-- default + current -->
+    <g transform="translate(0 64)">
+      <g id="breadcrumb-default">
+        <text class="body" x="32" y="22" text-anchor="middle" fill="#4d4d4d">資產庫</text>
+        <path class="icon" d="M77 8l6 8-6 8" stroke="#4d4d4d"/>
+        <text class="body" x="136" y="22" text-anchor="middle" fill="#4d4d4d">設計系統</text>
+        <path class="icon" d="M189 8l6 8-6 8" stroke="#4d4d4d"/>
+        <text class="body" x="240" y="22" text-anchor="middle" fill="#4d4d4d">元件庫</text>
+        <path class="icon" d="M285 8l6 8-6 8" stroke="#4d4d4d"/>
+        <text class="body" x="361" y="22" text-anchor="middle" fill="#f2f2f2" font-weight="600">Breadcrumb</text>
+      </g>
+      <text class="caption" x="0" y="52">default（可點擊，文字置中於自己的命中區內，湮色 gray-700）＋ current（最後一項，off-white 加粗，非連結、無 chevron 尾隨、無 hover）</text>
+    </g>
+
+    <!-- hover -->
+    <g transform="translate(0 148)">
+      <g id="breadcrumb-hover">
+        <text class="body" x="32" y="22" text-anchor="middle" fill="#4d4d4d">資產庫</text>
+        <path class="icon" d="M77 8l6 8-6 8" stroke="#4d4d4d"/>
+        <rect x="96" y="0" width="80" height="32" rx="8" fill="#ffffff" fill-opacity="0.06"/>
+        <text class="body" x="136" y="22" text-anchor="middle" fill="#f2f2f2">設計系統</text>
+        <path class="icon" d="M189 8l6 8-6 8" stroke="#4d4d4d"/>
+        <text class="body" x="240" y="22" text-anchor="middle" fill="#4d4d4d">元件庫</text>
+        <path class="icon" d="M285 8l6 8-6 8" stroke="#4d4d4d"/>
+        <text class="body" x="361" y="22" text-anchor="middle" fill="#f2f2f2" font-weight="600">Breadcrumb</text>
+      </g>
+      <text class="caption" x="0" y="52">hover（第 2 項）：命中區（同 default 置中的隱形 slot）浮現文字轉為 off-white，背後疊加 6% 白色圓角底色（沿用 tabs／menu／list-item 既有 hover 技法，非新技法）</text>
+    </g>
+
+    <!-- collapsed / truncation -->
+    <g transform="translate(0 232)">
+      <g id="breadcrumb-collapsed">
+        <text class="body" x="32" y="22" text-anchor="middle" fill="#4d4d4d">資產庫</text>
+        <path class="icon" d="M77 8l6 8-6 8" stroke="#4d4d4d"/>
+        <g id="breadcrumb-ellipsis">
+          <circle cx="102" cy="16" r="2" fill="#4d4d4d"/>
+          <circle cx="112" cy="16" r="2" fill="#4d4d4d"/>
+          <circle cx="122" cy="16" r="2" fill="#4d4d4d"/>
+        </g>
+        <path class="icon" d="M141 8l6 8-6 8" stroke="#4d4d4d"/>
+        <text class="body" x="192" y="22" text-anchor="middle" fill="#4d4d4d">元件庫</text>
+        <path class="icon" d="M237 8l6 8-6 8" stroke="#4d4d4d"/>
+        <text class="body" x="313" y="22" text-anchor="middle" fill="#f2f2f2" font-weight="600">Breadcrumb</text>
+      </g>
+      <text class="caption" x="0" y="52">collapsed：層級過深時，中間項目摺疊為省略號按鈕（32×32 命中區，僅示意三點圖形，同樣置中），點擊展開被摺疊的項目；首項與目前頁固定顯示，不參與摺疊</text>
+    </g>
+
+    <text class="note" x="0" y="336">摺疊策略（候選）：畫面寬度不足或層級數超過 4 層時，保留「首項＋省略號＋直接父項＋目前頁」；省略號需可點擊／可鍵盤觸發，展開後以清單呈現被摺疊項目，此候選稿不畫出展開後選單。</text>
+    <text class="caption" x="0" y="360" fill="#666">校準候選：字級沿用 font.size-body 16px；每個項目文字置中於自己的命中區內（8px 左右內距，同 hover 底色的 rx 8px／80px 寬示例一致），非緊貼 chevron 靠左排列；chevron 分隔符 16px（size.icon-sm）、顏色 gray-700，置中於相鄰兩命中區之間 32px 的間距內；current 使用 font.weight-semibold 600、色彩 foreground-primary；省略號命中區 32px（接近 size.tag-md 40px 但非該 token，候選值待審）</text>
+  </g>
+
+  <!-- ===================== Number input / Spin button ===================== -->
+
+  <g id="c-number-input" class="ui" transform="translate(48 1520)">
+    <text class="section" x="0" y="0">Number input / Spin button</text>
+    <text class="note" x="0" y="28">延伸 Text input＋Icon button 樣式與 token · 48px 高、48×48 圓形加減按鈕＋數值欄位、8px 間距（處處是圓，不貼合成單一直角外框）· 已畢業，見 works/html/batch3/index.html</text>
+
+    <g transform="translate(0 64)">
+      <!-- default -->
+      <g id="number-input-default" transform="translate(0 0)">
+        <circle cx="24" cy="24" r="24" fill="#333"/>
+        <path class="icon" d="M18 24h12" stroke="#f2f2f2"/>
+        <rect x="56" width="80" height="48" rx="24" fill="#666"/>
+        <text class="body" x="96" y="30" text-anchor="middle" fill="#f2f2f2">4</text>
+        <circle cx="168" cy="24" r="24" fill="#333"/>
+        <path class="icon" d="M162 24h12 M168 18v12" stroke="#f2f2f2"/>
+        <text class="caption" x="96" y="72" text-anchor="middle">default</text>
+      </g>
+
+      <!-- focused -->
+      <g id="number-input-focused" transform="translate(220 0)">
+        <circle cx="24" cy="24" r="24" fill="#333"/>
+        <path class="icon" d="M18 24h12" stroke="#f2f2f2"/>
+        <rect x="57" y="1" width="78" height="46" rx="23" fill="#666" stroke="#598ae8" stroke-width="2"/>
+        <text class="body" x="96" y="30" text-anchor="middle" fill="#f2f2f2">4</text>
+        <circle cx="168" cy="24" r="24" fill="#333"/>
+        <path class="icon" d="M162 24h12 M168 18v12" stroke="#f2f2f2"/>
+        <text class="caption" x="96" y="72" text-anchor="middle">focused</text>
+      </g>
+
+      <!-- min reached (decrement disabled) -->
+      <g id="number-input-min" transform="translate(440 0)">
+        <circle cx="24" cy="24" r="24" fill="#666"/>
+        <path class="icon" d="M18 24h12" stroke="#f2f2f2" stroke-opacity="0.55"/>
+        <rect x="56" width="80" height="48" rx="24" fill="#666"/>
+        <text class="body" x="96" y="30" text-anchor="middle" fill="#f2f2f2">0</text>
+        <circle cx="168" cy="24" r="24" fill="#333"/>
+        <path class="icon" d="M162 24h12 M168 18v12" stroke="#f2f2f2"/>
+        <text class="caption" x="96" y="72" text-anchor="middle">min reached（減少已停用）</text>
+      </g>
+
+      <!-- max reached (increment disabled) -->
+      <g id="number-input-max" transform="translate(660 0)">
+        <circle cx="24" cy="24" r="24" fill="#333"/>
+        <path class="icon" d="M18 24h12" stroke="#f2f2f2"/>
+        <rect x="56" width="80" height="48" rx="24" fill="#666"/>
+        <text class="body" x="96" y="30" text-anchor="middle" fill="#f2f2f2">10</text>
+        <circle cx="168" cy="24" r="24" fill="#666"/>
+        <path class="icon" d="M162 24h12 M168 18v12" stroke="#f2f2f2" stroke-opacity="0.55"/>
+        <text class="caption" x="96" y="72" text-anchor="middle">max reached（增加已停用）</text>
+      </g>
+
+      <!-- disabled -->
+      <g id="number-input-disabled" transform="translate(880 0)">
+        <circle cx="24" cy="24" r="24" fill="#666"/>
+        <path class="icon" d="M18 24h12" stroke="#f2f2f2" stroke-opacity="0.55"/>
+        <rect x="56" width="80" height="48" rx="24" fill="#666"/>
+        <text class="body" x="96" y="30" text-anchor="middle" fill="#f2f2f2" fill-opacity="0.55">4</text>
+        <circle cx="168" cy="24" r="24" fill="#666"/>
+        <path class="icon" d="M162 24h12 M168 18v12" stroke="#f2f2f2" stroke-opacity="0.55"/>
+        <text class="caption" x="96" y="72" text-anchor="middle">disabled</text>
+      </g>
+    </g>
+
+    <text class="note" x="0" y="178">減／加按鈕沿用 Icon button 的 48×48 圓形＋neutral 底色（background-surface）；圖示 24px、foreground-primary 描邊，停用時改用 foreground-disabled + opacity.disabled（與 search field disabled 圖示同技法）。</text>
+    <text class="note" x="0" y="202">欄位本身沿用 Text input 的 48px 高、radius.control、background-subdued、focus 描邊；數值置中對齊。min／max reached 只停用對應單一按鈕，欄位與另一按鈕維持可互動；全欄 disabled 才三者同時停用。</text>
+    <text class="note" x="0" y="226">鍵盤：方向鍵 ↑/↓ 或直接輸入數值皆應可調整；候選稿僅示意視覺，實際鍵盤互動於畢業階段以原生 input[type=number] 或等效互動驗證。</text>
+    <text class="caption" x="0" y="250" fill="#666">校準候選：欄位寬度 80px（候選值，未鎖定 8px scale 之外的特殊比例，僅供 2-3 位數顯示）；按鈕與欄位間距 8px（space.1，處處是圓）；欄位／按鈕皆沿用既有 text-input／icon-button 尺寸 token，無新增顏色</text>
   </g>
 
 </svg>
