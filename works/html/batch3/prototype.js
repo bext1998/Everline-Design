@@ -109,3 +109,49 @@
     sync();
   });
 })();
+
+// Breadcrumb — collapsed example's ellipsis reveals the real hidden <li> in the DOM (not a
+// hand-drawn "expanded" snapshot, which the SVG candidate deliberately left undrawn). One-way
+// reveal: once expanded there's nothing left to re-collapse back to in this demo.
+(() => {
+  document.querySelectorAll('[data-breadcrumb-ellipsis]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const nav = button.closest('nav');
+      const hiddenItem = nav.querySelector('.breadcrumb__collapsible');
+      const trigger = button.closest('.breadcrumb__collapsible-trigger');
+      hiddenItem.hidden = false;
+      trigger.hidden = true;
+      hiddenItem.querySelector('.breadcrumb__item').focus();
+    });
+  });
+})();
+
+// Number input — decrement/increment call the native stepDown()/stepUp(), which already respect
+// min/max/step, instead of hand-rolling the arithmetic. Both buttons' disabled state is re-synced
+// after every change, whether it came from a button click, the keyboard (native ArrowUp/ArrowDown
+// on <input type="number">), or direct typing — so reaching a boundary by typing disables the
+// corresponding button just as reliably as reaching it by clicking.
+(() => {
+  document.querySelectorAll('[data-number-input]').forEach((input) => {
+    const wrapper = input.closest('.number-input');
+    const decrementButton = wrapper.querySelector('[data-decrement]');
+    const incrementButton = wrapper.querySelector('[data-increment]');
+    const sync = () => {
+      const value = input.value === '' ? NaN : Number(input.value);
+      const min = input.min === '' ? -Infinity : Number(input.min);
+      const max = input.max === '' ? Infinity : Number(input.max);
+      decrementButton.disabled = Number.isNaN(value) || value <= min;
+      incrementButton.disabled = Number.isNaN(value) || value >= max;
+    };
+    decrementButton.addEventListener('click', () => {
+      input.stepDown();
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+    incrementButton.addEventListener('click', () => {
+      input.stepUp();
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+    input.addEventListener('input', sync);
+    sync();
+  });
+})();

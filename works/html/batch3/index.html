@@ -10,9 +10,9 @@
     <main class="catalog" aria-labelledby="page-title">
       <header class="catalog-header">
         <div>
-          <p class="eyebrow">Everline v0.1 · 第三批元件型錄（1-2/8）</p>
+          <p class="eyebrow">Everline v0.1 · 第三批元件型錄（1-4/8）</p>
           <h1 id="page-title">Everline Design Language — Components Batch 3 HTML/CSS Candidate</h1>
-          <p class="lede">Progress / Spinner / Loading（GitHub issue #5）· Search field（GitHub issue #6）</p>
+          <p class="lede">Progress / Spinner / Loading（GitHub issue #5）· Search field（GitHub issue #6）· Breadcrumb（GitHub issue #7）· Number input / Spin button（GitHub issue #8）</p>
           <p class="trace">Graduated from <code>works/everline-components-batch3.svg</code>（歷史視覺快照）· sibling batch to <code>works/everline-components-master.svg</code>、<code>works/everline-components-batch2.svg</code> · 此 HTML/CSS 為目前候選規格權威來源，不是產品元件庫。</p>
         </div>
         <p class="candidate-badge"><span aria-hidden="true"></span> CANDIDATE · NOT FROZEN</p>
@@ -20,8 +20,10 @@
 
       <aside class="scope-note" aria-labelledby="scope-title">
         <h2 id="scope-title">本輪範圍</h2>
-        <p>第三批（8 類）目前完成第 1-2 個元件：Progress / Spinner / Loading、Search field。已實作互動：spinner 以 CSS <code>animation</code> 持續旋轉（非 SVG 快照）、determinate 進度條會自動示範 0→100% 的真實 <code>width</code> 過渡、indeterminate 進度條以持續滑動的區段示意、error 進度條有「重試」示範、full-page loading 有「取消」／「重新示範」示範。<code>prefers-reduced-motion</code>：批次二既有的全域規則把所有動畫時長硬壓到 0.01ms，這對「一次性開闔轉場」正確，但套用在這裡的持續循環動畫（旋轉、滑動）上會變成極速閃爍而不是停止，本檔案另外覆寫為直接停在靜態畫面（見 styles.css 對應註解）。依 GitHub issue #13 的決議，本元件審查通過後已回填 loading 視覺到 <code>works/html/batch2/</code> 的 List／Data table／Kanban column（同一批 PR 完成，見 docs/design-system-v0.1-batch2-draft.md 跨元件設計決策，以及該檔案為權威來源，此處不重複維護狀態）。</p>
+        <p>第三批（8 類）目前完成第 1-4 個元件：Progress / Spinner / Loading、Search field、Breadcrumb、Number input / Spin button。已實作互動：spinner 以 CSS <code>animation</code> 持續旋轉（非 SVG 快照）、determinate 進度條會自動示範 0→100% 的真實 <code>width</code> 過渡、indeterminate 進度條以持續滑動的區段示意、error 進度條有「重試」示範、full-page loading 有「取消」／「重新示範」示範。<code>prefers-reduced-motion</code>：批次二既有的全域規則把所有動畫時長硬壓到 0.01ms，這對「一次性開闔轉場」正確，但套用在這裡的持續循環動畫（旋轉、滑動）上會變成極速閃爍而不是停止，本檔案另外覆寫為直接停在靜態畫面（見 styles.css 對應註解）。依 GitHub issue #13 的決議，本元件審查通過後已回填 loading 視覺到 <code>works/html/batch2/</code> 的 List／Data table／Kanban column（同一批 PR 完成，見 docs/design-system-v0.1-batch2-draft.md 跨元件設計決策，以及該檔案為權威來源，此處不重複維護狀態）。</p>
         <p>Search field（issue #6）延伸 Text input 的 token 與結構。SVG 候選稿原本用四張靜態圖畫 empty／filled／focused／disabled，畢業到 HTML/CSS 後改用真正的原生互動狀態：focus 邊框改用 <code>:focus-within</code> 即時觸發（不需要另外準備一張「focused」快照）、清除按鈕的出現／隱藏與 disabled 的變暗都是即時的 <code>input</code> 事件與原生 <code>:disabled</code>／<code>:has()</code>，取代候選稿手繪每個狀態的做法。</p>
+        <p>Breadcrumb（issue #7）SVG 候選稿以四張靜態圖示意 default／current／hover／collapsed；畢業到 HTML/CSS 後 hover／focus 改用原生 <code>:hover</code>／<code>:focus-visible</code>，collapsed 的省略號改為真正可點擊的 <code>&lt;button&gt;</code>，點擊後即時在 DOM 中顯示被摺疊的項目（非示意），取代候選稿「不畫出展開後選單」的留白。每個項目的置中命中區改用原生 padding／<code>display: contents</code> flex 版面自然達成，不需要再手動量測文字寬度計算 slot（那是 SVG 手繪階段才需要的做法）。</p>
+        <p>Number input / Spin button（issue #8）SVG 候選稿以五張靜態圖畫 default／focused／min reached／max reached／disabled；畢業到 HTML/CSS 後改用原生 <code>&lt;input type="number"&gt;</code>（保留瀏覽器原生鍵盤 ↑/↓ 支援，只隱藏預設的瀏覽器 spinner 外觀改用自訂按鈕），減／加按鈕呼叫 <code>stepDown()</code>／<code>stepUp()</code>，min／max reached 時對應按鈕即時套用原生 <code>:disabled</code>，直接輸入數值到達邊界時也會同步停用，取代候選稿逐一手繪五種狀態快照的做法。</p>
       </aside>
 
       <section class="component-section" aria-labelledby="spinner-title">
@@ -108,6 +110,109 @@
               <input class="search-field__input" type="search" placeholder="搜尋…" aria-label="搜尋" disabled>
             </div>
             <p class="example-label">disabled（無清除按鈕，即使有殘留文字）</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="component-section" aria-labelledby="breadcrumb-title">
+        <div class="section-heading"><div><p class="eyebrow">Navigation</p><h2 id="breadcrumb-title">Breadcrumb</h2><p>chevron 分隔 · 每項文字置中於自己的命中區（原生 padding，非手動量測）· 目前頁不可點擊 · 過深層級可摺疊</p></div></div>
+        <div class="breadcrumb-examples">
+          <div class="breadcrumb-example">
+            <nav class="breadcrumb" aria-label="麵包屑導覽">
+              <ol>
+                <li><a href="#" class="breadcrumb__item">資產庫</a></li>
+                <li aria-hidden="true"><span class="breadcrumb__sep"><svg viewBox="0 0 16 16" width="16" height="16"><path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></li>
+                <li><a href="#" class="breadcrumb__item">設計系統</a></li>
+                <li aria-hidden="true"><span class="breadcrumb__sep"><svg viewBox="0 0 16 16" width="16" height="16"><path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></li>
+                <li><a href="#" class="breadcrumb__item">元件庫</a></li>
+                <li aria-hidden="true"><span class="breadcrumb__sep"><svg viewBox="0 0 16 16" width="16" height="16"><path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></li>
+                <li><span class="breadcrumb__item breadcrumb__item--current" aria-current="page">Breadcrumb</span></li>
+              </ol>
+            </nav>
+            <p class="example-label">試著用滑鼠 hover 或 Tab 鍵移到前三項：文字與底色即時反應（原生 :hover／:focus-visible），目前頁不可互動</p>
+          </div>
+          <div class="breadcrumb-example">
+            <nav class="breadcrumb" aria-label="麵包屑導覽（第 2 項 hover 靜態示意）">
+              <ol>
+                <li><a href="#" class="breadcrumb__item">資產庫</a></li>
+                <li aria-hidden="true"><span class="breadcrumb__sep"><svg viewBox="0 0 16 16" width="16" height="16"><path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></li>
+                <li><a href="#" class="breadcrumb__item breadcrumb__item--hover-demo">設計系統</a></li>
+                <li aria-hidden="true"><span class="breadcrumb__sep"><svg viewBox="0 0 16 16" width="16" height="16"><path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></li>
+                <li><a href="#" class="breadcrumb__item">元件庫</a></li>
+                <li aria-hidden="true"><span class="breadcrumb__sep"><svg viewBox="0 0 16 16" width="16" height="16"><path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></li>
+                <li><span class="breadcrumb__item breadcrumb__item--current" aria-current="page">Breadcrumb</span></li>
+              </ol>
+            </nav>
+            <p class="example-label">hover（第 2 項，靜態示意，套用與 :hover 完全相同的樣式規則，非另一套視覺）：文字轉為 off-white，背後疊加 6% 白色圓角底色</p>
+          </div>
+          <div class="breadcrumb-example">
+            <nav class="breadcrumb" aria-label="麵包屑導覽（層級過深，已摺疊）">
+              <ol>
+                <li><a href="#" class="breadcrumb__item">資產庫</a></li>
+                <li aria-hidden="true"><span class="breadcrumb__sep"><svg viewBox="0 0 16 16" width="16" height="16"><path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></li>
+                <li class="breadcrumb__collapsible" hidden><a href="#" class="breadcrumb__item">設計系統</a></li>
+                <li class="breadcrumb__collapsible-trigger"><button type="button" class="breadcrumb__ellipsis" aria-expanded="false" aria-label="顯示更多路徑" data-breadcrumb-ellipsis><span></span><span></span><span></span></button></li>
+                <li aria-hidden="true"><span class="breadcrumb__sep"><svg viewBox="0 0 16 16" width="16" height="16"><path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></li>
+                <li><a href="#" class="breadcrumb__item">元件庫</a></li>
+                <li aria-hidden="true"><span class="breadcrumb__sep"><svg viewBox="0 0 16 16" width="16" height="16"><path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></li>
+                <li><span class="breadcrumb__item breadcrumb__item--current" aria-current="page">Breadcrumb</span></li>
+              </ol>
+            </nav>
+            <p class="example-label">collapsed：點擊省略號即時在 DOM 中顯示被摺疊的「設計系統」（真實互動，非示意）</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="component-section" aria-labelledby="number-input-title">
+        <div class="section-heading"><div><p class="eyebrow">Input</p><h2 id="number-input-title">Number input / Spin button</h2><p>延伸 Text input＋Icon button · 原生 &lt;input type="number"&gt;＋自訂加減按鈕 · min／max 即時停用對應按鈕</p></div></div>
+        <div class="number-input-examples">
+          <div class="number-input-example">
+            <div class="number-input">
+              <button type="button" class="number-input__btn" aria-label="減少數量" data-decrement>
+                <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M6 12h12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </button>
+              <input type="number" class="number-input__field" aria-label="數量" value="4" min="0" max="10" step="1" data-number-input>
+              <button type="button" class="number-input__btn" aria-label="增加數量" data-increment>
+                <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M12 6v12M6 12h12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+            <p class="example-label">default／focused：點擊欄位可見原生 focus 邊框；試著點擊按鈕、方向鍵 ↑/↓，或直接輸入</p>
+          </div>
+          <div class="number-input-example">
+            <div class="number-input">
+              <button type="button" class="number-input__btn" aria-label="減少數量" data-decrement>
+                <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M6 12h12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </button>
+              <input type="number" class="number-input__field" aria-label="數量" value="0" min="0" max="10" step="1" data-number-input>
+              <button type="button" class="number-input__btn" aria-label="增加數量" data-increment>
+                <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M12 6v12M6 12h12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+            <p class="example-label">min reached（減少已停用，值＝0）：停用狀態由實際 value／min 比較即時算出，非寫死</p>
+          </div>
+          <div class="number-input-example">
+            <div class="number-input">
+              <button type="button" class="number-input__btn" aria-label="減少數量" data-decrement>
+                <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M6 12h12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </button>
+              <input type="number" class="number-input__field" aria-label="數量" value="10" min="0" max="10" step="1" data-number-input>
+              <button type="button" class="number-input__btn" aria-label="增加數量" data-increment>
+                <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M12 6v12M6 12h12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+            <p class="example-label">max reached（增加已停用，值＝10）：停用狀態由實際 value／max 比較即時算出，非寫死</p>
+          </div>
+          <div class="number-input-example">
+            <div class="number-input">
+              <button type="button" class="number-input__btn" aria-label="減少數量" disabled>
+                <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M6 12h12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </button>
+              <input type="number" class="number-input__field" aria-label="數量" value="4" disabled>
+              <button type="button" class="number-input__btn" aria-label="增加數量" disabled>
+                <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M12 6v12M6 12h12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+            <p class="example-label">disabled</p>
           </div>
         </div>
       </section>

@@ -41,6 +41,34 @@
   --everline-component-search-field-padding-inline-start: 40px;
   --everline-component-search-field-padding-inline-end: var(--everline-space-3);
   --everline-component-search-field-padding-inline-end-filled: 40px;
+  --everline-font-weight-semibold: 600;
+  --everline-component-breadcrumb-foreground-default: var(--everline-color-base-gray-700);
+  --everline-component-breadcrumb-foreground-hover: var(--everline-color-semantic-foreground-primary);
+  --everline-component-breadcrumb-foreground-current: var(--everline-color-semantic-foreground-primary);
+  --everline-component-breadcrumb-separator-color: var(--everline-color-base-gray-700);
+  --everline-component-breadcrumb-separator-size: var(--everline-size-icon-sm);
+  --everline-component-breadcrumb-item-padding-inline: var(--everline-space-1);
+  --everline-component-breadcrumb-item-gap: var(--everline-space-4);
+  --everline-component-breadcrumb-hover-radius: var(--everline-radius-sm);
+  --everline-component-breadcrumb-ellipsis-size: 32px;
+  --everline-component-breadcrumb-ellipsis-dot-size: 4px;
+  --everline-component-breadcrumb-ellipsis-dot-gap: 10px;
+  --everline-component-number-input-height: var(--everline-component-search-field-height);
+  --everline-component-number-input-field-width: 80px;
+  --everline-component-number-input-gap: var(--everline-space-1);
+  --everline-component-number-input-field-radius: var(--everline-radius-control);
+  --everline-component-number-input-field-background: var(--everline-color-semantic-background-subdued);
+  --everline-component-number-input-field-foreground: var(--everline-color-semantic-foreground-primary);
+  --everline-component-number-input-field-foreground-disabled: var(--everline-color-semantic-foreground-disabled);
+  --everline-component-number-input-field-border-width-focus: var(--everline-border-width-focus);
+  --everline-component-number-input-field-border-focus: var(--everline-color-semantic-border-focus);
+  --everline-component-number-input-button-size: var(--everline-component-search-field-height);
+  --everline-component-number-input-button-radius: var(--everline-radius-control);
+  --everline-component-number-input-button-icon-size: 24px;
+  --everline-component-number-input-button-background: var(--everline-color-semantic-background-surface);
+  --everline-component-number-input-button-background-disabled: var(--everline-color-semantic-background-subdued);
+  --everline-component-number-input-button-icon-color: var(--everline-color-semantic-foreground-primary);
+  --everline-component-number-input-button-icon-color-disabled: var(--everline-color-semantic-foreground-disabled);
 }
 
 * { box-sizing: border-box; }
@@ -125,6 +153,43 @@ h1, h2, p { margin: 0; } h1 { font-size: 32px; line-height: 1.25; } h2 { font-si
 .search-field:has(.search-field__input:disabled) .search-field__input::placeholder { color: var(--everline-color-semantic-foreground-disabled); opacity: 1; }
 .search-field__input:disabled { cursor: not-allowed; }
 .search-field-examples { align-items: start; display: flex; flex-wrap: wrap; gap: var(--everline-space-4); }
+
+/* Breadcrumb — each <li> is display:contents so its child (link/span/button) becomes the actual
+   flex item; no manually-measured slot widths (that was an SVG-only concern) — padding-inline on
+   each item plus margin-inline on each separator reproduces the reviewed candidate's spacing:
+   8px item padding + 8px separator margin on either side of a 16px chevron = 32px between items. */
+.breadcrumb-examples { display: flex; flex-direction: column; gap: var(--everline-space-3); }
+.breadcrumb ol { align-items: center; display: flex; flex-wrap: wrap; list-style: none; margin: 0; padding: 0; }
+.breadcrumb li { display: contents; }
+/* display:contents on every <li> otherwise beats the browser's default [hidden]{display:none} at
+   equal specificity (li.breadcrumb__collapsible = 0,0,1,1 vs [hidden] alone = 0,0,1,0) — same
+   gotcha already hit by .loading-overlay[hidden] above; without this override the collapsed
+   item never actually hides. */
+.breadcrumb li[hidden] { display: none; }
+.breadcrumb__item { border-radius: var(--everline-component-breadcrumb-hover-radius); color: var(--everline-component-breadcrumb-foreground-default); line-height: 32px; padding-inline: var(--everline-component-breadcrumb-item-padding-inline); text-decoration: none; }
+a.breadcrumb__item:hover, a.breadcrumb__item:focus-visible, .breadcrumb__item--hover-demo { background: rgba(255, 255, 255, var(--everline-opacity-hover-overlay)); color: var(--everline-component-breadcrumb-foreground-hover); }
+a.breadcrumb__item:focus-visible { outline: var(--everline-border-width-focus) solid var(--everline-color-semantic-border-focus); outline-offset: -2px; }
+.breadcrumb__item--current { color: var(--everline-component-breadcrumb-foreground-current); cursor: default; font-weight: var(--everline-font-weight-semibold); }
+.breadcrumb__sep { align-items: center; color: var(--everline-component-breadcrumb-separator-color); display: inline-flex; height: 32px; justify-content: center; margin-inline: var(--everline-component-breadcrumb-item-padding-inline); width: var(--everline-component-breadcrumb-separator-size); }
+.breadcrumb__ellipsis { align-items: center; background: transparent; border: 0; border-radius: var(--everline-component-breadcrumb-hover-radius); color: var(--everline-component-breadcrumb-separator-color); cursor: pointer; display: inline-flex; gap: 3px; height: var(--everline-component-breadcrumb-ellipsis-size); justify-content: center; padding: 0; width: var(--everline-component-breadcrumb-ellipsis-size); }
+.breadcrumb__ellipsis:hover, .breadcrumb__ellipsis:focus-visible { background: rgba(255, 255, 255, var(--everline-opacity-hover-overlay)); color: var(--everline-component-breadcrumb-foreground-hover); }
+.breadcrumb__ellipsis:focus-visible { outline: var(--everline-border-width-focus) solid var(--everline-color-semantic-border-focus); outline-offset: -2px; }
+.breadcrumb__ellipsis span { background: currentColor; border-radius: 50%; height: var(--everline-component-breadcrumb-ellipsis-dot-size); width: var(--everline-component-breadcrumb-ellipsis-dot-size); }
+
+/* Number input — decrement/increment stay separately-rounded circles beside the field (處處是圓,
+   never fused into one flat-edged control); native <input type="number"> keeps browser keyboard
+   Up/Down and min/max/step semantics, only its default spin-button chrome is hidden. */
+.number-input-examples { align-items: start; display: flex; flex-wrap: wrap; gap: var(--everline-space-4); }
+.number-input { align-items: center; display: flex; gap: var(--everline-component-number-input-gap); }
+.number-input__btn { align-items: center; background: var(--everline-component-number-input-button-background); border: 0; border-radius: var(--everline-component-number-input-button-radius); color: var(--everline-component-number-input-button-icon-color); cursor: pointer; display: flex; flex: 0 0 auto; height: var(--everline-component-number-input-button-size); justify-content: center; padding: 0; width: var(--everline-component-number-input-button-size); }
+.number-input__btn:hover:not(:disabled), .number-input__btn:focus-visible:not(:disabled) { box-shadow: inset 0 0 0 999px rgba(255, 255, 255, var(--everline-opacity-hover-overlay)); }
+.number-input__btn:focus-visible { outline: var(--everline-border-width-focus) solid var(--everline-color-semantic-border-focus); outline-offset: 2px; }
+.number-input__btn:disabled { background: var(--everline-component-number-input-button-background-disabled); color: var(--everline-component-number-input-button-icon-color-disabled); cursor: not-allowed; opacity: var(--everline-opacity-disabled); }
+.number-input__field { background: var(--everline-component-number-input-field-background); border: 0; border-radius: var(--everline-component-number-input-field-radius); box-sizing: border-box; color: var(--everline-component-number-input-field-foreground); font: inherit; height: var(--everline-component-number-input-height); text-align: center; width: var(--everline-component-number-input-field-width); }
+.number-input__field:focus { box-shadow: inset 0 0 0 var(--everline-component-number-input-field-border-width-focus) var(--everline-component-number-input-field-border-focus); outline: none; }
+.number-input__field:disabled { color: var(--everline-component-number-input-field-foreground-disabled); cursor: not-allowed; opacity: var(--everline-opacity-disabled); }
+.number-input__field::-webkit-inner-spin-button, .number-input__field::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.number-input__field { -moz-appearance: textfield; }
 
 @media (max-width: 760px) {
   .catalog { padding: var(--everline-space-2); }
