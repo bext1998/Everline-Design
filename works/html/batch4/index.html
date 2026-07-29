@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Everline v0.1 — 第四批 HTML/CSS 候選元件</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="catalog" aria-labelledby="page-title">
+      <header class="catalog-header">
+        <div>
+          <p class="eyebrow">Everline v0.1 · 第四批元件型錄（4/4）</p>
+          <h1 id="page-title">Everline Design Language — Components Batch 4 HTML/CSS Candidate</h1>
+          <p class="lede">Slider（GitHub issue #9）· Accordion（issue #10）· Popover（issue #11）· Date / Time picker（issue #12）</p>
+          <p class="trace">驗證：<code>node works/html/batch4/verify.mjs</code>（零相依，只需 Node 22+ 與 Chrome）· Graduated from <code>works/everline-components-batch4.svg</code>（2026-07-30 人類審查通過後成為歷史視覺快照）· sibling batch to <code>works/everline-components-master.svg</code>、<code>batch2.svg</code>、<code>batch3.svg</code> · 此 HTML/CSS 為目前候選規格權威來源，不是產品元件庫，也未指定前端技術棧。</p>
+        </div>
+        <p class="candidate-badge"><span aria-hidden="true"></span> CANDIDATE · NOT FROZEN</p>
+      </header>
+
+      <aside class="scope-note" aria-labelledby="scope-title">
+        <h2 id="scope-title">本輪範圍與畢業時的取代關係</h2>
+        <p>SVG 候選稿以靜態圖逐一手繪各狀態；畢業到 HTML/CSS 後一律換成原生互動狀態與真實 DOM。Slider 用原生 <code>&lt;input type="range"&gt;</code>（保留瀏覽器的方向鍵／Home／End／PageUp／PageDown／step 語意），範圍變體是<strong>兩個各自具可存取名稱、可獨立鍵盤操作</strong>的 range 控制項，不是兩個畫出來的 thumb。Accordion 用語意標題內含 <code>&lt;button&gt;</code>，以 <code>aria-expanded</code>／<code>aria-controls</code> 關聯 panel。Popover 用原生 Popover API（<code>popover="auto"</code>）取得 Esc、面板外點擊關閉與焦點自動回到 trigger，定位／翻轉／位移另以 JS 對 viewport 實算。Date / Time picker 組合上述 Popover 與既有 Text input／Icon button，月曆是 <code>role="grid"</code> ＋ roving tabindex。</p>
+        <p><strong>Slider 幾何說明</strong>：審查通過的 SVG 定義 thumb 中心 = 值百分比 × 軌道長度（值 40 時中心落在 320px 的第 128px）。瀏覽器原生 range 預設會把 thumb 內縮，使中心只在 <code>寬度 − thumb</code> 範圍內移動（同樣條件下會落在 130.4px）。為了與核准視覺一致，本檔把 <code>&lt;input&gt;</code> 左移一個 thumb 半徑並外擴一個 thumb 直徑，讓 thumb 中心走完整軌道長度；代價是 0%／100% 時 thumb 會突出軌道兩端各 12px，容器已預留內距。</p>
+        <p><strong>刻意未實作、待審查決定的項目</strong>：Date / Time picker 的日期欄位目前是 <code>readonly</code>，值只能由月曆設定。自由輸入需要日期解析與「無效／不完整輸入」的視覺，而該視覺在 SVG 審查時已明確標記為「待 G1／G2 決定，不先預設」，因此這裡不自行發明錯誤樣式。Accordion 的開闔<strong>沒有</strong>加動畫：<code>motion.duration-base</code>／<code>easing-standard</code> 在 token 檔仍標記 candidate，靜態 SVG 無法用來重新核對動效值，依 <code>AGENTS.md</code>「candidate 值不得原封不動沿用」的規則，寧可不動畫也不引用未驗證的值。</p>
+      </aside>
+
+      <!-- ===================== Slider ===================== -->
+      <section class="component-section" aria-labelledby="slider-title">
+        <div class="section-heading">
+          <p class="eyebrow">Input</p>
+          <h2 id="slider-title">Slider</h2>
+          <p>issue #9 · 8px 軌道（同 Progress bar）· 24px thumb · 焦點為 4px 實心藍環，無間隙 · 單值／範圍／step／disabled</p>
+        </div>
+
+        <div class="slider-examples">
+          <div class="slider-example">
+            <div class="slider-head">
+              <label class="slider-label" for="slider-volume">音量</label>
+              <output class="slider-output" for="slider-volume" data-slider-output>40</output>
+            </div>
+            <div class="slider" data-slider>
+              <div class="slider__track" aria-hidden="true"><div class="slider__fill" data-slider-fill></div></div>
+              <input class="slider__input" type="range" id="slider-volume" min="0" max="100" step="1" value="40" data-slider-single>
+            </div>
+            <p class="example-label">單值 default（min 0 / max 100，值 40）</p>
+          </div>
+
+          <div class="slider-example">
+            <div class="slider-head">
+              <label class="slider-label" for="slider-volume-disabled">音量</label>
+              <output class="slider-output" for="slider-volume-disabled" data-slider-output>40</output>
+            </div>
+            <div class="slider" data-slider>
+              <div class="slider__track" aria-hidden="true"><div class="slider__fill" data-slider-fill></div></div>
+              <input class="slider__input" type="range" id="slider-volume-disabled" min="0" max="100" step="1" value="40" disabled data-slider-single>
+            </div>
+            <p class="example-label">單值 disabled（原生 <code>disabled</code>，非 class 模擬）</p>
+          </div>
+
+          <div class="slider-example">
+            <div class="slider-head">
+              <label class="slider-label" for="slider-brightness">亮度</label>
+            </div>
+            <div class="slider slider--value-label" data-slider>
+              <output class="slider__value-label" for="slider-brightness" data-slider-value-label>65</output>
+              <div class="slider__track" aria-hidden="true"><div class="slider__fill" data-slider-fill></div></div>
+              <input class="slider__input" type="range" id="slider-brightness" min="0" max="100" step="1" value="65" data-slider-single>
+            </div>
+            <p class="example-label">值標籤變體（標籤數值與 thumb 位置同一來源，不可能不一致）</p>
+          </div>
+
+          <div class="slider-example">
+            <div class="slider-head">
+              <span class="slider-label" id="slider-price-label">價格範圍</span>
+              <output class="slider-output" data-slider-output>25 – 70</output>
+            </div>
+            <div class="slider slider--range" data-slider data-slider-range>
+              <div class="slider__track" aria-hidden="true"><div class="slider__fill" data-slider-fill></div></div>
+              <input class="slider__input slider__input--lower" type="range" min="0" max="100" step="1" value="25"
+                     aria-label="價格範圍起點" data-slider-lower>
+              <input class="slider__input slider__input--upper" type="range" min="0" max="100" step="1" value="70"
+                     aria-label="價格範圍終點" data-slider-upper>
+            </div>
+            <p class="example-label">範圍：兩個獨立的 range 控制項（各有可存取名稱），互相限制 lower ≤ upper</p>
+          </div>
+
+          <div class="slider-example">
+            <div class="slider-head">
+              <span class="slider-label" id="slider-price-disabled-label">價格範圍</span>
+              <output class="slider-output" data-slider-output>25 – 70</output>
+            </div>
+            <div class="slider slider--range" data-slider data-slider-range>
+              <div class="slider__track" aria-hidden="true"><div class="slider__fill" data-slider-fill></div></div>
+              <input class="slider__input slider__input--lower" type="range" min="0" max="100" step="1" value="25"
+                     aria-label="價格範圍起點（已停用）" disabled data-slider-lower>
+              <input class="slider__input slider__input--upper" type="range" min="0" max="100" step="1" value="70"
+                     aria-label="價格範圍終點（已停用）" disabled data-slider-upper>
+            </div>
+            <p class="example-label">範圍 disabled（兩個控制項同時原生停用）</p>
+          </div>
+
+          <div class="slider-example">
+            <div class="slider-head">
+              <label class="slider-label" for="slider-score">評分</label>
+              <output class="slider-output" for="slider-score" data-slider-output>60</output>
+            </div>
+            <div class="slider slider--step" data-slider>
+              <div class="slider__track" aria-hidden="true"><div class="slider__fill" data-slider-fill></div></div>
+              <input class="slider__input" type="range" id="slider-score" min="0" max="100" step="20" value="60" data-slider-single>
+              <div class="slider__markers" aria-hidden="true" data-slider-markers></div>
+            </div>
+            <p class="example-label">step 20：標記由 min／max／step 計算產生，數量必然等於 (max − min) / step + 1</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== Accordion ===================== -->
+      <section class="component-section" aria-labelledby="accordion-title">
+        <div class="section-heading">
+          <p class="eyebrow">Disclosure</p>
+          <h2 id="accordion-title">Accordion</h2>
+          <p>issue #10 · 48px trigger · 8px 圓角、4px 項目間距（沿用 list-item 的相鄰圓角列語彙）· 單開／多開只是行為設定</p>
+        </div>
+
+        <div class="accordion-examples">
+          <div class="accordion-example">
+            <h3 class="example-title">單開（一次只展開一項）</h3>
+            <div class="accordion" data-accordion="single">
+              <div class="accordion__item">
+                <h4 class="accordion__heading">
+                  <button type="button" class="accordion__trigger" id="acc-s1-t" aria-expanded="false" aria-controls="acc-s1-p">
+                    <span>版面與間距</span>
+                    <svg class="accordion__icon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3 6l5 5 5-5"/></svg>
+                  </button>
+                </h4>
+                <div class="accordion__panel" id="acc-s1-p" role="region" aria-labelledby="acc-s1-t" hidden>
+                  <p>間距一律取自 8px 級距；版面用 flex／grid 排，不用固定座標。</p>
+                </div>
+              </div>
+              <div class="accordion__item">
+                <h4 class="accordion__heading">
+                  <button type="button" class="accordion__trigger" id="acc-s2-t" aria-expanded="true" aria-controls="acc-s2-p">
+                    <span>色彩與對比</span>
+                    <svg class="accordion__icon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3 6l5 5 5-5"/></svg>
+                  </button>
+                </h4>
+                <div class="accordion__panel" id="acc-s2-p" role="region" aria-labelledby="acc-s2-t">
+                  <p>內文對比至少 4.5:1；浮動面板上的次要文字改用 gray-600，不用 foreground-subdued（它與面板同色會直接消失）。</p>
+                </div>
+              </div>
+              <div class="accordion__item">
+                <h4 class="accordion__heading">
+                  <button type="button" class="accordion__trigger" id="acc-s3-t" aria-expanded="false" aria-controls="acc-s3-p">
+                    <span>圖示與線條</span>
+                    <svg class="accordion__icon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3 6l5 5 5-5"/></svg>
+                  </button>
+                </h4>
+                <div class="accordion__panel" id="acc-s3-p" role="region" aria-labelledby="acc-s3-t" hidden>
+                  <p>圖示線寬固定 2px，端點與轉角一律圓角。</p>
+                </div>
+              </div>
+            </div>
+            <p class="example-label">展開任一項會收合其他項；焦點留在被按下的 trigger 上，不移動到 panel</p>
+          </div>
+
+          <div class="accordion-example">
+            <h3 class="example-title">多開（可同時展開多項）</h3>
+            <div class="accordion" data-accordion="multi">
+              <div class="accordion__item">
+                <h4 class="accordion__heading">
+                  <button type="button" class="accordion__trigger" id="acc-m1-t" aria-expanded="true" aria-controls="acc-m1-p">
+                    <span>元件狀態命名與跨批次一致性</span>
+                    <svg class="accordion__icon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3 6l5 5 5-5"/></svg>
+                  </button>
+                </h4>
+                <div class="accordion__panel" id="acc-m1-p" role="region" aria-labelledby="acc-m1-t">
+                  <p>同一狀態在不同元件不得使用不同名稱（例如 off 與 inactive 併存）。長標題在此示意兩行內容的密度。</p>
+                </div>
+              </div>
+              <div class="accordion__item">
+                <h4 class="accordion__heading">
+                  <button type="button" class="accordion__trigger" id="acc-m2-t" aria-expanded="false" aria-controls="acc-m2-p">
+                    <span>動效與 reduced-motion</span>
+                    <svg class="accordion__icon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3 6l5 5 5-5"/></svg>
+                  </button>
+                </h4>
+                <div class="accordion__panel" id="acc-m2-p" role="region" aria-labelledby="acc-m2-t" hidden>
+                  <p>本元件目前不做開闔動畫，因為動效 token 仍是未驗證的 candidate。</p>
+                </div>
+              </div>
+              <div class="accordion__item">
+                <h4 class="accordion__heading">
+                  <button type="button" class="accordion__trigger" id="acc-m3-t" aria-expanded="true" aria-controls="acc-m3-p">
+                    <span>無障礙與鍵盤操作</span>
+                    <svg class="accordion__icon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3 6l5 5 5-5"/></svg>
+                  </button>
+                </h4>
+                <div class="accordion__panel" id="acc-m3-p" role="region" aria-labelledby="acc-m3-t">
+                  <p>所有 icon-only 按鈕需有可存取名稱，裝飾性圖示標記 aria-hidden。</p>
+                </div>
+              </div>
+            </div>
+            <p class="example-label">第 1、3 項同時展開；末項下方沒有額外分隔，區塊邊界就是最後一個圓角列</p>
+          </div>
+
+          <div class="accordion-example">
+            <h3 class="example-title">Trigger 狀態</h3>
+            <div class="accordion" data-accordion="multi">
+              <div class="accordion__item">
+                <h4 class="accordion__heading">
+                  <button type="button" class="accordion__trigger" id="acc-d1-t" aria-expanded="false" aria-controls="acc-d1-p">
+                    <span>匯出設定</span>
+                    <svg class="accordion__icon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3 6l5 5 5-5"/></svg>
+                  </button>
+                </h4>
+                <div class="accordion__panel" id="acc-d1-p" role="region" aria-labelledby="acc-d1-t" hidden>
+                  <p>可互動：hover 會疊 6% 白，focus-visible 會出現 2px 內縮焦點框。</p>
+                </div>
+              </div>
+              <div class="accordion__item">
+                <h4 class="accordion__heading">
+                  <button type="button" class="accordion__trigger" id="acc-d2-t" aria-expanded="false" aria-controls="acc-d2-p" disabled>
+                    <span>匯出設定（停用）</span>
+                    <svg class="accordion__icon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3 6l5 5 5-5"/></svg>
+                  </button>
+                </h4>
+                <div class="accordion__panel" id="acc-d2-p" role="region" aria-labelledby="acc-d2-t" hidden>
+                  <p>此項永遠無法展開。</p>
+                </div>
+              </div>
+            </div>
+            <p class="example-label">disabled 用原生 <code>disabled</code> 屬性（不可聚焦、不可觸發），背景維持 background-surface，只有前景轉 0.55</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== Popover ===================== -->
+      <section class="component-section" aria-labelledby="popover-title">
+        <div class="section-heading">
+          <p class="eyebrow">Overlay</p>
+          <h2 id="popover-title">Popover</h2>
+          <p>issue #11 · 非模態 · 面板沿用 background-overlay · 16px 圓角／內距 · 8px 錨點間距 · 箭頭 16×8px · 空間不足時 flip／shift</p>
+        </div>
+
+        <div class="popover-placements">
+          <div class="popover-demo">
+            <button type="button" class="button" popovertarget="pop-top" data-popover-trigger="pop-top">上方開啟</button>
+            <div class="popover popover--catalog-width" id="pop-top" popover data-popover data-placement="top">
+              <div class="popover__arrow" data-popover-arrow aria-hidden="true"></div>
+              <p class="popover__title">篩選條件</p>
+              <p class="popover__body">只顯示我負責的項目。</p>
+            </div>
+            <p class="example-label">top</p>
+          </div>
+          <div class="popover-demo">
+            <button type="button" class="button" popovertarget="pop-right" data-popover-trigger="pop-right">右側開啟</button>
+            <div class="popover popover--catalog-width" id="pop-right" popover data-popover data-placement="right">
+              <div class="popover__arrow" data-popover-arrow aria-hidden="true"></div>
+              <p class="popover__title">篩選條件</p>
+              <p class="popover__body">只顯示我負責的項目。</p>
+            </div>
+            <p class="example-label">right</p>
+          </div>
+          <div class="popover-demo">
+            <button type="button" class="button" popovertarget="pop-bottom" data-popover-trigger="pop-bottom">下方開啟</button>
+            <div class="popover popover--catalog-width" id="pop-bottom" popover data-popover data-placement="bottom">
+              <div class="popover__arrow" data-popover-arrow aria-hidden="true"></div>
+              <p class="popover__title">篩選條件</p>
+              <p class="popover__body">只顯示我負責的項目。</p>
+            </div>
+            <p class="example-label">bottom（預設）</p>
+          </div>
+          <div class="popover-demo">
+            <button type="button" class="button" popovertarget="pop-left" data-popover-trigger="pop-left">左側開啟</button>
+            <div class="popover popover--catalog-width" id="pop-left" popover data-popover data-placement="left">
+              <div class="popover__arrow" data-popover-arrow aria-hidden="true"></div>
+              <p class="popover__title">篩選條件</p>
+              <p class="popover__body">只顯示我負責的項目。</p>
+            </div>
+            <p class="example-label">left</p>
+          </div>
+        </div>
+
+        <div class="popover-examples">
+          <div class="popover-demo">
+            <button type="button" class="button" popovertarget="pop-rich" data-popover-trigger="pop-rich">版面設定</button>
+            <div class="popover popover--catalog-width popover--rich" id="pop-rich" popover data-popover data-placement="bottom">
+              <div class="popover__arrow" data-popover-arrow aria-hidden="true"></div>
+              <div class="popover__header">
+                <p class="popover__title">版面設定</p>
+                <button type="button" class="popover__close" popovertarget="pop-rich" popovertargetaction="hide" aria-label="關閉版面設定">
+                  <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3 3l10 10M13 3L3 13"/></svg>
+                </button>
+              </div>
+              <p class="popover__body">選擇看板欄位的顯示密度，設定會立即套用到目前看板。</p>
+              <button type="button" class="button button--primary button--sm" popovertarget="pop-rich" popovertargetaction="hide">套用</button>
+            </div>
+            <p class="example-label">標題＋內容＋關閉按鈕。四種關閉方式都可用：再按一次 trigger、Esc、面板外點擊、面板內關閉按鈕；關閉後焦點回到 trigger</p>
+          </div>
+
+          <div class="popover-demo">
+            <button type="button" class="button" popovertarget="pop-simple" data-popover-trigger="pop-simple">分享</button>
+            <div class="popover popover--catalog-width" id="pop-simple" popover data-popover data-placement="bottom">
+              <div class="popover__arrow" data-popover-arrow aria-hidden="true"></div>
+              <p class="popover__body">已複製連結到剪貼簿。</p>
+            </div>
+            <p class="example-label">簡單內容、無關閉按鈕：面板內沒有互動控制項時不強制把焦點移入</p>
+          </div>
+
+          <div class="popover-demo popover-demo--flip">
+            <button type="button" class="button" popovertarget="pop-flip" data-popover-trigger="pop-flip">空間不足時翻轉</button>
+            <div class="popover popover--catalog-width" id="pop-flip" popover data-popover data-placement="bottom">
+              <div class="popover__arrow" data-popover-arrow aria-hidden="true"></div>
+              <p class="popover__title">本週排程</p>
+              <p class="popover__body">已排定 2 項工作。</p>
+            </div>
+            <p class="example-label">指定 <code>bottom</code>，但下方空間不足時會自動翻到上方（flip），左右溢出時沿同軸位移（shift）；箭頭永遠指向 trigger 中心。把視窗縮矮或捲動到此按鈕貼近視窗底部即可觸發</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== Date / Time picker ===================== -->
+      <section class="component-section" aria-labelledby="datepicker-title">
+        <div class="section-heading">
+          <p class="eyebrow">Input · Overlay</p>
+          <h2 id="datepicker-title">Date / Time picker</h2>
+          <p>issue #12 · Text input＋Icon button 作為 trigger，面板組合 Popover · 40px 日期格 · 單日／範圍／時間 · 日期格式固定 YYYY/MM/DD；時間<strong>值</strong>固定 24 小時制 HH:MM，<strong>顯示</strong>由原生控制項依使用者地區設定決定（zh-TW 下會顯示「上午／下午 hh:mm」）</p>
+        </div>
+
+        <div class="datepicker-examples">
+          <div class="datepicker-example">
+            <div class="datepicker" data-datepicker data-mode="single" data-today="2026-07-30"
+                 data-value="2026-07-15" data-time="14:30" data-unavailable="2026-07-25,2026-07-26">
+              <div class="datepicker__trigger">
+                <label class="visually-hidden" for="dp-single-field">日期</label>
+                <input class="datepicker__field" type="text" id="dp-single-field" readonly placeholder="YYYY/MM/DD" data-datepicker-field>
+                <button type="button" class="icon-button" aria-label="開啟日期選擇器" data-datepicker-button>
+                  <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+                    <rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>
+                  </svg>
+                </button>
+              </div>
+              <div class="popover datepicker__panel" popover data-popover data-placement="bottom" data-datepicker-panel>
+                <div class="popover__arrow" data-popover-arrow aria-hidden="true"></div>
+                <div class="calendar" data-calendar></div>
+                <div class="datepicker__footer">
+                  <label class="datepicker__time">
+                    <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><circle cx="8" cy="8" r="7"/><path d="M8 4v4l3 2"/></svg>
+                    <span class="visually-hidden">時間</span>
+                    <input type="time" data-datepicker-time>
+                  </label>
+                  <div class="datepicker__actions">
+                    <button type="button" class="button" data-datepicker-cancel>取消</button>
+                    <button type="button" class="button button--primary" data-datepicker-apply>套用</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <p class="example-label">單一日期：已選 7/15、今天 7/30 以外圈標示、7/25–7/26 不可選、上／下月日期淡化但仍可點（會跳月）</p>
+          </div>
+
+          <div class="datepicker-example">
+            <div class="datepicker" data-datepicker data-mode="range" data-today="2026-07-30"
+                 data-value="2026-07-08/2026-07-17" data-time="09:00">
+              <div class="datepicker__trigger">
+                <label class="visually-hidden" for="dp-range-field">日期範圍</label>
+                <input class="datepicker__field" type="text" id="dp-range-field" readonly placeholder="YYYY/MM/DD – YYYY/MM/DD" data-datepicker-field>
+                <button type="button" class="icon-button" aria-label="開啟日期範圍選擇器" data-datepicker-button>
+                  <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+                    <rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>
+                  </svg>
+                </button>
+              </div>
+              <div class="popover datepicker__panel" popover data-popover data-placement="bottom" data-datepicker-panel>
+                <div class="popover__arrow" data-popover-arrow aria-hidden="true"></div>
+                <div class="calendar" data-calendar></div>
+                <div class="datepicker__footer">
+                  <label class="datepicker__time">
+                    <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><circle cx="8" cy="8" r="7"/><path d="M8 4v4l3 2"/></svg>
+                    <span class="visually-hidden">時間</span>
+                    <input type="time" data-datepicker-time>
+                  </label>
+                  <div class="datepicker__actions">
+                    <button type="button" class="button" data-datepicker-cancel>取消</button>
+                    <button type="button" class="button button--primary" data-datepicker-apply>套用</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <p class="example-label">日期範圍：再選一次會重新開始新範圍。只選到起點的暫態下，「套用」原生停用，避免送出半個範圍</p>
+          </div>
+
+          <div class="datepicker-example">
+            <div class="datepicker" data-datepicker data-mode="single" data-today="2026-07-30" data-value="2026-07-15" data-time="14:30" data-disabled="true">
+              <div class="datepicker__trigger">
+                <label class="visually-hidden" for="dp-disabled-field">日期（已停用）</label>
+                <input class="datepicker__field" type="text" id="dp-disabled-field" readonly disabled placeholder="YYYY/MM/DD" data-datepicker-field>
+                <button type="button" class="icon-button" aria-label="開啟日期選擇器（已停用）" disabled data-datepicker-button>
+                  <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+                    <rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <p class="example-label">disabled：欄位與圖示按鈕同時原生停用，兩者皆不可聚焦</p>
+          </div>
+        </div>
+
+        <div class="keyboard-note">
+          <h3 class="example-title">月曆鍵盤模型（roving tabindex）</h3>
+          <ul>
+            <li>方向鍵：前後一天／前後一週</li>
+            <li>Home／End：跳到該週的第一天／最後一天</li>
+            <li>PageUp／PageDown：上一個月／下一個月</li>
+            <li>Enter／Space：選取目前聚焦的日期</li>
+            <li>Esc：關閉面板，焦點回到 trigger</li>
+          </ul>
+        </div>
+      </section>
+    </main>
+    <script src="prototype.js"></script>
+  </body>
+</html>
