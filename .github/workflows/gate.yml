@@ -12,18 +12,30 @@ jobs:
   gate-checks:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          persist-credentials: false
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
-          python-version: "3.x"
+          python-version: "3.12"
 
-      - name: Gate checks (tokens, SVG, UTF-8, asset filenames)
+      - name: Gate checks (pull_request)
+        if: github.event_name == 'pull_request'
+        run: python .github/scripts/gate_check.py --base "${{ github.event.pull_request.base.sha }}"
+
+      - name: Gate checks (push)
+        if: github.event_name == 'push'
         run: |
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            python .github/scripts/gate_check.py --base "origin/${{ github.base_ref }}"
-          else
-            python .github/scripts/gate_check.py --base HEAD~1 || python .github/scripts/gate_check.py
+          BEFORE="${{ github.event.before }}"
+          # New-branch pushes report an all-zero before-SHA; diff against the
+          # git empty tree instead so the filename lint still covers every
+          # file added by the push.
+          if [ "$BEFORE" = "0000000000000000000000000000000000000000" ]; then
+            BEFORE="4b825dc642cb6eb9a060e54bf8d69288fbee4904"
           fi
+          python .github/scripts/gate_check.py --base "$BEFORE"
+
+      - name: Regression tests
+        run: python -m unittest discover -s .github/scripts -p "test_*.py" -v
