@@ -1,0 +1,29 @@
+name: gate
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  gate-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Gate checks (tokens, SVG, UTF-8, asset filenames)
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            python .github/scripts/gate_check.py --base "origin/${{ github.base_ref }}"
+          else
+            python .github/scripts/gate_check.py --base HEAD~1 || python .github/scripts/gate_check.py
+          fi
