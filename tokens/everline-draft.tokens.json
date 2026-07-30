@@ -120,7 +120,8 @@
       "background-neutral": { "$type": "color", "$value": "{color.semantic.background-surface}" },
       "background-disabled": { "$type": "color", "$value": "{color.semantic.background-subdued}" },
       "background-danger": { "$type": "color", "$value": "{color.semantic.action-danger}" },
-      "foreground": { "$type": "color", "$value": "{color.semantic.foreground-inverse}" },
+      "foreground": { "$type": "color", "$value": "{color.semantic.foreground-inverse}", "$description": "White. Only the primary and danger variants use this — verified against works/everline-components-master.svg c-button, where those two are the only variants with an explicit fill=\"#fff\" text override." },
+      "foreground-neutral": { "$type": "color", "$value": "{color.semantic.foreground-primary}", "$description": "Batch 1 (issue #17) gap found during P0 token audit, 2026-07-30. The neutral and outline variants' label text in c-button has no fill override, so it inherits the sheet's default .label fill (#f2f2f2, off-white / foreground-primary) — a different value from `foreground` (white / foreground-inverse) above, which only the primary/danger variants actually use. The token file previously declared a single `foreground` for the whole component, which would have painted neutral/outline text white instead of the SVG's actual off-white." },
       "foreground-disabled": { "$type": "color", "$value": "{color.semantic.foreground-disabled}" },
       "border-focus": { "$type": "color", "$value": "{color.semantic.border-focus}" }
     },
@@ -152,7 +153,9 @@
       "indicator-size": { "$type": "dimension", "$value": { "value": 20, "unit": "px" } },
       "background": { "$type": "color", "$value": "{color.semantic.background-surface}" },
       "indicator": { "$type": "color", "$value": "{color.semantic.action-primary}" },
-      "disabled": { "$type": "color", "$value": "{color.semantic.background-subdued}" }
+      "disabled": { "$type": "color", "$value": "{color.semantic.background-subdued}" },
+      "border": { "$type": "color", "$value": "{color.semantic.border-default}", "$description": "Batch 1 (issue #17) gap found during P0 token audit, 2026-07-30. works/everline-components-master.svg c-checkbox draws the unchecked state with stroke=\"#444\" (gray-800 / border-default) — an existing semantic token that was never aliased under component.checkbox. Checked/indeterminate/disabled states have no stroke, so this only applies to unchecked." },
+      "border-width": { "$type": "dimension", "$value": "{border.width-default}", "$description": "1px, matching the unchecked state's stroke-width=\"1\" in the same SVG group." }
     },
     "radio": {
       "size": { "$type": "dimension", "$value": { "value": 32, "unit": "px" } },
@@ -180,6 +183,7 @@
       "background": { "$type": "color", "$value": "{color.semantic.background-subdued}" },
       "placeholder": { "$type": "color", "$value": "{color.base.gray-700}" },
       "foreground": { "$type": "color", "$value": "{color.semantic.foreground-primary}" },
+      "foreground-disabled": { "$type": "color", "$value": "{color.semantic.foreground-disabled}", "$description": "Batch 1 (issue #17) gap found during P0 token audit, 2026-07-30. Text input's own SVG group never drew a disabled state (design-system-v0.1-draft.md lists it under 'regex needed but not drawn'), so this cannot be verified against c-text-input directly. Reused instead from component.number-input.field-foreground-disabled, which already extends Text input's own field and had this exact disabled treatment (background stays the solid token colour, only foreground combines with opacity.disabled via color-mix) human-reviewed and pixel-validated in batch 3 (see docs/design-system-v0.1-batch3-draft.md). Not a new visual decision." },
       "border-focus": { "$type": "color", "$value": "{color.semantic.border-focus}" }
     },
     "textarea": {
@@ -190,7 +194,12 @@
       "radius": { "$type": "dimension", "$value": "{radius.control}" },
       "scrollbar-width": { "$type": "dimension", "$value": { "value": 10, "unit": "px" }, "$description": "Observed optical width; verify before implementation." },
       "background": { "$type": "color", "$value": "{color.semantic.background-subdued}" },
-      "scrollbar": { "$type": "color", "$value": "{color.base.gray-700}" }
+      "scrollbar": { "$type": "color", "$value": "{color.base.gray-700}" },
+      "foreground": { "$type": "color", "$value": "{color.semantic.foreground-primary}", "$description": "Batch 1 (issue #17) gap found during P0 token audit, 2026-07-30. component.textarea had no typed-text foreground token at all despite c-textarea rendering text; same value as component.text-input.foreground since both fields share the same generic default-text role, verified by the shared .body class default fill (#f2f2f2) in works/everline-components-master.svg." },
+      "placeholder": { "$type": "color", "$value": "{color.base.gray-700}", "$description": "Batch 1 gap. Verified directly against c-textarea's placeholder text fill=\"#4d4d4d\" (gray-700) in the master SVG — same value component.text-input.placeholder already uses, but textarea never had its own alias." },
+      "foreground-disabled": { "$type": "color", "$value": "{color.semantic.foreground-disabled}", "$description": "Batch 1 gap, same reuse rationale as component.text-input.foreground-disabled above: no disabled state was drawn for Textarea either, so this reuses the already-reviewed Number-input-field disabled treatment rather than inventing one." },
+      "border-width-focus": { "$type": "dimension", "$value": "{border.width-focus}", "$description": "Batch 1 gap. Textarea's own SVG group (resizable/scrollable) does not draw a focused example, but the design draft's text explicitly calls for the same 2px blue focus border as Text input, and every sibling text-entry component in this system (Text input, Search field, Number input's field) already uses this exact technique. Reused, not a new decision." },
+      "border-focus": { "$type": "color", "$value": "{color.semantic.border-focus}", "$description": "Batch 1 gap, same reuse rationale as border-width-focus above." }
     },
     "search-field": {
       "$description": "Batch 3 candidate (2026-07-27, GitHub issue #6, component 2/8). Extends component.text-input's structure (height/radius/background/foreground/placeholder/border-focus all identical values) with a leading search icon and a content-conditional trailing clear button. Every value below was verified against the reviewed candidate in works/everline-components-batch3.svg (c-search-field group) before being added, per AGENTS.md's token-before-use rule. No width token, same reasoning already applied to component.text-input (width set by container).",

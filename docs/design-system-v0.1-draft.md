@@ -6,6 +6,7 @@
 候選向量稿：`works/everline-components-master.svg`（目前持續維護的完整候選視覺來源，涵蓋既有元件與第一批新元件）  
 歷史候選稿：`works/everline-agent-components-v0.1.svg`（已由總表取代，僅保留為歷史快照，不再更新）  
 第二批：`works/everline-components-batch2.svg` 與 `docs/design-system-v0.1-batch2-draft.md`（2026-07-20 起，Sidebar／Toolbar／Card／List／Data table／Task card／Kanban column，獨立於本檔案與 master.svg 的同層檔案，不是取代關係）
+第一批畢業試辦（issue #17，2026-07-30）：`works/html/batch1/`（Button、Checkbox、Text input／Textarea 三群 pilot candidate，**等待人類 G1 審查，尚未畢業**；master.svg 對應區塊尚未標記 `superseded-by`）。其餘 12 群仍以本檔案與 `works/everline-components-master.svg` 為權威來源。
 
 本文件是受控延伸用的校準稿，不是穩定版規格。已觀察到的值與本次推導值分開記錄；使用者確認前，不應將候選內容視為 Everline 的凍結決策。
 
@@ -536,6 +537,7 @@ Text input 用於單行短文字；Textarea 用於描述、備註與多行內容
 - 待補 success／warning 語意色，但在有實際產品情境前不新增。
 - 待將確認後的元件回填至 Illustrator 主來源；本批不修改 `works/illustrator/everline_p1.ai`。
 - 第一批新元件（Select/Combobox、Menu/Context menu、Tabs、Tooltip、Modal/Dialog、Toast/Snackbar）僅畫出核心狀態，見各元件小節「狀態、互動與內容」，尚未涵蓋完整無障礙與鍵盤操作驗證。
+- 2026-07-30（issue #17 pilot）：Button／Checkbox／Text input／Textarea 四個 token 缺口已最小補上（`component.button.foreground-neutral`、`component.checkbox.border`/`border-width`、`component.text-input.foreground-disabled`、`component.textarea.foreground`/`placeholder`/`border-width-focus`/`border-focus`），皆為新增、未改動既有解析值，詳見 `tokens/everline-draft.tokens.json` 各欄位 `$description`。同輪也確認 Button 的 outline 變體與（尚未畫出的）focus 狀態共用同一組視覺這個既有未決問題仍未解決，見上方 Button 小節與 `works/html/batch1/index.html` scope note。
 
 ## 設計系統／Token 全面檢查（2026-07-19）
 
