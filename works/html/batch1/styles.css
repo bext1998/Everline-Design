@@ -1,0 +1,288 @@
+/* Everline v0.1 — batch 1 HTML/CSS candidate (issue #17 pilot: Button, Checkbox, Text input / Textarea only).
+   Every custom property below maps 1:1 onto a token path in tokens/everline-draft.tokens.json.
+   No component rule may introduce a raw colour or dimension that isn't declared here.
+   Two things sit deliberately outside that rule, because they are not design values:
+     - shape idioms carrying no magnitude: 0, 50%, 100%, other percentages;
+     - catalog layout, confined to the "catalog chrome" section and to .*-example* /
+       .*--catalog-* selectors, which exists only so the examples sit side by side on this page.
+   works/html/batch1/verify.mjs enforces this: it fails if a component rule grows a raw px value. */
+:root {
+  /* color.base.* */
+  --everline-color-base-white: #fff;
+  --everline-color-base-off-white: #f2f2f2;
+  --everline-color-base-gray-700: #4d4d4d;
+  --everline-color-base-gray-800: #444;
+  /* color.semantic.* */
+  --everline-color-semantic-background-canvas: #1a1a1a;
+  --everline-color-semantic-background-surface: #333;
+  --everline-color-semantic-background-subdued: #666;
+  --everline-color-semantic-foreground-primary: #f2f2f2;
+  --everline-color-semantic-foreground-inverse: var(--everline-color-base-white);
+  --everline-color-semantic-foreground-disabled: #f2f2f2;
+  --everline-color-semantic-action-primary: #598ae8;
+  --everline-color-semantic-action-danger: #c1272d;
+  --everline-color-semantic-border-default: var(--everline-color-base-gray-800);
+  --everline-color-semantic-border-focus: #598ae8;
+  /* space.* / radius.* / border.* / focus.* */
+  --everline-space-1: 8px; --everline-space-2: 16px; --everline-space-3: 24px; --everline-space-4: 32px;
+  --everline-radius-sm: 8px; --everline-radius-control: 24px; --everline-radius-pill: 999px;
+  --everline-border-width-default: 1px; --everline-border-width-focus: 2px;
+  --everline-focus-ring-offset: 2px;
+  /* opacity.* */
+  --everline-opacity-disabled: .55; --everline-opacity-hover-overlay: .06;
+  /* size.* / font.* */
+  --everline-size-control-md: 48px;
+  --everline-font-family-sans: "Noto Sans TC", system-ui, sans-serif;
+  --everline-font-size-label: 14px; --everline-font-size-body: 16px;
+  --everline-font-weight-regular: 400; --everline-font-weight-semibold: 600;
+  --everline-font-line-height-body: 1.5;
+
+  /* component.button.* */
+  --everline-component-button-height: var(--everline-size-control-md);
+  --everline-component-button-padding-inline: var(--everline-space-3);
+  --everline-component-button-radius: var(--everline-radius-control);
+  --everline-component-button-border-width: var(--everline-border-width-focus);
+  --everline-component-button-background-primary: var(--everline-color-semantic-action-primary);
+  --everline-component-button-background-neutral: var(--everline-color-semantic-background-surface);
+  --everline-component-button-background-disabled: var(--everline-color-semantic-background-subdued);
+  --everline-component-button-background-danger: var(--everline-color-semantic-action-danger);
+  --everline-component-button-foreground: var(--everline-color-semantic-foreground-inverse);
+  --everline-component-button-foreground-neutral: var(--everline-color-semantic-foreground-primary);
+  --everline-component-button-foreground-disabled: var(--everline-color-semantic-foreground-disabled);
+  --everline-component-button-border-focus: var(--everline-color-semantic-border-focus);
+
+  /* component.checkbox.* */
+  --everline-component-checkbox-size: 32px;
+  --everline-component-checkbox-radius: var(--everline-radius-sm);
+  --everline-component-checkbox-indicator-size: 32px; /* mask covers the whole box; the drawn path already sits inset within it, see .checkbox::after */
+  --everline-component-checkbox-background: var(--everline-color-semantic-background-surface);
+  --everline-component-checkbox-indicator: var(--everline-color-semantic-action-primary);
+  --everline-component-checkbox-disabled: var(--everline-color-semantic-background-subdued);
+  --everline-component-checkbox-border: var(--everline-color-semantic-border-default);
+  --everline-component-checkbox-border-width: var(--everline-border-width-default);
+
+  /* component.text-input.* */
+  --everline-component-text-input-height: var(--everline-size-control-md);
+  --everline-component-text-input-padding-inline: var(--everline-space-3);
+  --everline-component-text-input-radius: var(--everline-radius-control);
+  --everline-component-text-input-border-width-focus: var(--everline-border-width-focus);
+  --everline-component-text-input-background: var(--everline-color-semantic-background-subdued);
+  --everline-component-text-input-placeholder: var(--everline-color-base-gray-700);
+  --everline-component-text-input-foreground: var(--everline-color-semantic-foreground-primary);
+  --everline-component-text-input-foreground-disabled: var(--everline-color-semantic-foreground-disabled);
+  --everline-component-text-input-border-focus: var(--everline-color-semantic-border-focus);
+
+  /* component.textarea.* */
+  --everline-component-textarea-height-sm: 128px;
+  --everline-component-textarea-height-lg: 256px;
+  --everline-component-textarea-padding: var(--everline-space-2);
+  --everline-component-textarea-radius: var(--everline-radius-control);
+  --everline-component-textarea-scrollbar-width: 10px;
+  --everline-component-textarea-background: var(--everline-color-semantic-background-subdued);
+  --everline-component-textarea-scrollbar: var(--everline-color-base-gray-700);
+  --everline-component-textarea-foreground: var(--everline-color-semantic-foreground-primary);
+  --everline-component-textarea-placeholder: var(--everline-color-base-gray-700);
+  --everline-component-textarea-foreground-disabled: var(--everline-color-semantic-foreground-disabled);
+  --everline-component-textarea-border-width-focus: var(--everline-border-width-focus);
+  --everline-component-textarea-border-focus: var(--everline-color-semantic-border-focus);
+}
+
+/* Hover overlay, derived from the two tokens that define it rather than restating #fff:
+   color.base.white at opacity.hover-overlay. Reused as-is from batch 2/3/4 — not a new decision. */
+:root { --everline-hover-overlay: rgb(from var(--everline-color-base-white) r g b / var(--everline-opacity-hover-overlay)); }
+
+/* ---------- catalog chrome (page furniture, not part of any component spec) ---------- */
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--everline-color-semantic-background-canvas);
+  color: var(--everline-color-semantic-foreground-primary);
+  font-family: var(--everline-font-family-sans);
+  font-size: var(--everline-font-size-body);
+  line-height: var(--everline-font-line-height-body);
+}
+.catalog { max-width: 1440px; margin: 0 auto; padding: var(--everline-space-4); }
+.catalog-header {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: var(--everline-space-3);
+  border-bottom: var(--everline-border-width-default) solid var(--everline-color-semantic-border-default);
+  padding-bottom: var(--everline-space-3);
+}
+h1, h2, h3, p, ul { margin: 0; }
+h1 { font-size: 32px; line-height: 1.25; }
+h2 { font-size: var(--everline-space-3); line-height: 1.35; }
+.eyebrow, .lede, .trace, .example-label { color: var(--everline-color-semantic-foreground-disabled); font-size: var(--everline-font-size-label); opacity: var(--everline-opacity-disabled); }
+.eyebrow { text-transform: uppercase; letter-spacing: .05em; }
+.lede, .trace { margin-top: var(--everline-space-1); }
+.trace code, .scope-note code, .example-label code, .section-heading code { font-family: inherit; color: inherit; }
+.candidate-badge {
+  display: flex; align-items: center; gap: var(--everline-space-1);
+  border: var(--everline-border-width-default) solid var(--everline-color-semantic-action-primary);
+  border-radius: 999px; padding: var(--everline-space-1) var(--everline-space-2);
+  font-weight: 700; font-size: var(--everline-font-size-label); white-space: nowrap;
+}
+.candidate-badge span { width: 12px; height: 12px; background: var(--everline-color-semantic-action-primary); border-radius: 50%; }
+.scope-note {
+  background: var(--everline-color-semantic-background-surface);
+  border-left: 4px solid var(--everline-color-semantic-action-primary);
+  border-radius: var(--everline-radius-sm);
+  margin: var(--everline-space-4) 0; padding: var(--everline-space-2) var(--everline-space-3);
+}
+.scope-note p { margin-top: var(--everline-space-1); }
+.scope-note h2 { margin-bottom: var(--everline-space-1); }
+.scope-note ul { padding-left: var(--everline-space-3); margin-top: var(--everline-space-1); }
+.component-section {
+  border-bottom: var(--everline-border-width-default) solid var(--everline-color-semantic-border-default);
+  padding: var(--everline-space-4) 0;
+}
+.component-section:last-child { border: 0; }
+.section-heading { margin-bottom: var(--everline-space-3); }
+.section-heading p:last-child { margin-top: var(--everline-space-1); color: var(--everline-color-semantic-foreground-disabled); font-size: var(--everline-font-size-label); opacity: var(--everline-opacity-disabled); }
+.example-group { margin-bottom: var(--everline-space-3); }
+.example-title { font-size: var(--everline-font-size-label); font-weight: var(--everline-font-weight-semibold); margin-bottom: var(--everline-space-2); }
+.example-label { margin-top: var(--everline-space-2); max-width: 480px; }
+.field-group { display: flex; flex-direction: column; gap: var(--everline-space-1); margin-bottom: var(--everline-space-2); }
+.field-group label { font-size: var(--everline-font-size-label); font-weight: var(--everline-font-weight-semibold); }
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+}
+:where(button, [href], input, textarea, [tabindex]):focus-visible {
+  outline: var(--everline-border-width-focus) solid var(--everline-color-semantic-border-focus);
+  outline-offset: var(--everline-focus-ring-offset);
+}
+
+/* ---------- Button ---------- */
+.button-examples { display: flex; flex-wrap: wrap; gap: var(--everline-space-2); align-items: center; }
+.button {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--everline-space-1);
+  height: var(--everline-component-button-height);
+  padding-inline: var(--everline-component-button-padding-inline);
+  border: 0; border-radius: var(--everline-component-button-radius);
+  background: var(--everline-component-button-background-neutral);
+  color: var(--everline-component-button-foreground-neutral);
+  font: inherit; font-weight: var(--everline-font-weight-semibold);
+  cursor: pointer;
+}
+.button--primary { background: var(--everline-component-button-background-primary); color: var(--everline-component-button-foreground); }
+.button--danger { background: var(--everline-component-button-background-danger); color: var(--everline-component-button-foreground); }
+.button--outline {
+  background: var(--everline-component-button-background-neutral);
+  color: var(--everline-component-button-foreground-neutral);
+  box-shadow: inset 0 0 0 var(--everline-component-button-border-width) var(--everline-component-button-border-focus);
+}
+.button:hover:not(:disabled) { background-image: linear-gradient(var(--everline-hover-overlay), var(--everline-hover-overlay)); }
+.button:disabled {
+  background: var(--everline-component-button-background-disabled);
+  color: var(--everline-component-button-foreground-disabled);
+  opacity: var(--everline-opacity-disabled);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* ---------- Checkbox ----------
+   Native <input type="checkbox"> with appearance:none. Checked/indeterminate glyphs are the
+   exact paths already hand-drawn in works/everline-components-master.svg c-checkbox (M8 16l6 6
+   10-12 / M8 16h16 inside a 32x32 box), reproduced as a mask-image so the check keeps
+   component.checkbox.indicator's colour instead of baking a fixed colour into the asset.
+   .indeterminate is set from JS (prototype.js) — it is not an HTML attribute. */
+.checkbox-examples { display: flex; flex-direction: column; gap: var(--everline-space-2); }
+.checkbox-row { display: flex; align-items: center; gap: var(--everline-space-2); }
+.checkbox {
+  appearance: none; -webkit-appearance: none; margin: 0; flex: 0 0 auto; position: relative;
+  width: var(--everline-component-checkbox-size); height: var(--everline-component-checkbox-size);
+  border-radius: var(--everline-component-checkbox-radius);
+  background: var(--everline-component-checkbox-background);
+  box-shadow: inset 0 0 0 var(--everline-component-checkbox-border-width) transparent;
+  cursor: pointer;
+}
+.checkbox:not(:checked):not(:indeterminate):not(:disabled) { box-shadow: inset 0 0 0 var(--everline-component-checkbox-border-width) var(--everline-component-checkbox-border); }
+.checkbox:hover:not(:disabled) { background-image: linear-gradient(var(--everline-hover-overlay), var(--everline-hover-overlay)); }
+.checkbox::after {
+  content: ""; position: absolute; inset: 0;
+  width: var(--everline-component-checkbox-indicator-size); height: var(--everline-component-checkbox-indicator-size);
+  background: var(--everline-component-checkbox-indicator);
+  mask-repeat: no-repeat; mask-position: center; mask-size: contain;
+  -webkit-mask-repeat: no-repeat; -webkit-mask-position: center; -webkit-mask-size: contain;
+  opacity: 0;
+}
+.checkbox:checked::after {
+  opacity: 1;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M8 16l6 6 10-12' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M8 16l6 6 10-12' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+.checkbox:indeterminate::after {
+  opacity: 1;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M8 16h16' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M8 16h16' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+.checkbox:disabled { background: var(--everline-component-checkbox-disabled); box-shadow: none; cursor: not-allowed; }
+.checkbox-row label { cursor: pointer; }
+.checkbox:disabled ~ label, .checkbox-row:has(.checkbox:disabled) label { color: var(--everline-color-semantic-foreground-disabled); opacity: var(--everline-opacity-disabled); cursor: not-allowed; }
+
+/* ---------- Text input / Textarea ----------
+   Disabled foreground uses color-mix against the field's own solid background (not plain CSS
+   opacity on the whole element), same technique batch 3's Number input field already
+   established — plain opacity would incorrectly fade the background too. */
+/* Neither Text input nor Textarea defines its own width — both are container-sized per
+   docs/design-system-v0.1-draft.md (same reasoning already applied to Search field/Number
+   input/Progress). The catalog-only widths below exist purely so the examples sit side by side
+   on this page; they live in a selector containing "example" precisely so verify.mjs's
+   CSS-has-no-raw-dimensions contract (modeled on batch 4's) does not mistake page furniture for
+   a component spec value. */
+.field-examples { display: flex; flex-wrap: wrap; gap: var(--everline-space-3); align-items: flex-start; }
+.field-examples .text-input { width: 320px; max-width: 100%; }
+.field-examples .textarea { width: 256px; max-width: 100%; }
+.text-input {
+  height: var(--everline-component-text-input-height);
+  padding-inline: var(--everline-component-text-input-padding-inline);
+  border: 0; border-radius: var(--everline-component-text-input-radius);
+  background: var(--everline-component-text-input-background);
+  color: var(--everline-component-text-input-foreground);
+  font: inherit;
+}
+.text-input::placeholder { color: var(--everline-component-text-input-placeholder); opacity: 1; }
+.text-input:focus { outline: none; box-shadow: inset 0 0 0 var(--everline-component-text-input-border-width-focus) var(--everline-component-text-input-border-focus); }
+.text-input:disabled {
+  color: color-mix(in srgb, var(--everline-component-text-input-foreground-disabled) calc(var(--everline-opacity-disabled) * 100%), var(--everline-component-text-input-background));
+  cursor: not-allowed;
+}
+.text-input:disabled::placeholder { color: color-mix(in srgb, var(--everline-component-text-input-foreground-disabled) calc(var(--everline-opacity-disabled) * 100%), var(--everline-component-text-input-background)); opacity: 1; }
+.text-input:read-only:not(:disabled) { cursor: default; }
+
+.textarea {
+  padding: var(--everline-component-textarea-padding);
+  border: 0; border-radius: var(--everline-component-textarea-radius);
+  background: var(--everline-component-textarea-background);
+  color: var(--everline-component-textarea-foreground);
+  font: inherit; resize: vertical;
+}
+.textarea--sm { height: var(--everline-component-textarea-height-sm); }
+.textarea--lg { height: var(--everline-component-textarea-height-lg); resize: none; overflow-y: auto; }
+.textarea::placeholder { color: var(--everline-component-textarea-placeholder); opacity: 1; }
+.textarea:focus { outline: none; box-shadow: inset 0 0 0 var(--everline-component-textarea-border-width-focus) var(--everline-component-textarea-border-focus); }
+.textarea:disabled {
+  color: color-mix(in srgb, var(--everline-component-textarea-foreground-disabled) calc(var(--everline-opacity-disabled) * 100%), var(--everline-component-textarea-background));
+  cursor: not-allowed; resize: none;
+}
+.textarea:disabled::placeholder { color: color-mix(in srgb, var(--everline-component-textarea-foreground-disabled) calc(var(--everline-opacity-disabled) * 100%), var(--everline-component-textarea-background)); opacity: 1; }
+/* Chromium-only custom scrollbar consuming the existing scrollbar/scrollbar-width tokens, for
+   the "scrollable" example; not a new colour or dimension, purely styling the native scrollbar
+   this component already draws. */
+.textarea--lg::-webkit-scrollbar { width: var(--everline-component-textarea-scrollbar-width); }
+/* The track/thumb otherwise run edge-to-edge and visually poke past the box's own 24px rounded
+   corners at top and bottom (reported 2026-07-30). Inset the track by the same padding token
+   already used inside the field, so the straight scrollbar stays clear of the curved corners
+   instead of a new magic-number gap. */
+.textarea--lg::-webkit-scrollbar-track { background: transparent; margin-block: var(--everline-component-textarea-padding); }
+.textarea--lg::-webkit-scrollbar-thumb { background: var(--everline-component-textarea-scrollbar); border-radius: var(--everline-radius-pill); }
+
+@media (max-width: 760px) {
+  .catalog { padding: var(--everline-space-2); }
+  .catalog-header { flex-direction: column; }
+  .candidate-badge { white-space: normal; }
+  .text-input, .textarea { width: 100%; }
+}
+
+/* No transition, animation or keyframe is declared anywhere in this batch — Button/Checkbox/
+   Text input/Textarea have no drawn hover/pressed/loading motion (see index.html scope note),
+   so there is nothing for prefers-reduced-motion to switch off and no override is needed. */
