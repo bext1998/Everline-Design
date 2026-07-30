@@ -1,0 +1,515 @@
+/* Everline v0.1 — batch 4 HTML/CSS candidate.
+   Every custom property below maps 1:1 onto a token path in tokens/everline-draft.tokens.json.
+   No component rule may introduce a raw colour or dimension that isn't declared here.
+   Two things sit deliberately outside that rule, because they are not design values:
+     - shape idioms carrying no magnitude: 0, 50% (a circle), 100%, other percentages;
+     - catalog layout, confined to the "catalog chrome" section and to .*-example* /
+       .*--catalog-* selectors, which exists only so the examples sit side by side on this
+       page. Neither Accordion nor Popover defines its own width — one fills its container,
+       the other is sized by its content — so those caps must not live in a component rule.
+   works/html/batch4/verify.mjs enforces this: it fails if a component rule grows a raw px
+   value. */
+:root {
+  /* color.base.* */
+  --everline-color-base-white: #fff;
+  --everline-color-base-gray-600: #666;
+  --everline-color-base-gray-700: #4d4d4d;
+  /* color.semantic.* */
+  --everline-color-semantic-background-canvas: #1a1a1a;
+  --everline-color-semantic-background-surface: #333;
+  --everline-color-semantic-background-subdued: #666;
+  --everline-color-semantic-background-overlay: #4d4d4d;
+  --everline-color-semantic-foreground-primary: #f2f2f2;
+  --everline-color-semantic-foreground-inverse: var(--everline-color-base-white);
+  --everline-color-semantic-foreground-disabled: #f2f2f2;
+  --everline-color-semantic-action-primary: #598ae8;
+  --everline-color-semantic-border-default: #444;
+  --everline-color-semantic-border-focus: #598ae8;
+  /* space.* / radius.* / border.* */
+  --everline-space-1: 8px; --everline-space-2: 16px; --everline-space-3: 24px; --everline-space-4: 32px; --everline-space-5: 40px;
+  --everline-radius-sm: 8px; --everline-radius-lg: 16px; --everline-radius-control: 24px; --everline-radius-pill: 999px;
+  --everline-border-width-default: 1px; --everline-border-width-focus: 2px;
+  --everline-focus-ring-offset: 2px;
+  /* opacity.* */
+  --everline-opacity-disabled: .55; --everline-opacity-hover-overlay: .06; --everline-opacity-selected-overlay: .18;
+  /* size.* / scale.* / font.* / layer.* */
+  --everline-size-control-md: 48px; --everline-size-tag-md: 40px; --everline-size-icon-sm: 16px; --everline-size-icon-md: 24px;
+  --everline-scale-component-heights-xs: 32px; --everline-scale-component-heights-sm: 40px;
+  --everline-font-size-label: 14px; --everline-font-size-body: 16px;
+  --everline-font-weight-regular: 400; --everline-font-weight-semibold: 600;
+  --everline-font-line-height-body: 1.5;
+  --everline-icon-stroke-width: 2;
+  --everline-layer-overlay: 100;
+
+  /* component.button.* / component.icon-button.* (reused, not redefined) */
+  --everline-component-button-height: var(--everline-size-control-md);
+  --everline-component-button-padding-inline: var(--everline-space-3);
+  --everline-component-button-radius: var(--everline-radius-control);
+  --everline-component-button-background-primary: var(--everline-color-semantic-action-primary);
+  --everline-component-button-background-neutral: var(--everline-color-semantic-background-surface);
+  --everline-component-button-background-disabled: var(--everline-color-semantic-background-subdued);
+  --everline-component-button-foreground: var(--everline-color-semantic-foreground-inverse);
+  --everline-component-icon-button-size: var(--everline-size-control-md);
+  --everline-component-icon-button-icon-size: var(--everline-size-icon-md);
+  --everline-component-icon-button-radius: var(--everline-radius-control);
+  --everline-component-icon-button-background-neutral: var(--everline-color-semantic-background-surface);
+  --everline-component-icon-button-background-disabled: var(--everline-color-semantic-background-subdued);
+  /* component.text-input.* (reused by the date picker trigger) */
+  --everline-component-text-input-height: var(--everline-size-control-md);
+  --everline-component-text-input-padding-inline: var(--everline-space-3);
+  --everline-component-text-input-radius: var(--everline-radius-control);
+  --everline-component-text-input-background: var(--everline-color-semantic-background-subdued);
+  --everline-component-text-input-foreground: var(--everline-color-semantic-foreground-primary);
+  --everline-component-text-input-placeholder: var(--everline-color-base-gray-700);
+  --everline-component-text-input-border-width-focus: var(--everline-border-width-focus);
+  --everline-component-text-input-border-focus: var(--everline-color-semantic-border-focus);
+
+  /* component.slider.* */
+  --everline-component-slider-track-height: 8px;
+  --everline-component-slider-track-radius: var(--everline-radius-pill);
+  --everline-component-slider-track-color: var(--everline-color-base-gray-700);
+  --everline-component-slider-fill: var(--everline-color-semantic-action-primary);
+  --everline-component-slider-fill-disabled: var(--everline-color-semantic-background-subdued);
+  --everline-component-slider-thumb-size: var(--everline-size-icon-md);
+  --everline-component-slider-thumb: var(--everline-color-semantic-foreground-primary);
+  --everline-component-slider-thumb-disabled: var(--everline-color-semantic-foreground-disabled);
+  --everline-component-slider-focus-ring-width: 4px;
+  --everline-component-slider-focus-ring-color: var(--everline-color-semantic-border-focus);
+  --everline-component-slider-step-marker-size: 4px;
+  --everline-component-slider-step-marker-color: var(--everline-color-base-gray-600);
+  --everline-component-slider-step-marker-gap: var(--everline-space-1);
+  --everline-component-slider-value-label-width: var(--everline-scale-component-heights-sm);
+  --everline-component-slider-value-label-height: 24px;
+  --everline-component-slider-value-label-radius: var(--everline-radius-sm);
+  --everline-component-slider-value-label-background: var(--everline-color-semantic-background-surface);
+  --everline-component-slider-value-label-gap: var(--everline-space-1);
+  --everline-component-slider-track-length-reference: 320px;
+
+  /* component.accordion.* */
+  --everline-component-accordion-trigger-height: var(--everline-size-control-md);
+  --everline-component-accordion-item-radius: var(--everline-radius-sm);
+  --everline-component-accordion-item-gap: 4px;
+  --everline-component-accordion-padding-inline: var(--everline-space-2);
+  --everline-component-accordion-content-padding: var(--everline-space-2);
+  --everline-component-accordion-background: var(--everline-color-semantic-background-surface);
+  --everline-component-accordion-background-hover: var(--everline-color-base-white);
+  --everline-component-accordion-foreground: var(--everline-color-semantic-foreground-primary);
+  --everline-component-accordion-foreground-disabled: var(--everline-color-semantic-foreground-disabled);
+  --everline-component-accordion-title-size: var(--everline-font-size-body);
+  --everline-component-accordion-title-weight: var(--everline-font-weight-semibold);
+  --everline-component-accordion-disclosure-icon-size: var(--everline-size-icon-sm);
+  --everline-component-accordion-disclosure-icon-color: var(--everline-color-semantic-foreground-primary);
+  --everline-component-accordion-border-width-focus: var(--everline-border-width-focus);
+  --everline-component-accordion-border-focus: var(--everline-color-semantic-border-focus);
+
+  /* component.popover.* */
+  --everline-component-popover-background: var(--everline-color-semantic-background-overlay);
+  --everline-component-popover-foreground: var(--everline-color-semantic-foreground-primary);
+  --everline-component-popover-radius: var(--everline-radius-lg);
+  --everline-component-popover-padding: var(--everline-space-2);
+  --everline-component-popover-anchor-gap: var(--everline-space-1);
+  --everline-component-popover-arrow-size: var(--everline-size-icon-sm);
+  --everline-component-popover-arrow-height: var(--everline-space-1);
+  --everline-component-popover-arrow-color: var(--everline-component-popover-background);
+  --everline-component-popover-close-control-size: var(--everline-scale-component-heights-xs);
+  --everline-component-popover-close-icon-size: var(--everline-size-icon-sm);
+  --everline-component-popover-action-height: var(--everline-size-tag-md);
+  --everline-component-popover-layer: var(--everline-layer-overlay);
+
+  /* component.date-time-picker.* */
+  --everline-component-date-time-picker-panel-width: 312px;
+  --everline-component-date-time-picker-calendar-cell-size: var(--everline-size-tag-md);
+  --everline-component-date-time-picker-day-radius: var(--everline-radius-pill);
+  --everline-component-date-time-picker-day-selected-background: var(--everline-color-semantic-action-primary);
+  --everline-component-date-time-picker-day-selected-foreground: var(--everline-color-semantic-foreground-inverse);
+  --everline-component-date-time-picker-range-day-size: 36px;
+  --everline-component-date-time-picker-range-background: var(--everline-color-semantic-action-primary);
+  --everline-component-date-time-picker-today-indicator-width: var(--everline-border-width-focus);
+  --everline-component-date-time-picker-today-indicator-color: var(--everline-color-semantic-border-focus);
+  --everline-component-date-time-picker-outside-month-foreground: var(--everline-color-semantic-foreground-disabled);
+  --everline-component-date-time-picker-unavailable-foreground: var(--everline-color-base-gray-600);
+  --everline-component-date-time-picker-weekday-foreground: var(--everline-color-base-gray-600);
+  --everline-component-date-time-picker-weekday-size: var(--everline-font-size-label);
+  --everline-component-date-time-picker-header-height: var(--everline-size-tag-md);
+  --everline-component-date-time-picker-header-gap: var(--everline-space-1);
+  --everline-component-date-time-picker-month-nav-size: var(--everline-size-tag-md);
+  --everline-component-date-time-picker-month-nav-icon-size: var(--everline-size-icon-sm);
+  --everline-component-date-time-picker-time-field-width: 160px;
+  --everline-component-date-time-picker-trigger-field-width: 232px;
+  --everline-component-date-time-picker-action-height: var(--everline-size-control-md);
+}
+
+/* Hover overlay, derived from the two tokens that define it rather than restating #fff:
+   color.base.white at opacity.hover-overlay. Every hover surface below consumes this. */
+:root { --everline-hover-overlay: rgb(from var(--everline-color-base-white) r g b / var(--everline-opacity-hover-overlay)); }
+
+/* ---------- catalog chrome (page furniture, not part of any component spec) ---------- */
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--everline-color-semantic-background-canvas);
+  color: var(--everline-color-semantic-foreground-primary);
+  font-family: "Noto Sans TC", system-ui, sans-serif;
+  font-size: var(--everline-font-size-body);
+  line-height: var(--everline-font-line-height-body);
+}
+.catalog { max-width: 1920px; margin: 0 auto; padding: var(--everline-space-4); }
+.catalog-header {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: var(--everline-space-3);
+  border-bottom: var(--everline-border-width-default) solid var(--everline-color-semantic-border-default);
+  padding-bottom: var(--everline-space-3);
+}
+h1, h2, h3, h4, p, ul { margin: 0; }
+h1 { font-size: 32px; line-height: 1.25; }
+h2 { font-size: var(--everline-space-3); line-height: 1.35; }
+.eyebrow, .lede, .trace, .example-label { color: var(--everline-color-semantic-foreground-disabled); font-size: var(--everline-font-size-label); opacity: var(--everline-opacity-disabled); }
+.eyebrow { text-transform: uppercase; letter-spacing: .05em; }
+.lede, .trace { margin-top: var(--everline-space-1); }
+.trace code, .scope-note code, .example-label code, .section-heading code { font-family: inherit; color: inherit; }
+.candidate-badge {
+  display: flex; align-items: center; gap: var(--everline-space-1);
+  border: var(--everline-border-width-default) solid var(--everline-color-semantic-action-primary);
+  border-radius: var(--everline-radius-pill); padding: var(--everline-space-1) var(--everline-space-2);
+  font-weight: 700; font-size: var(--everline-font-size-label); white-space: nowrap;
+}
+.candidate-badge span { width: 12px; height: 12px; background: var(--everline-color-semantic-action-primary); border-radius: 50%; }
+.scope-note {
+  background: var(--everline-color-semantic-background-surface);
+  border-left: 4px solid var(--everline-color-semantic-action-primary);
+  border-radius: var(--everline-radius-sm);
+  margin: var(--everline-space-4) 0; padding: var(--everline-space-2) var(--everline-space-3);
+}
+.scope-note p { margin-top: var(--everline-space-1); }
+.component-section {
+  border-bottom: var(--everline-border-width-default) solid var(--everline-color-semantic-border-default);
+  padding: var(--everline-space-5) 0;
+}
+.component-section:last-child { border: 0; }
+.section-heading { margin-bottom: var(--everline-space-4); }
+.section-heading p:last-child { margin-top: var(--everline-space-1); color: var(--everline-color-semantic-foreground-disabled); font-size: var(--everline-font-size-label); opacity: var(--everline-opacity-disabled); }
+.example-title { font-size: var(--everline-font-size-label); font-weight: var(--everline-font-weight-semibold); margin-bottom: var(--everline-space-2); }
+.example-label { margin-top: var(--everline-space-2); max-width: 480px; }
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+}
+
+/* ---------- shared controls reused from earlier batches ---------- */
+.button {
+  height: var(--everline-component-button-height);
+  padding-inline: var(--everline-component-button-padding-inline);
+  border: 0; border-radius: var(--everline-component-button-radius);
+  background: var(--everline-component-button-background-neutral);
+  color: var(--everline-color-semantic-foreground-primary);
+  font: inherit; cursor: pointer;
+}
+.button--primary { background: var(--everline-component-button-background-primary); color: var(--everline-component-button-foreground); }
+.button--sm { height: var(--everline-component-popover-action-height); padding-inline: var(--everline-space-2); }
+.button:hover:not(:disabled) { background-image: linear-gradient(var(--everline-hover-overlay), var(--everline-hover-overlay)); }
+.button:disabled { background: var(--everline-component-button-background-disabled); color: var(--everline-color-semantic-foreground-disabled); opacity: var(--everline-opacity-disabled); cursor: not-allowed; }
+.icon-button {
+  display: flex; align-items: center; justify-content: center; flex: 0 0 auto;
+  width: var(--everline-component-icon-button-size); height: var(--everline-component-icon-button-size);
+  padding: 0; border: 0; border-radius: var(--everline-component-icon-button-radius);
+  background: var(--everline-component-icon-button-background-neutral);
+  color: var(--everline-color-semantic-foreground-primary); cursor: pointer;
+}
+.icon-button:hover:not(:disabled) { background-image: linear-gradient(var(--everline-hover-overlay), var(--everline-hover-overlay)); }
+.icon-button:disabled { background: var(--everline-component-icon-button-background-disabled); color: var(--everline-color-semantic-foreground-disabled); opacity: var(--everline-opacity-disabled); cursor: not-allowed; }
+.icon-button svg, .accordion__icon, .popover__close svg, .datepicker__time svg, .calendar__nav svg {
+  fill: none; stroke: currentColor; stroke-width: var(--everline-icon-stroke-width);
+  stroke-linecap: round; stroke-linejoin: round;
+}
+:where(button, [href], input, [tabindex]):focus-visible {
+  outline: var(--everline-border-width-focus) solid var(--everline-color-semantic-border-focus);
+  outline-offset: var(--everline-focus-ring-offset);
+}
+
+/* ---------- Slider ----------
+   Geometry note: the approved SVG puts the thumb centre at value% x track length. A native
+   range input instead keeps the thumb inside the track, so its centre only travels
+   (width - thumbSize). To reproduce the approved geometry exactly, the input is widened by one
+   thumb diameter and pulled left by one radius, letting the thumb centre travel the full track
+   length. Consequence: at 0% / 100% the thumb overhangs each track end by half a thumb, so the
+   example wrapper reserves that space. */
+.slider-examples { display: grid; gap: var(--everline-space-5); grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); }
+.slider-example { max-width: calc(var(--everline-component-slider-track-length-reference) + var(--everline-component-slider-thumb-size)); padding-inline: calc(var(--everline-component-slider-thumb-size) / 2); }
+.slider-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--everline-space-2); margin-bottom: var(--everline-space-2); }
+.slider-label { font-size: var(--everline-font-size-label); font-weight: var(--everline-font-weight-semibold); }
+.slider-output { font-size: var(--everline-font-size-label); font-weight: var(--everline-font-weight-semibold); }
+.slider {
+  position: relative;
+  height: var(--everline-component-slider-thumb-size);
+  width: 100%;
+  max-width: var(--everline-component-slider-track-length-reference);
+}
+.slider__track {
+  position: absolute; inset-inline: 0;
+  top: calc((var(--everline-component-slider-thumb-size) - var(--everline-component-slider-track-height)) / 2);
+  height: var(--everline-component-slider-track-height);
+  border-radius: var(--everline-component-slider-track-radius);
+  background: var(--everline-component-slider-track-color);
+  overflow: hidden;
+}
+.slider__fill {
+  position: absolute; top: 0; bottom: 0;
+  left: calc(var(--slider-lower, 0) * 1%);
+  right: calc(100% - var(--slider-upper, 0) * 1%);
+  background: var(--everline-component-slider-fill);
+}
+.slider:has(.slider__input:disabled) .slider__fill { background: var(--everline-component-slider-fill-disabled); }
+.slider__input {
+  position: absolute; top: 0;
+  left: calc(var(--everline-component-slider-thumb-size) / -2);
+  width: calc(100% + var(--everline-component-slider-thumb-size));
+  height: var(--everline-component-slider-thumb-size);
+  margin: 0; padding: 0; background: transparent; -webkit-appearance: none; appearance: none;
+}
+.slider__input:focus { outline: none; }
+.slider__input::-webkit-slider-runnable-track { height: var(--everline-component-slider-thumb-size); background: transparent; }
+.slider__input::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: var(--everline-component-slider-thumb-size); height: var(--everline-component-slider-thumb-size);
+  border: 0; border-radius: 50%;
+  background: var(--everline-component-slider-thumb);
+  cursor: pointer;
+}
+.slider__input:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 var(--everline-component-slider-focus-ring-width) var(--everline-component-slider-focus-ring-color);
+}
+.slider__input:active::-webkit-slider-thumb {
+  box-shadow: 0 0 0 var(--everline-component-slider-focus-ring-width) var(--everline-component-slider-focus-ring-color);
+}
+.slider__input:disabled::-webkit-slider-thumb {
+  background: var(--everline-component-slider-thumb-disabled); opacity: var(--everline-opacity-disabled); cursor: not-allowed;
+}
+.slider:has(.slider__input:disabled) .slider-output,
+.slider-example:has(.slider__input:disabled) .slider-head { opacity: var(--everline-opacity-disabled); }
+/* Range variant: two stacked inputs. The inputs themselves must not swallow pointer events or
+   the upper one would cover the lower one's whole track; only the thumbs stay interactive. */
+.slider--range .slider__input { pointer-events: none; }
+.slider--range .slider__input::-webkit-slider-thumb { pointer-events: auto; }
+/* step markers */
+.slider__markers {
+  position: absolute; inset-inline: 0;
+  top: calc((var(--everline-component-slider-thumb-size) + var(--everline-component-slider-track-height)) / 2 + var(--everline-component-slider-step-marker-gap));
+  height: var(--everline-component-slider-step-marker-size);
+}
+.slider__marker {
+  position: absolute; top: 0;
+  width: var(--everline-component-slider-step-marker-size); height: var(--everline-component-slider-step-marker-size);
+  margin-left: calc(var(--everline-component-slider-step-marker-size) / -2);
+  border-radius: 50%; background: var(--everline-component-slider-step-marker-color);
+}
+.slider--step { margin-bottom: calc(var(--everline-component-slider-step-marker-gap) + var(--everline-component-slider-step-marker-size)); }
+/* value label */
+.slider__value-label {
+  position: absolute;
+  left: calc(var(--slider-upper, 0) * 1%);
+  /* The .slider box is exactly one thumb tall, so its top edge IS the thumb's top edge:
+     the label's bottom therefore sits one gap above 100%. */
+  bottom: calc(100% + var(--everline-component-slider-value-label-gap));
+  transform: translateX(-50%);
+  display: grid; place-items: center;
+  width: var(--everline-component-slider-value-label-width); height: var(--everline-component-slider-value-label-height);
+  border-radius: var(--everline-component-slider-value-label-radius);
+  background: var(--everline-component-slider-value-label-background);
+  font-size: var(--everline-font-size-label); font-weight: var(--everline-font-weight-semibold);
+}
+.slider--value-label { margin-top: calc(var(--everline-component-slider-value-label-height) + var(--everline-component-slider-value-label-gap)); }
+
+/* ---------- Accordion ---------- */
+.accordion-examples { display: grid; gap: var(--everline-space-5); grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); align-items: start; }
+.accordion { display: flex; flex-direction: column; gap: var(--everline-component-accordion-item-gap); }
+/* Catalog-only widths. Neither component defines its own width: an Accordion fills its
+   container and a Popover is sized by its content. These caps exist so the examples sit
+   side by side on a wide page, which is why they live here and not in the rules above. */
+.accordion-example .accordion { max-width: 400px; }
+.accordion__item { background: var(--everline-component-accordion-background); border-radius: var(--everline-component-accordion-item-radius); }
+.accordion__heading { font-size: inherit; font-weight: inherit; }
+.accordion__trigger {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--everline-space-2);
+  width: 100%; min-height: var(--everline-component-accordion-trigger-height);
+  padding-block: 0; padding-inline: var(--everline-component-accordion-padding-inline);
+  border: 0; border-radius: inherit; background: transparent;
+  color: var(--everline-component-accordion-foreground);
+  font-size: var(--everline-component-accordion-title-size); font-weight: var(--everline-component-accordion-title-weight);
+  font-family: inherit; text-align: start; cursor: pointer;
+}
+.accordion__trigger:hover:not(:disabled) { background: var(--everline-hover-overlay); }
+.accordion__trigger:focus-visible { outline: var(--everline-component-accordion-border-width-focus) solid var(--everline-component-accordion-border-focus); outline-offset: calc(var(--everline-focus-ring-offset) * -1); }
+.accordion__trigger:disabled { color: var(--everline-component-accordion-foreground-disabled); opacity: var(--everline-opacity-disabled); cursor: not-allowed; }
+.accordion__icon {
+  flex: 0 0 auto;
+  width: var(--everline-component-accordion-disclosure-icon-size); height: var(--everline-component-accordion-disclosure-icon-size);
+  color: var(--everline-component-accordion-disclosure-icon-color);
+  fill: none; stroke: currentColor; stroke-width: var(--everline-icon-stroke-width); stroke-linecap: round; stroke-linejoin: round;
+}
+.accordion__trigger[aria-expanded="true"] .accordion__icon { transform: rotate(180deg); }
+.accordion__panel { padding-inline: var(--everline-component-accordion-padding-inline); padding-block: 0 var(--everline-component-accordion-content-padding); }
+.accordion__panel[hidden] { display: none; }
+
+/* ---------- Popover ----------
+   Uses the native Popover API for the behaviour contract (Esc, light-dismiss, focus return to
+   the invoker) and JS only for placement/flip/shift, so the close paths are the browser's own
+   implementation rather than hand-rolled event handling. Non-modal: popover="auto" has no
+   backdrop and no focus trap, which is exactly the required behaviour. */
+.popover-placements, .popover-examples { display: flex; flex-wrap: wrap; gap: var(--everline-space-5); align-items: flex-start; }
+.popover-examples { margin-top: var(--everline-space-5); }
+.popover-demo { display: flex; flex-direction: column; align-items: flex-start; }
+.popover-demo .example-label { max-width: 320px; }
+.popover--catalog-width { max-width: 320px; }
+.popover {
+  position: fixed; margin: 0; inset: auto;
+  z-index: var(--everline-component-popover-layer);
+  padding: var(--everline-component-popover-padding);
+  border: 0; border-radius: var(--everline-component-popover-radius);
+  background: var(--everline-component-popover-background);
+  color: var(--everline-component-popover-foreground);
+  font: inherit;
+  overflow: visible; /* the arrow sits outside the panel box */
+}
+.popover::backdrop { background: transparent; } /* non-modal: no scrim, unlike Modal */
+.popover__arrow {
+  position: absolute;
+  width: var(--everline-component-popover-arrow-size);
+  height: var(--everline-component-popover-arrow-height);
+  background: var(--everline-component-popover-arrow-color);
+}
+.popover[data-resolved-placement="top"] .popover__arrow { top: 100%; clip-path: polygon(0 0, 100% 0, 50% 100%); }
+.popover[data-resolved-placement="bottom"] .popover__arrow { bottom: 100%; clip-path: polygon(50% 0, 100% 100%, 0 100%); }
+.popover[data-resolved-placement="left"] .popover__arrow,
+.popover[data-resolved-placement="right"] .popover__arrow {
+  width: var(--everline-component-popover-arrow-height);
+  height: var(--everline-component-popover-arrow-size);
+}
+.popover[data-resolved-placement="left"] .popover__arrow { left: 100%; clip-path: polygon(0 0, 100% 50%, 0 100%); }
+.popover[data-resolved-placement="right"] .popover__arrow { right: 100%; clip-path: polygon(100% 0, 100% 100%, 0 50%); }
+.popover__title { font-weight: var(--everline-font-weight-semibold); }
+.popover__body { margin-top: var(--everline-space-1); }
+.popover__header { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--everline-space-2); }
+.popover__close {
+  display: flex; align-items: center; justify-content: center; flex: 0 0 auto;
+  width: var(--everline-component-popover-close-control-size); height: var(--everline-component-popover-close-control-size);
+  margin: calc(var(--everline-space-1) * -1) calc(var(--everline-space-1) * -1) 0 0;
+  padding: 0; border: 0; border-radius: 50%; background: transparent;
+  color: var(--everline-component-popover-foreground); cursor: pointer;
+}
+.popover__close svg { width: var(--everline-component-popover-close-icon-size); height: var(--everline-component-popover-close-icon-size); }
+.popover__close:hover { background: var(--everline-hover-overlay); }
+.popover--rich .button--sm { margin-top: var(--everline-space-2); }
+
+/* ---------- Date / Time picker ---------- */
+.datepicker-examples { display: flex; flex-wrap: wrap; gap: var(--everline-space-5); align-items: flex-start; }
+.datepicker__trigger { display: flex; align-items: center; gap: var(--everline-space-1); }
+.datepicker__field {
+  width: var(--everline-component-date-time-picker-trigger-field-width); max-width: 100%;
+  height: var(--everline-component-text-input-height);
+  padding-inline: var(--everline-component-text-input-padding-inline);
+  border: 0; border-radius: var(--everline-component-text-input-radius);
+  background: var(--everline-component-text-input-background);
+  color: var(--everline-component-text-input-foreground);
+  font: inherit; cursor: pointer;
+}
+.datepicker__field::placeholder { color: var(--everline-component-text-input-placeholder); opacity: 1; }
+.datepicker__field:focus-visible { outline: none; box-shadow: inset 0 0 0 var(--everline-component-text-input-border-width-focus) var(--everline-component-text-input-border-focus); }
+.datepicker__field:disabled { color: var(--everline-color-semantic-foreground-disabled); opacity: var(--everline-opacity-disabled); cursor: not-allowed; }
+.datepicker__panel { width: var(--everline-component-date-time-picker-panel-width); max-width: 100%; }
+
+.calendar__header {
+  display: flex; align-items: center; justify-content: space-between;
+  height: var(--everline-component-date-time-picker-header-height);
+  margin-bottom: var(--everline-component-date-time-picker-header-gap);
+}
+.calendar__nav {
+  display: flex; align-items: center; justify-content: center;
+  width: var(--everline-component-date-time-picker-month-nav-size); height: var(--everline-component-date-time-picker-month-nav-size);
+  padding: 0; border: 0; border-radius: 50%; background: transparent;
+  color: var(--everline-component-popover-foreground); cursor: pointer;
+}
+.calendar__nav svg { width: var(--everline-component-date-time-picker-month-nav-icon-size); height: var(--everline-component-date-time-picker-month-nav-icon-size); }
+.calendar__nav:hover { background: var(--everline-hover-overlay); }
+.calendar__month { font-weight: var(--everline-font-weight-semibold); }
+.calendar__grid { display: grid; grid-template-columns: repeat(7, var(--everline-component-date-time-picker-calendar-cell-size)); }
+/* role="row" wrappers must not create their own boxes or the 7-column grid would collapse into
+   one column of rows — same display:contents technique batch 3 used for the breadcrumb list. */
+.calendar__row { display: contents; }
+.calendar__weekday {
+  display: grid; place-items: center;
+  height: var(--everline-space-4);
+  font-size: var(--everline-component-date-time-picker-weekday-size);
+  font-weight: var(--everline-font-weight-semibold);
+  color: var(--everline-component-date-time-picker-weekday-foreground);
+}
+.calendar__day {
+  position: relative;
+  display: grid; place-items: center;
+  width: var(--everline-component-date-time-picker-calendar-cell-size); height: var(--everline-component-date-time-picker-calendar-cell-size);
+  padding: 0; border: 0; background: transparent;
+  color: var(--everline-component-popover-foreground);
+  font: inherit; cursor: pointer;
+}
+.calendar__day::before {
+  content: ""; position: absolute; inset: 0; margin: auto;
+  width: var(--everline-component-date-time-picker-calendar-cell-size); height: var(--everline-component-date-time-picker-calendar-cell-size);
+  border-radius: var(--everline-component-date-time-picker-day-radius);
+}
+.calendar__day > span { position: relative; }
+.calendar__day:hover:not([aria-disabled="true"])::before { background: var(--everline-hover-overlay); }
+.calendar__day--outside { color: var(--everline-component-date-time-picker-outside-month-foreground); opacity: var(--everline-opacity-disabled); }
+.calendar__day--unavailable { color: var(--everline-component-date-time-picker-unavailable-foreground); cursor: not-allowed; }
+.calendar__day--today::before {
+  box-shadow: inset 0 0 0 var(--everline-component-date-time-picker-today-indicator-width) var(--everline-component-date-time-picker-today-indicator-color);
+}
+.calendar__day--in-range::before {
+  width: var(--everline-component-date-time-picker-range-day-size); height: var(--everline-component-date-time-picker-range-day-size);
+  background: rgb(from var(--everline-component-date-time-picker-range-background) r g b / var(--everline-opacity-selected-overlay));
+}
+.calendar__day--selected { color: var(--everline-component-date-time-picker-day-selected-foreground); }
+.calendar__day--selected::before {
+  width: var(--everline-component-date-time-picker-calendar-cell-size); height: var(--everline-component-date-time-picker-calendar-cell-size);
+  background: var(--everline-component-date-time-picker-day-selected-background); box-shadow: none;
+}
+.calendar__day:focus-visible { outline: var(--everline-border-width-focus) solid var(--everline-color-semantic-border-focus); outline-offset: calc(var(--everline-focus-ring-offset) * -1); border-radius: var(--everline-component-date-time-picker-day-radius); }
+
+/* Time field and the confirm/cancel row are two stacked rows, as drawn and approved in the SVG —
+   not one row. Side by side they exceed the panel's 280px content width and flex would silently
+   shrink the time field until its localized value clipped. */
+.datepicker__footer { display: grid; gap: var(--everline-component-date-time-picker-header-gap); margin-top: var(--everline-component-date-time-picker-header-gap); }
+.datepicker__time {
+  display: flex; align-items: center; gap: var(--everline-space-1);
+  width: var(--everline-component-date-time-picker-time-field-width);
+  height: var(--everline-component-text-input-height);
+  padding-inline: var(--everline-space-2);
+  border-radius: var(--everline-component-text-input-radius);
+  background: var(--everline-component-text-input-background);
+}
+.datepicker__time:focus-within { box-shadow: inset 0 0 0 var(--everline-component-text-input-border-width-focus) var(--everline-component-text-input-border-focus); }
+.datepicker__time svg { flex: 0 0 auto; width: var(--everline-size-icon-sm); height: var(--everline-size-icon-sm); }
+.datepicker__time input {
+  flex: 1; min-width: 0; padding: 0; border: 0; background: transparent;
+  color: var(--everline-component-text-input-foreground); font: inherit;
+}
+.datepicker__time input:focus { outline: none; }
+.datepicker__time input::-webkit-calendar-picker-indicator { display: none; }
+.datepicker__actions { display: flex; gap: var(--everline-space-1); justify-content: flex-end; }
+.datepicker__actions .button { height: var(--everline-component-date-time-picker-action-height); padding-inline: var(--everline-space-2); }
+
+.keyboard-note { margin-top: var(--everline-space-5); }
+.keyboard-note ul { padding-left: var(--everline-space-3); color: var(--everline-color-semantic-foreground-disabled); opacity: var(--everline-opacity-disabled); font-size: var(--everline-font-size-label); }
+
+@media (max-width: 760px) {
+  .catalog { padding: var(--everline-space-2); }
+  .catalog-header { flex-direction: column; }
+  .candidate-badge { white-space: normal; }
+  .slider-examples, .accordion-examples { grid-template-columns: 1fr; }
+  .accordion, .slider-example { max-width: 100%; }
+  .datepicker__field { width: 100%; }
+  .datepicker__trigger { width: 100%; }
+}
+
+/* Batch 4 declares no transition, animation or keyframe at all: the accordion opens and closes
+   instantly, and the popover appears without a fade. That is a deliberate consequence of the
+   motion tokens still being unverified candidates (see index.html's scope note), not an
+   oversight — so there is nothing for prefers-reduced-motion to switch off, and no reduced-motion
+   override is needed here. The disclosure chevron's rotate() is a static state, not motion. */

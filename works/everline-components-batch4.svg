@@ -1,0 +1,683 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="3168" viewBox="0 0 1920 3168" role="img" aria-labelledby="title desc">
+  <title id="title">Everline v0.1 components batch 4 sheet</title>
+  <desc id="desc">Fourth-batch candidate vector sheet, 4 components: Slider; Accordion; Popover; Date / Time picker. Not yet human-reviewed.</desc>
+  <metadata>
+    sibling-of: works/everline-components-master.svg (2026-07-19), works/everline-components-batch2.svg (2026-07-20), works/everline-components-batch3.svg (2026-07-27) — independent batch, not a supersession of any of them;
+    scope: batch 4 (4 components) — Slider (issue #9), Accordion (issue #10), Popover (issue #11), Date / Time picker (issue #12). Created 2026-07-30 per batch4-plan.tmp.md's decision to split the remaining four batch-3 issues into their own sheet instead of appending them to works/everline-components-batch3.svg, which now holds only its own graduated components 1-4/8. NOTE: batch3.svg's file-level metadata and docs/design-system-v0.1-batch3-draft.md still say issues #9-#12 will be appended to batch 3 — that clarification is a stage-0 edit deliberately NOT made in this pass (this task was scoped to the SVG candidate stage only, and the working tree has unrelated uncommitted changes), so it remains an open inconsistency to fix before batch 4 proceeds past G1;
+    status: 4/4 graduated (2026-07-30). All four groups (c-slider, c-accordion, c-popover, c-date-time-picker) passed human visual review (gate G1) on 2026-07-30 and have since been reconciled against tokens and ported to HTML/CSS. This entire sheet is now a FROZEN historical snapshot and must not be updated further; superseded-by: works/html/batch4/index.html, which is the candidate spec authority for all four components. Two visual decisions were made by the human DURING that review and are reflected in this file: the Slider's focus indicator became a 4px solid ring with no gap (an earlier 2px stroke + 2px offset read as a detached hairline at 24px), and the date range's in-between days became individual tinted circles instead of one continuous band. Unlike batch 3, batch 4 was drawn as one sheet and reviewed in one pass, so there are no active un-drawn groups left here;
+    spec-reference: docs/design-system-v0.1-batch4-draft.md — records the spec, the token mapping, the deviations from this sheet, and the measurement results;
+    known-deviation: the HTML/CSS widened the time field from the 128px implied here to 160px. This sheet drew a static string (14:30), but a real input[type=time] renders in the user's locale (上午 09:00 under zh-TW) and needs 104px of intrinsic width. The token was corrected to 160px; this sheet was deliberately NOT redrawn, because a graduated sheet is a historical record of what was approved, not a live document;
+    token-status: this sheet uses NO component.slider.*, component.accordion.*, component.popover.* or component.date-time-picker.* tokens, because none exist yet. Every size and color drawn here is either (a) the resolved value of an existing token in tokens/everline-draft.tokens.json, or (b) a 校準候選 raw value called out in each group's 校準候選 caption. This follows the same token-before-use order batch 3 used: raw values with a calibration caption until human review passes, tokens formalized only afterward. No new color has been introduced — every fill and stroke below resolves to color.base.canvas #1A1A1A, gray-900 #333333, gray-800 #444444, gray-700 #4D4D4D, gray-600 #666666, off-white #F2F2F2, white #FFFFFF, blue #598AE8, or a documented opacity multiplier applied to one of them;
+    overlay-note: Popover's panel and the Date / Time picker's calendar panel both use color.semantic.background-overlay (gray-700 #4D4D4D), the shared floating-panel surface already used by Select, Split-button menu, Menu, Tooltip and Modal — as required by batch4-plan.tmp.md section 8.3. Consequence worth flagging at review: color.semantic.foreground-subdued resolves to the SAME gray-700, so subdued text is invisible on these panels. Muted text inside overlay panels therefore uses gray-600 #666666, which is the existing precedent set by component.menu.shortcut-foreground and component.menu.disabled-foreground, not a new value;
+    dependency-note: issue #12 (Date / Time picker) composes issue #11 (Popover). Per batch4-plan.tmp.md section 9.1, #12 may only proceed past the SVG stage after #11 has fully graduated; the two are drawn together here only so the composition can be reviewed as one visual decision, which does not shorten that dependency.
+  </metadata>
+  <defs>
+    <style>
+      .ui { font-family: "Noto Sans TC", system-ui, sans-serif; }
+      .title { font-size: 30px; font-weight: 700; fill: #fff; }
+      .section { font-size: 24px; font-weight: 600; fill: #f2f2f2; }
+      .body { font-size: 16px; font-weight: 400; fill: #f2f2f2; }
+      .label { font-size: 14px; font-weight: 600; fill: #f2f2f2; }
+      .note { font-size: 14px; font-weight: 400; fill: #a8a8a8; }
+      .caption { font-size: 12px; font-weight: 400; fill: #888; }
+      .meta { font-size: 12px; font-weight: 400; fill: #a8a8a8; }
+      .icon { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2; }
+    </style>
+  </defs>
+
+  <rect width="1920" height="3168" fill="#1a1a1a"/>
+
+  <g id="board-heading" class="ui">
+    <text class="title" x="48" y="58">Everline Design Language — Components Batch 4 Sheet</text>
+    <text class="note" x="48" y="88">v0.1 candidate · 第四批 4/4 已畢業（Slider issue #9、Accordion issue #10、Popover issue #11、Date / Time picker issue #12）· 權威來源見 works/html/batch4/index.html · sibling to master.svg、batch2.svg 與 batch3.svg</text>
+    <g transform="translate(1556 32)">
+      <rect width="310" height="40" rx="20" fill="#333" stroke="#598ae8" stroke-width="2"/>
+      <circle cx="22" cy="20" r="6" fill="#598ae8"/>
+      <text class="label" x="38" y="25" fill="#f2f2f2">CANDIDATE - HISTORICAL SNAPSHOT</text>
+    </g>
+  </g>
+
+  <!-- ===================== Slider ===================== -->
+
+  <g id="c-slider" class="ui" transform="translate(48 170)">
+    <text class="section" x="0" y="0" fill="#f2f2f2">Slider</text>
+    <text class="note" x="0" y="28" fill="#a8a8a8">在連續或離散範圍內調整數值 · 延伸 Switch 的軌道／滑塊語彙與 Progress bar 的軌道幾何，但維持獨立元件 · 尚無專屬 token，全部沿用既有語意值</text>
+
+    <!-- Row A: single value -->
+    <g transform="translate(0 76)">
+      <g id="slider-single-default" transform="translate(0 0)">
+        <text class="label" x="0" y="12" fill="#f2f2f2">音量</text>
+        <text class="label" x="320" y="12" text-anchor="end" fill="#f2f2f2">40</text>
+        <rect x="0" y="28" width="320" height="8" rx="4" fill="#4d4d4d"/>
+        <rect x="0" y="28" width="128" height="8" rx="4" fill="#598ae8"/>
+        <circle cx="128" cy="32" r="12" fill="#f2f2f2"/>
+        <text class="caption" x="160" y="76" text-anchor="middle" fill="#888">單值 default（min 0 / max 100，值 40 → 填色 40%）</text>
+      </g>
+
+      <g id="slider-single-focused" transform="translate(400 0)">
+        <text class="label" x="0" y="12" fill="#f2f2f2">音量</text>
+        <text class="label" x="320" y="12" text-anchor="end" fill="#f2f2f2">40</text>
+        <rect x="0" y="28" width="320" height="8" rx="4" fill="#4d4d4d"/>
+        <rect x="0" y="28" width="128" height="8" rx="4" fill="#598ae8"/>
+        <circle cx="128" cy="32" r="16" fill="#598ae8"/>
+        <circle cx="128" cy="32" r="12" fill="#f2f2f2"/>
+        <text class="caption" x="160" y="76" text-anchor="middle" fill="#888">單值 focused／active（4px 實心藍外環，無間隙）</text>
+      </g>
+
+      <g id="slider-single-disabled" transform="translate(800 0)">
+        <text class="label" x="0" y="12" fill="#f2f2f2" fill-opacity="0.55">音量</text>
+        <text class="label" x="320" y="12" text-anchor="end" fill="#f2f2f2" fill-opacity="0.55">40</text>
+        <rect x="0" y="28" width="320" height="8" rx="4" fill="#4d4d4d"/>
+        <rect x="0" y="28" width="128" height="8" rx="4" fill="#666666"/>
+        <circle cx="128" cy="32" r="12" fill="#f2f2f2" fill-opacity="0.55"/>
+        <text class="caption" x="160" y="76" text-anchor="middle" fill="#888">單值 disabled（填色轉 background-subdued，thumb／文字 0.55）</text>
+      </g>
+
+      <g id="slider-single-value-label" transform="translate(1200 0)">
+        <text class="label" x="0" y="12" fill="#f2f2f2">亮度</text>
+        <rect x="188" y="-12" width="40" height="24" rx="8" fill="#333333"/>
+        <text class="label" x="208" y="5" text-anchor="middle" fill="#f2f2f2">65</text>
+        <rect x="0" y="28" width="320" height="8" rx="4" fill="#4d4d4d"/>
+        <rect x="0" y="28" width="208" height="8" rx="4" fill="#598ae8"/>
+        <circle cx="208" cy="32" r="12" fill="#f2f2f2"/>
+        <text class="caption" x="160" y="76" text-anchor="middle" fill="#888">值標籤（候選變體）：標籤 65 與 thumb 位置 65% 一致</text>
+      </g>
+    </g>
+
+    <!-- Row B: range + step -->
+    <g transform="translate(0 196)">
+      <g id="slider-range-default" transform="translate(0 0)">
+        <text class="label" x="0" y="12" fill="#f2f2f2">價格範圍</text>
+        <text class="label" x="320" y="12" text-anchor="end" fill="#f2f2f2">25 – 70</text>
+        <rect x="0" y="28" width="320" height="8" rx="4" fill="#4d4d4d"/>
+        <rect x="80" y="28" width="144" height="8" fill="#598ae8"/>
+        <circle cx="80" cy="32" r="12" fill="#f2f2f2"/>
+        <circle cx="224" cy="32" r="16" fill="#598ae8"/>
+        <circle cx="224" cy="32" r="12" fill="#f2f2f2"/>
+        <text class="caption" x="160" y="76" text-anchor="middle" fill="#888">範圍：雙 thumb（起點 25、終點 70），終點為 active thumb</text>
+      </g>
+
+      <g id="slider-range-disabled" transform="translate(400 0)">
+        <text class="label" x="0" y="12" fill="#f2f2f2" fill-opacity="0.55">價格範圍</text>
+        <text class="label" x="320" y="12" text-anchor="end" fill="#f2f2f2" fill-opacity="0.55">25 – 70</text>
+        <rect x="0" y="28" width="320" height="8" rx="4" fill="#4d4d4d"/>
+        <rect x="80" y="28" width="144" height="8" fill="#666666"/>
+        <circle cx="80" cy="32" r="12" fill="#f2f2f2" fill-opacity="0.55"/>
+        <circle cx="224" cy="32" r="12" fill="#f2f2f2" fill-opacity="0.55"/>
+        <text class="caption" x="160" y="76" text-anchor="middle" fill="#888">範圍 disabled（兩個 thumb 同時停用）</text>
+      </g>
+
+      <g id="slider-step" transform="translate(800 0)">
+        <text class="label" x="0" y="12" fill="#f2f2f2">評分</text>
+        <text class="label" x="320" y="12" text-anchor="end" fill="#f2f2f2">60</text>
+        <rect x="0" y="28" width="320" height="8" rx="4" fill="#4d4d4d"/>
+        <rect x="0" y="28" width="192" height="8" rx="4" fill="#598ae8"/>
+        <circle cx="192" cy="32" r="12" fill="#f2f2f2"/>
+        <g id="slider-step-markers">
+          <circle cx="0" cy="46" r="2" fill="#666666"/>
+          <circle cx="64" cy="46" r="2" fill="#666666"/>
+          <circle cx="128" cy="46" r="2" fill="#666666"/>
+          <circle cx="192" cy="46" r="2" fill="#666666"/>
+          <circle cx="256" cy="46" r="2" fill="#666666"/>
+          <circle cx="320" cy="46" r="2" fill="#666666"/>
+        </g>
+        <text class="caption" x="0" y="66" text-anchor="middle" fill="#888">0</text>
+        <text class="caption" x="64" y="66" text-anchor="middle" fill="#888">20</text>
+        <text class="caption" x="128" y="66" text-anchor="middle" fill="#888">40</text>
+        <text class="caption" x="192" y="66" text-anchor="middle" fill="#888">60</text>
+        <text class="caption" x="256" y="66" text-anchor="middle" fill="#888">80</text>
+        <text class="caption" x="320" y="66" text-anchor="middle" fill="#888">100</text>
+        <text class="caption" x="160" y="90" text-anchor="middle" fill="#888">step：min 0 / max 100 / step 20 → 6 個標記（含兩端），值 60</text>
+      </g>
+    </g>
+
+    <text class="note" x="0" y="326" fill="#a8a8a8">單值以原生 input[type=range] 為畢業目標；範圍由兩個各自具可存取名稱、可獨立鍵盤操作的 range 控制項組成並維持 lower ≤ upper，不是只畫兩個 thumb。</text>
+    <text class="note" x="0" y="350" fill="#a8a8a8">disabled 沿用既有手法：填色改用 background-subdued（#666666，同 button-background-disabled），thumb 與文字套 opacity.disabled 0.55，不另造灰階；軌道底色不變。</text>
+    <text class="note" x="0" y="374" fill="#a8a8a8">焦點不只靠色彩：active／focused thumb 外圍有可量測的 4px 實心藍環（thumb 24px → 外徑 32px）。2026-07-30 人類決定改為實心無間隙——原本 2px 描邊＋2px 間距在 24px 這種小尺寸上會讀成一圈脫離 thumb 的細環，不美觀。</text>
+    <text class="note" x="0" y="398" fill="#a8a8a8">副作用需在 G1／G2 一併裁決：本表其他元件（Accordion trigger、Popover trigger、Date picker 欄位）的 focus 仍是 batch3 既有的 2px outline＋offset，Slider 是唯一例外。</text>
+    <text class="note" x="0" y="422" fill="#a8a8a8">理由是小尺寸圓形控制點與大面積控制項的觀感不同；若審查認為必須全表一致，應回頭統一，而不是留兩套並行手法。step 標記數量必須等於 (max − min) / step + 1，此例 (100 − 0) / 20 + 1 = 6。</text>
+    <text class="caption" x="0" y="446" fill="#666">校準候選：track 高 8px（space.1，與 component.progress.height 相同）、radius pill；track 色 gray-700 #4d4d4d（同 component.progress.track-color）；fill = action-primary #598ae8；thumb 24px（size.icon-md）off-white</text>
+    <text class="caption" x="0" y="464" fill="#666">校準候選（續）：焦點外環 4px 實心（thumb 24px、外徑 32px；4px 與 component.switch.thumb-inset 同值，可作 alias 候選，非 border.width-focus 的 2px）</text>
+    <text class="caption" x="0" y="482" fill="#666">校準候選（續）：step 標記 4px 圓點（同 component.breadcrumb.ellipsis-dot-size）、與 track 間距 8px（space.1）；值標籤 40×24px／radius.sm／background-surface、底邊與 thumb 頂端間距 8px（space.1）；track 長度 320px 僅型錄基準，產品寬度由容器決定</text>
+  </g>
+
+  <!-- ===================== Accordion ===================== -->
+
+  <g id="c-accordion" class="ui" transform="translate(48 720)">
+    <text class="section" x="0" y="0" fill="#f2f2f2">Accordion</text>
+    <text class="note" x="0" y="28" fill="#a8a8a8">在同一內容區塊內展開／收合相關章節 · 每項為獨立圓角列（處處是圓），以 4px 間距分隔，不使用分隔線 · 單開／多開是行為模式，視覺完全相同</text>
+
+    <!-- Single-open mode -->
+    <g id="accordion-single-open-mode" transform="translate(0 64)">
+      <text class="label" x="0" y="0" fill="#f2f2f2">單開（一次只展開一項）</text>
+      <g transform="translate(0 16)">
+        <g id="accordion-single-item1">
+          <rect x="0" y="0" width="400" height="48" rx="8" fill="#333333"/>
+          <text class="body" x="16" y="30" font-weight="600" fill="#f2f2f2">版面與間距</text>
+          <path class="icon" d="M370 21l6 6 6-6" stroke="#f2f2f2"/>
+        </g>
+        <g id="accordion-single-item2-expanded">
+          <rect x="0" y="52" width="400" height="128" rx="8" fill="#333333"/>
+          <text class="body" x="16" y="82" font-weight="600" fill="#f2f2f2">色彩與對比</text>
+          <path class="icon" d="M370 79l6-6 6 6" stroke="#f2f2f2"/>
+          <text class="body" x="16" y="133" fill="#f2f2f2">內文對比至少 4.5:1；浮動面板上的</text>
+          <text class="body" x="16" y="157" fill="#f2f2f2">次要文字改用 gray-600，不用 subdued。</text>
+        </g>
+        <g id="accordion-single-item3">
+          <rect x="0" y="184" width="400" height="48" rx="8" fill="#333333"/>
+          <text class="body" x="16" y="214" font-weight="600" fill="#f2f2f2">圖示與線條</text>
+          <path class="icon" d="M370 205l6 6 6-6" stroke="#f2f2f2"/>
+        </g>
+      </g>
+      <text class="caption" x="0" y="268" fill="#888">展開第 2 項時，其餘項自動收合；焦點留在被點擊的 trigger 上，不移動到 panel</text>
+    </g>
+
+    <!-- Multi-open mode -->
+    <g id="accordion-multi-open-mode" transform="translate(460 64)">
+      <text class="label" x="0" y="0" fill="#f2f2f2">多開（可同時展開多項）</text>
+      <g transform="translate(0 16)">
+        <g id="accordion-multi-item1-expanded">
+          <rect x="0" y="0" width="400" height="128" rx="8" fill="#333333"/>
+          <text class="body" x="16" y="30" font-weight="600" fill="#f2f2f2">元件狀態命名與跨批次一致性</text>
+          <path class="icon" d="M370 27l6-6 6 6" stroke="#f2f2f2"/>
+          <text class="body" x="16" y="81" fill="#f2f2f2">同一狀態在不同元件不得使用不同</text>
+          <text class="body" x="16" y="105" fill="#f2f2f2">名稱（例如 off 與 inactive 併存）。</text>
+        </g>
+        <g id="accordion-multi-item2">
+          <rect x="0" y="132" width="400" height="48" rx="8" fill="#333333"/>
+          <text class="body" x="16" y="162" font-weight="600" fill="#f2f2f2">動效與 reduced-motion</text>
+          <path class="icon" d="M370 153l6 6 6-6" stroke="#f2f2f2"/>
+        </g>
+        <g id="accordion-multi-item3-expanded">
+          <rect x="0" y="184" width="400" height="128" rx="8" fill="#333333"/>
+          <text class="body" x="16" y="214" font-weight="600" fill="#f2f2f2">無障礙與鍵盤操作</text>
+          <path class="icon" d="M370 211l6-6 6 6" stroke="#f2f2f2"/>
+          <text class="body" x="16" y="265" fill="#f2f2f2">所有 icon-only 按鈕需有可存取名稱，</text>
+          <text class="body" x="16" y="289" fill="#f2f2f2">裝飾性圖示標記 aria-hidden。</text>
+        </g>
+      </g>
+      <text class="caption" x="0" y="348" fill="#888">第 1、3 項同時展開；長標題與兩行內容示意內容密度，末項為區塊邊界（下方無額外分隔）</text>
+    </g>
+
+    <!-- Trigger states -->
+    <g id="accordion-trigger-states" transform="translate(920 64)">
+      <text class="label" x="0" y="0" fill="#f2f2f2">Trigger 狀態</text>
+      <g transform="translate(0 16)">
+        <g id="accordion-trigger-default">
+          <rect x="0" y="0" width="400" height="48" rx="8" fill="#333333"/>
+          <text class="body" x="16" y="30" font-weight="600" fill="#f2f2f2">匯出設定</text>
+          <path class="icon" d="M370 21l6 6 6-6" stroke="#f2f2f2"/>
+          <text class="caption" x="0" y="64" fill="#888">default（collapsed，chevron 朝下）</text>
+        </g>
+        <g id="accordion-trigger-hover">
+          <rect x="0" y="80" width="400" height="48" rx="8" fill="#333333"/>
+          <rect x="0" y="80" width="400" height="48" rx="8" fill="#ffffff" fill-opacity="0.06"/>
+          <text class="body" x="16" y="110" font-weight="600" fill="#f2f2f2">匯出設定</text>
+          <path class="icon" d="M370 101l6 6 6-6" stroke="#f2f2f2"/>
+          <text class="caption" x="0" y="144" fill="#888">hover（6% 白色疊加，沿用 tabs／menu／list-item 既有手法）</text>
+        </g>
+        <g id="accordion-trigger-focused">
+          <rect x="0" y="160" width="400" height="48" rx="8" fill="#333333"/>
+          <rect x="1" y="161" width="398" height="46" rx="7" fill="none" stroke="#598ae8" stroke-width="2"/>
+          <text class="body" x="16" y="190" font-weight="600" fill="#f2f2f2">匯出設定</text>
+          <path class="icon" d="M370 181l6 6 6-6" stroke="#f2f2f2"/>
+          <text class="caption" x="0" y="224" fill="#888">focused（2px 內縮焦點框，border.width-focus／border-focus）</text>
+        </g>
+        <g id="accordion-trigger-disabled">
+          <rect x="0" y="240" width="400" height="48" rx="8" fill="#333333"/>
+          <text class="body" x="16" y="270" font-weight="600" fill="#f2f2f2" fill-opacity="0.55">匯出設定</text>
+          <path class="icon" d="M370 261l6 6 6-6" stroke="#f2f2f2" stroke-opacity="0.55"/>
+          <text class="caption" x="0" y="304" fill="#888">disabled（前景 0.55；背景維持 background-surface，不改用 subdued）</text>
+        </g>
+      </g>
+    </g>
+
+    <text class="note" x="0" y="440" fill="#a8a8a8">結構：語意標題內含 button trigger，以 aria-expanded、aria-controls 與 panel 的 id 關聯；Enter／Space 切換，焦點留在 trigger，單開模式收合其他項時不移動焦點。</text>
+    <text class="note" x="0" y="464" fill="#a8a8a8">單開／多開只是行為設定，不建立第二套視覺 token：兩者的 trigger 高度、內距、圓角、間距與 chevron 完全相同，差別只在同時可展開的項目數量。</text>
+    <text class="note" x="0" y="488" fill="#a8a8a8">disabled 是否為 Accordion 的必要狀態，需在 G1／G2 確認（issue #10 未明確要求）；若確認不需要，應移除上方 disabled 示例，而非保留成沒有規格支持的未使用狀態。</text>
+    <text class="note" x="0" y="512" fill="#a8a8a8">開闔動畫若採用，須尊重 prefers-reduced-motion；motion.duration-base／easing-standard 目前仍是 candidate，畢業前要重新核對，不直接視為已核准值。</text>
+    <text class="caption" x="0" y="536" fill="#666">校準候選：trigger 高 48px（size.control-md）；item radius 8px（radius.sm，同 component.list-item.radius）；item 間距 4px（沿用 component.list-item.row-gap，相鄰圓角列的既有間距，因此不另立 divider-width）</text>
+    <text class="caption" x="0" y="554" fill="#666">校準候選（續）：內距 16px（space.2）；標題 16px／600（font.size-body／font.weight-semibold）；內容 16px、行距 24px（font.line-height-body 1.5）；disclosure chevron 16px（size.icon-sm）、stroke 2px（icon.stroke-width）</text>
+    <text class="caption" x="0" y="572" fill="#666">校準候選（續）：背景 background-surface #333333；hover 6% 白（opacity.hover-overlay）；展開項高度 128px＝48 trigger＋16 上內距＋48 兩行內容＋16 下內距，隨內容變動，非固定值</text>
+  </g>
+
+  <!-- ===================== Popover ===================== -->
+
+  <g id="c-popover" class="ui" transform="translate(48 1370)">
+    <text class="section" x="0" y="0" fill="#f2f2f2">Popover</text>
+    <text class="note" x="0" y="28" fill="#a8a8a8">由 trigger 點擊開啟、相對 trigger 定位的非模態浮動面板 · 面板沿用 color.semantic.background-overlay（gray-700 #4d4d4d），與 Select／Split button／Menu／Tooltip／Modal 同一語彙 · 箭頭與面板同色</text>
+
+    <!-- Row 1: four base placements -->
+    <g id="popover-placements" transform="translate(0 64)">
+      <g id="popover-placement-top" transform="translate(0 0)">
+        <rect x="0" y="0" width="200" height="88" rx="16" fill="#4d4d4d"/>
+        <path d="M92 88 L108 88 L100 96 Z" fill="#4d4d4d"/>
+        <text class="body" x="16" y="34" font-weight="600" fill="#f2f2f2">篩選條件</text>
+        <text class="note" x="16" y="60" fill="#a8a8a8">只顯示我負責的項目</text>
+        <rect x="36" y="104" width="128" height="48" rx="24" fill="#333333"/>
+        <text class="body" x="100" y="134" text-anchor="middle" fill="#f2f2f2">篩選</text>
+        <text class="caption" x="100" y="176" text-anchor="middle" fill="#888">top（面板在 trigger 上方）</text>
+      </g>
+
+      <g id="popover-placement-right" transform="translate(380 0)">
+        <rect x="0" y="20" width="128" height="48" rx="24" fill="#333333"/>
+        <text class="body" x="64" y="50" text-anchor="middle" fill="#f2f2f2">篩選</text>
+        <rect x="144" y="0" width="200" height="88" rx="16" fill="#4d4d4d"/>
+        <path d="M144 36 L144 52 L136 44 Z" fill="#4d4d4d"/>
+        <text class="body" x="160" y="34" font-weight="600" fill="#f2f2f2">篩選條件</text>
+        <text class="note" x="160" y="60" fill="#a8a8a8">只顯示我負責的項目</text>
+        <text class="caption" x="172" y="176" text-anchor="middle" fill="#888">right（面板在 trigger 右側）</text>
+      </g>
+
+      <g id="popover-placement-bottom" transform="translate(760 0)">
+        <rect x="36" y="0" width="128" height="48" rx="24" fill="#333333"/>
+        <text class="body" x="100" y="30" text-anchor="middle" fill="#f2f2f2">篩選</text>
+        <rect x="0" y="64" width="200" height="88" rx="16" fill="#4d4d4d"/>
+        <path d="M92 64 L108 64 L100 56 Z" fill="#4d4d4d"/>
+        <text class="body" x="16" y="98" font-weight="600" fill="#f2f2f2">篩選條件</text>
+        <text class="note" x="16" y="124" fill="#a8a8a8">只顯示我負責的項目</text>
+        <text class="caption" x="100" y="176" text-anchor="middle" fill="#888">bottom（預設 placement）</text>
+      </g>
+
+      <g id="popover-placement-left" transform="translate(1140 0)">
+        <rect x="0" y="0" width="200" height="88" rx="16" fill="#4d4d4d"/>
+        <path d="M200 36 L200 52 L208 44 Z" fill="#4d4d4d"/>
+        <text class="body" x="16" y="34" font-weight="600" fill="#f2f2f2">篩選條件</text>
+        <text class="note" x="16" y="60" fill="#a8a8a8">只顯示我負責的項目</text>
+        <rect x="216" y="20" width="128" height="48" rx="24" fill="#333333"/>
+        <text class="body" x="280" y="50" text-anchor="middle" fill="#f2f2f2">篩選</text>
+        <text class="caption" x="172" y="176" text-anchor="middle" fill="#888">left（面板在 trigger 左側）</text>
+      </g>
+    </g>
+
+    <!-- Row 2: flip, rich content, focus states, light-dismiss -->
+    <g transform="translate(0 300)">
+      <g id="popover-flip" transform="translate(0 0)">
+        <text class="label" x="0" y="0" fill="#f2f2f2">空間不足 → 翻轉（flip）</text>
+        <rect x="0" y="16" width="360" height="220" rx="8" fill="none" stroke="#444444" stroke-width="2" stroke-dasharray="4 6"/>
+        <rect x="80" y="64" width="200" height="88" rx="16" fill="#4d4d4d"/>
+        <path d="M172 152 L188 152 L180 160 Z" fill="#4d4d4d"/>
+        <text class="body" x="96" y="98" font-weight="600" fill="#f2f2f2">本週排程</text>
+        <text class="note" x="96" y="124" fill="#a8a8a8">已排定 2 項工作</text>
+        <rect x="116" y="168" width="128" height="48" rx="24" fill="#333333"/>
+        <text class="body" x="180" y="198" text-anchor="middle" fill="#f2f2f2">排程</text>
+        <text class="caption" x="0" y="256" fill="#888">虛線為 viewport 邊界示意，非元件的一部分。</text>
+        <text class="caption" x="0" y="274" fill="#888">原 placement 為 bottom，因下方空間不足翻轉到上方；</text>
+        <text class="caption" x="0" y="292" fill="#888">若為左右溢出，則沿同一軸位移（shift）而非翻轉。</text>
+        <text class="caption" x="0" y="310" fill="#888">兩種情況下箭頭都必須仍指向 trigger 中心。</text>
+      </g>
+
+      <g id="popover-rich-content" transform="translate(460 0)">
+        <text class="label" x="0" y="0" fill="#f2f2f2">標題＋內容＋關閉按鈕（opened）</text>
+        <rect x="0" y="16" width="320" height="160" rx="16" fill="#4d4d4d"/>
+        <path d="M92 176 L108 176 L100 184 Z" fill="#4d4d4d"/>
+        <text class="body" x="16" y="54" font-weight="600" fill="#f2f2f2">版面設定</text>
+        <path class="icon" d="M283 43l10 10 M293 43l-10 10" stroke="#f2f2f2"/>
+        <text class="body" x="16" y="88" fill="#f2f2f2">選擇看板欄位的顯示密度，</text>
+        <text class="body" x="16" y="112" fill="#f2f2f2">設定會立即套用到目前看板。</text>
+        <rect x="16" y="120" width="96" height="40" rx="20" fill="#598ae8"/>
+        <text class="body" x="64" y="146" text-anchor="middle" fill="#ffffff">套用</text>
+        <rect x="36" y="192" width="128" height="48" rx="24" fill="#333333"/>
+        <text class="body" x="100" y="222" text-anchor="middle" fill="#f2f2f2">版面設定</text>
+        <text class="caption" x="0" y="264" fill="#888">關閉方式（四種都須驗證）：再按一次 trigger、Esc、</text>
+        <text class="caption" x="0" y="282" fill="#888">面板外點擊（light-dismiss）、面板內關閉按鈕；</text>
+        <text class="caption" x="0" y="300" fill="#888">任一方式關閉後，焦點都回到 trigger。</text>
+      </g>
+
+      <g id="popover-focus-states" transform="translate(880 0)">
+        <text class="label" x="0" y="0" fill="#f2f2f2">焦點狀態</text>
+        <g id="popover-focused-trigger">
+          <rect x="0" y="24" width="128" height="48" rx="24" fill="#333333"/>
+          <rect x="-2" y="22" width="132" height="52" rx="26" fill="none" stroke="#598ae8" stroke-width="2"/>
+          <text class="body" x="64" y="54" text-anchor="middle" fill="#f2f2f2">版面設定</text>
+          <text class="caption" x="0" y="92" fill="#888">focused-trigger（開啟前與關閉後焦點所在位置）</text>
+        </g>
+        <g id="popover-close-control-focused">
+          <rect x="0" y="112" width="200" height="88" rx="16" fill="#4d4d4d"/>
+          <text class="body" x="16" y="146" font-weight="600" fill="#f2f2f2">版面設定</text>
+          <circle cx="168" cy="144" r="16" fill="none" stroke="#598ae8" stroke-width="2"/>
+          <path class="icon" d="M163 139l10 10 M173 139l-10 10" stroke="#f2f2f2"/>
+          <text class="note" x="16" y="176" fill="#a8a8a8">關閉按鈕取得焦點</text>
+          <text class="caption" x="0" y="224" fill="#888">close-control-focused（32px 命中區、16px 圖示、2px 焦點外圈）</text>
+        </g>
+      </g>
+
+      <g id="popover-light-dismiss" transform="translate(1320 0)">
+        <text class="label" x="0" y="0" fill="#f2f2f2">簡單內容（無關閉按鈕）</text>
+        <rect x="0" y="24" width="240" height="72" rx="16" fill="#4d4d4d"/>
+        <path d="M92 96 L108 96 L100 104 Z" fill="#4d4d4d"/>
+        <text class="body" x="16" y="66" fill="#f2f2f2">已複製連結到剪貼簿</text>
+        <rect x="36" y="112" width="128" height="48" rx="24" fill="#333333"/>
+        <text class="body" x="100" y="142" text-anchor="middle" fill="#f2f2f2">分享</text>
+        <text class="caption" x="0" y="184" fill="#888">面板內無互動控制項時不強制把焦點移入，</text>
+        <text class="caption" x="0" y="202" fill="#888">點擊面板外或按 Esc 即關閉</text>
+      </g>
+    </g>
+
+    <text class="note" x="0" y="644" fill="#a8a8a8">Popover 為非模態：不套用 Modal 的 backdrop 與 focus trap，開啟時頁面其餘部分仍可捲動與操作；初始焦點策略由內容型態決定，不一律強迫移入面板。</text>
+    <text class="note" x="0" y="668" fill="#a8a8a8">與 Tooltip 的界線：Tooltip 承載純文字說明、不可互動、由 hover／focus 觸發；Popover 由明確點擊觸發，可含標題、互動控制項與關閉按鈕。兩者共用 background-overlay，但 radius 與內距不同，不可互相取代規格。</text>
+    <text class="note" x="0" y="692" fill="#a8a8a8">本稿未加入陰影：Everline 既有浮動面板已用 overlay 底色與 canvas 對比表達層次，新增陰影 token 需 G1 明確核准（見 batch4-plan.tmp.md 8.3）。layer.overlay 仍是 candidate，與 Tooltip／Modal／Toast 的共存順序待 G3 重驗。</text>
+    <text class="caption" x="0" y="716" fill="#666">校準候選：面板 radius 16px（radius.lg，同 component.select.menu-radius／component.modal.radius）；面板內距 16px（space.2）；trigger 邊到箭頭尖端 8px（space.1）</text>
+    <text class="caption" x="0" y="734" fill="#666">校準候選（續）：箭頭 16×8px（底寬 size.icon-sm、高 space.1），填色與面板同為 background-overlay、未加邊框；關閉按鈕命中區 32px、圖示 16px（size.icon-sm）、stroke 2px（icon.stroke-width）</text>
+    <text class="caption" x="0" y="752" fill="#666">校準候選（續）：面板內動作按鈕 40px（size.tag-md，同 component.modal.action-height）；trigger 沿用 component.button 的 128×48px／radius.control／background-neutral；面板寬 200／240／320px 皆為型錄示意，非固定產品寬度</text>
+  </g>
+
+  <!-- ===================== Date / Time picker ===================== -->
+
+  <g id="c-date-time-picker" class="ui" transform="translate(48 2200)">
+    <text class="section" x="0" y="0" fill="#f2f2f2">Date / Time picker</text>
+    <text class="note" x="0" y="28" fill="#a8a8a8">組合元件：Text input＋Icon button 作為 trigger，開啟 Popover 內的月曆與時間輸入 · 面板、箭頭、錨點間距與圓角全部沿用上方 Popover，不另造浮動面板 · 示例月份 2026 年 7 月（7/1 為週三）</text>
+
+    <!-- Single date -->
+    <g id="date-picker-single" transform="translate(0 64)">
+      <rect x="0" y="0" width="232" height="48" rx="24" fill="#666666"/>
+      <text class="body" x="24" y="30" fill="#f2f2f2">2026/07/15</text>
+      <circle cx="264" cy="24" r="24" fill="#333333"/>
+      <rect class="icon" x="254" y="16" width="20" height="18" rx="2" stroke="#f2f2f2"/>
+      <path class="icon" d="M254 22h20 M259 13v6 M269 13v6" stroke="#f2f2f2"/>
+      <path d="M92 64 L108 64 L100 56 Z" fill="#4d4d4d"/>
+      <rect x="0" y="64" width="312" height="472" rx="16" fill="#4d4d4d"/>
+      <g transform="translate(16 80)">
+        <!-- header -->
+        <path class="icon" d="M23 14l-6 6 6 6" stroke="#f2f2f2"/>
+        <text class="body" x="140" y="26" text-anchor="middle" font-weight="600" fill="#f2f2f2">2026 年 7 月</text>
+        <path class="icon" d="M257 14l6 6-6 6" stroke="#f2f2f2"/>
+        <!-- weekday row -->
+        <text class="label" x="20" y="70" text-anchor="middle" fill="#666666">日</text>
+        <text class="label" x="60" y="70" text-anchor="middle" fill="#666666">一</text>
+        <text class="label" x="100" y="70" text-anchor="middle" fill="#666666">二</text>
+        <text class="label" x="140" y="70" text-anchor="middle" fill="#666666">三</text>
+        <text class="label" x="180" y="70" text-anchor="middle" fill="#666666">四</text>
+        <text class="label" x="220" y="70" text-anchor="middle" fill="#666666">五</text>
+        <text class="label" x="260" y="70" text-anchor="middle" fill="#666666">六</text>
+        <!-- selected + today indicators -->
+        <circle cx="140" cy="188" r="20" fill="#598ae8"/>
+        <circle cx="180" cy="268" r="19" fill="none" stroke="#598ae8" stroke-width="2"/>
+        <!-- week 1 (outside month 6/28-6/30) -->
+        <text class="body" x="20" y="114" text-anchor="middle" fill="#f2f2f2" fill-opacity="0.55">28</text>
+        <text class="body" x="60" y="114" text-anchor="middle" fill="#f2f2f2" fill-opacity="0.55">29</text>
+        <text class="body" x="100" y="114" text-anchor="middle" fill="#f2f2f2" fill-opacity="0.55">30</text>
+        <text class="body" x="140" y="114" text-anchor="middle" fill="#f2f2f2">1</text>
+        <text class="body" x="180" y="114" text-anchor="middle" fill="#f2f2f2">2</text>
+        <text class="body" x="220" y="114" text-anchor="middle" fill="#f2f2f2">3</text>
+        <text class="body" x="260" y="114" text-anchor="middle" fill="#f2f2f2">4</text>
+        <!-- week 2 -->
+        <text class="body" x="20" y="154" text-anchor="middle" fill="#f2f2f2">5</text>
+        <text class="body" x="60" y="154" text-anchor="middle" fill="#f2f2f2">6</text>
+        <text class="body" x="100" y="154" text-anchor="middle" fill="#f2f2f2">7</text>
+        <text class="body" x="140" y="154" text-anchor="middle" fill="#f2f2f2">8</text>
+        <text class="body" x="180" y="154" text-anchor="middle" fill="#f2f2f2">9</text>
+        <text class="body" x="220" y="154" text-anchor="middle" fill="#f2f2f2">10</text>
+        <text class="body" x="260" y="154" text-anchor="middle" fill="#f2f2f2">11</text>
+        <!-- week 3 (15 selected) -->
+        <text class="body" x="20" y="194" text-anchor="middle" fill="#f2f2f2">12</text>
+        <text class="body" x="60" y="194" text-anchor="middle" fill="#f2f2f2">13</text>
+        <text class="body" x="100" y="194" text-anchor="middle" fill="#f2f2f2">14</text>
+        <text class="body" x="140" y="194" text-anchor="middle" fill="#ffffff">15</text>
+        <text class="body" x="180" y="194" text-anchor="middle" fill="#f2f2f2">16</text>
+        <text class="body" x="220" y="194" text-anchor="middle" fill="#f2f2f2">17</text>
+        <text class="body" x="260" y="194" text-anchor="middle" fill="#f2f2f2">18</text>
+        <!-- week 4 (25 unavailable) -->
+        <text class="body" x="20" y="234" text-anchor="middle" fill="#f2f2f2">19</text>
+        <text class="body" x="60" y="234" text-anchor="middle" fill="#f2f2f2">20</text>
+        <text class="body" x="100" y="234" text-anchor="middle" fill="#f2f2f2">21</text>
+        <text class="body" x="140" y="234" text-anchor="middle" fill="#f2f2f2">22</text>
+        <text class="body" x="180" y="234" text-anchor="middle" fill="#f2f2f2">23</text>
+        <text class="body" x="220" y="234" text-anchor="middle" fill="#f2f2f2">24</text>
+        <text class="body" x="260" y="234" text-anchor="middle" fill="#666666">25</text>
+        <!-- week 5 (26 unavailable, 30 = today, 8/1 outside month) -->
+        <text class="body" x="20" y="274" text-anchor="middle" fill="#666666">26</text>
+        <text class="body" x="60" y="274" text-anchor="middle" fill="#f2f2f2">27</text>
+        <text class="body" x="100" y="274" text-anchor="middle" fill="#f2f2f2">28</text>
+        <text class="body" x="140" y="274" text-anchor="middle" fill="#f2f2f2">29</text>
+        <text class="body" x="180" y="274" text-anchor="middle" fill="#f2f2f2">30</text>
+        <text class="body" x="220" y="274" text-anchor="middle" fill="#f2f2f2">31</text>
+        <text class="body" x="260" y="274" text-anchor="middle" fill="#f2f2f2" fill-opacity="0.55">1</text>
+        <!-- week 6 (all outside month) -->
+        <text class="body" x="20" y="314" text-anchor="middle" fill="#f2f2f2" fill-opacity="0.55">2</text>
+        <text class="body" x="60" y="314" text-anchor="middle" fill="#f2f2f2" fill-opacity="0.55">3</text>
+        <text class="body" x="100" y="314" text-anchor="middle" fill="#f2f2f2" fill-opacity="0.55">4</text>
+        <text class="body" x="140" y="314" text-anchor="middle" fill="#f2f2f2" fill-opacity="0.55">5</text>
+        <text class="body" x="180" y="314" text-anchor="middle" fill="#f2f2f2" fill-opacity="0.55">6</text>
+        <text class="body" x="220" y="314" text-anchor="middle" fill="#f2f2f2" fill-opacity="0.55">7</text>
+        <text class="body" x="260" y="314" text-anchor="middle" fill="#f2f2f2" fill-opacity="0.55">8</text>
+        <!-- time field -->
+        <rect x="0" y="336" width="128" height="48" rx="24" fill="#666666"/>
+        <circle class="icon" cx="24" cy="360" r="7" stroke="#f2f2f2"/>
+        <path class="icon" d="M24 356v4l3 2" stroke="#f2f2f2"/>
+        <text class="body" x="48" y="366" fill="#f2f2f2">14:30</text>
+        <!-- actions -->
+        <rect x="64" y="392" width="104" height="48" rx="24" fill="#333333"/>
+        <text class="body" x="116" y="422" text-anchor="middle" fill="#f2f2f2">取消</text>
+        <rect x="176" y="392" width="104" height="48" rx="24" fill="#598ae8"/>
+        <text class="body" x="228" y="422" text-anchor="middle" fill="#ffffff">套用</text>
+      </g>
+      <text class="caption" x="0" y="560" fill="#888">單一日期選取：已選 7/15（實心圓）</text>
+      <text class="caption" x="0" y="578" fill="#888">今天 7/30（2px 外圈，未被選取）</text>
+      <text class="caption" x="0" y="596" fill="#888">7/25–7/26 不可選（gray-600）</text>
+      <text class="caption" x="0" y="614" fill="#888">上／下月日期淡化 0.55；時間 14:30</text>
+    </g>
+
+    <!-- Date range -->
+    <g id="date-picker-range" transform="translate(400 64)">
+      <rect x="0" y="0" width="232" height="48" rx="24" fill="#666666"/>
+      <text class="body" x="24" y="30" fill="#f2f2f2">07/08 – 07/17</text>
+      <circle cx="264" cy="24" r="24" fill="#333333"/>
+      <rect class="icon" x="254" y="16" width="20" height="18" rx="2" stroke="#f2f2f2"/>
+      <path class="icon" d="M254 22h20 M259 13v6 M269 13v6" stroke="#f2f2f2"/>
+      <path d="M92 64 L108 64 L100 56 Z" fill="#4d4d4d"/>
+      <rect x="0" y="64" width="312" height="472" rx="16" fill="#4d4d4d"/>
+      <g transform="translate(16 80)">
+        <path class="icon" d="M23 14l-6 6 6 6" stroke="#f2f2f2"/>
+        <text class="body" x="140" y="26" text-anchor="middle" font-weight="600" fill="#f2f2f2">2026 年 7 月</text>
+        <path class="icon" d="M257 14l6 6-6 6" stroke="#f2f2f2"/>
+        <text class="label" x="20" y="70" text-anchor="middle" fill="#666666">日</text>
+        <text class="label" x="60" y="70" text-anchor="middle" fill="#666666">一</text>
+        <text class="label" x="100" y="70" text-anchor="middle" fill="#666666">二</text>
+        <text class="label" x="140" y="70" text-anchor="middle" fill="#666666">三</text>
+        <text class="label" x="180" y="70" text-anchor="middle" fill="#666666">四</text>
+        <text class="label" x="220" y="70" text-anchor="middle" fill="#666666">五</text>
+        <text class="label" x="260" y="70" text-anchor="middle" fill="#666666">六</text>
+        <!-- in-range: 7/8 (row 2 col 3) -> 7/17 (row 3 col 5). Each in-between day gets its own 36px
+             tinted circle (4px apart, matching component.list-item.row-gap) rather than one continuous
+             band — 處處是圓, and it avoids two adjacent rows' bands merging into a single rectangle. -->
+        <circle cx="180" cy="148" r="18" fill="#598ae8" fill-opacity="0.18"/>
+        <circle cx="220" cy="148" r="18" fill="#598ae8" fill-opacity="0.18"/>
+        <circle cx="260" cy="148" r="18" fill="#598ae8" fill-opacity="0.18"/>
+        <circle cx="20" cy="188" r="18" fill="#598ae8" fill-opacity="0.18"/>
+        <circle cx="60" cy="188" r="18" fill="#598ae8" fill-opacity="0.18"/>
+        <circle cx="100" cy="188" r="18" fill="#598ae8" fill-opacity="0.18"/>
+        <circle cx="140" cy="188" r="18" fill="#598ae8" fill-opacity="0.18"/>
+        <circle cx="180" cy="188" r="18" fill="#598ae8" fill-opacity="0.18"/>
+        <circle cx="140" cy="148" r="20" fill="#598ae8"/>
+        <circle cx="220" cy="188" r="20" fill="#598ae8"/>
+        <text class="body" x="20" y="114" text-anchor="middle" fill="#f2f2f2" fill-opacity="0.55">28</text>
+        <text class="body" x="60" y="114" text-anchor="middle" fill="#f2f2f2" fill-opacity="0.55">29</text>
+        <text class="body" x="100" y="114" text-anchor="middle" fill="#f2f2f2" fill-opacity="0.55">30</text>
+        <text class="body" x="140" y="114" text-anchor="middle" fill="#f2f2f2">1</text>
+        <text class="body" x="180" y="114" text-anchor="middle" fill="#f2f2f2">2</text>
+        <text class="body" x="220" y="114" text-anchor="middle" fill="#f2f2f2">3</text>
+        <text class="body" x="260" y="114" text-anchor="middle" fill="#f2f2f2">4</text>
+        <text class="body" x="20" y="154" text-anchor="middle" fill="#f2f2f2">5</text>
+        <text class="body" x="60" y="154" text-anchor="middle" fill="#f2f2f2">6</text>
+        <text class="body" x="100" y="154" text-anchor="middle" fill="#f2f2f2">7</text>
+        <text class="body" x="140" y="154" text-anchor="middle" fill="#ffffff">8</text>
+        <text class="body" x="180" y="154" text-anchor="middle" fill="#f2f2f2">9</text>
+        <text class="body" x="220" y="154" text-anchor="middle" fill="#f2f2f2">10</text>
+        <text class="body" x="260" y="154" text-anchor="middle" fill="#f2f2f2">11</text>
+        <text class="body" x="20" y="194" text-anchor="middle" fill="#f2f2f2">12</text>
+        <text class="body" x="60" y="194" text-anchor="middle" fill="#f2f2f2">13</text>
+        <text class="body" x="100" y="194" text-anchor="middle" fill="#f2f2f2">14</text>
+        <text class="body" x="140" y="194" text-anchor="middle" fill="#f2f2f2">15</text>
+        <text class="body" x="180" y="194" text-anchor="middle" fill="#f2f2f2">16</text>
+        <text class="body" x="220" y="194" text-anchor="middle" fill="#ffffff">17</text>
+        <text class="body" x="260" y="194" text-anchor="middle" fill="#f2f2f2">18</text>
+        <text class="body" x="20" y="234" text-anchor="middle" fill="#f2f2f2">19</text>
+        <text class="body" x="60" y="234" text-anchor="middle" fill="#f2f2f2">20</text>
+        <text class="body" x="100" y="234" text-anchor="middle" fill="#f2f2f2">21</text>
+        <text class="body" x="140" y="234" text-anchor="middle" fill="#f2f2f2">22</text>
+        <text class="body" x="180" y="234" text-anchor="middle" fill="#f2f2f2">23</text>
+        <text class="body" x="220" y="234" text-anchor="middle" fill="#f2f2f2">24</text>
+        <text class="body" x="260" y="234" text-anchor="middle" fill="#f2f2f2">25</text>
+        <text class="body" x="20" y="274" text-anchor="middle" fill="#f2f2f2">26</text>
+        <text class="body" x="60" y="274" text-anchor="middle" fill="#f2f2f2">27</text>
+        <text class="body" x="100" y="274" text-anchor="middle" fill="#f2f2f2">28</text>
+        <text class="body" x="140" y="274" text-anchor="middle" fill="#f2f2f2">29</text>
+        <text class="body" x="180" y="274" text-anchor="middle" fill="#f2f2f2">30</text>
+        <text class="body" x="220" y="274" text-anchor="middle" fill="#f2f2f2">31</text>
+        <text class="body" x="260" y="274" text-anchor="middle" fill="#f2f2f2" fill-opacity="0.55">1</text>
+        <text class="body" x="20" y="314" text-anchor="middle" fill="#f2f2f2" fill-opacity="0.55">2</text>
+        <text class="body" x="60" y="314" text-anchor="middle" fill="#f2f2f2" fill-opacity="0.55">3</text>
+        <text class="body" x="100" y="314" text-anchor="middle" fill="#f2f2f2" fill-opacity="0.55">4</text>
+        <text class="body" x="140" y="314" text-anchor="middle" fill="#f2f2f2" fill-opacity="0.55">5</text>
+        <text class="body" x="180" y="314" text-anchor="middle" fill="#f2f2f2" fill-opacity="0.55">6</text>
+        <text class="body" x="220" y="314" text-anchor="middle" fill="#f2f2f2" fill-opacity="0.55">7</text>
+        <text class="body" x="260" y="314" text-anchor="middle" fill="#f2f2f2" fill-opacity="0.55">8</text>
+        <rect x="0" y="336" width="128" height="48" rx="24" fill="#666666"/>
+        <circle class="icon" cx="24" cy="360" r="7" stroke="#f2f2f2"/>
+        <path class="icon" d="M24 356v4l3 2" stroke="#f2f2f2"/>
+        <text class="body" x="48" y="366" fill="#f2f2f2">09:00</text>
+        <rect x="64" y="392" width="104" height="48" rx="24" fill="#333333"/>
+        <text class="body" x="116" y="422" text-anchor="middle" fill="#f2f2f2">取消</text>
+        <rect x="176" y="392" width="104" height="48" rx="24" fill="#598ae8"/>
+        <text class="body" x="228" y="422" text-anchor="middle" fill="#ffffff">套用</text>
+      </g>
+      <text class="caption" x="0" y="560" fill="#888">日期範圍選取：start 7/8、end 7/17</text>
+      <text class="caption" x="0" y="578" fill="#888">兩端為 40px 實心圓；中間每天各自一個</text>
+      <text class="caption" x="0" y="596" fill="#888">36px 淡藍圓（18%），間距 4px，不連成色帶</text>
+      <text class="caption" x="0" y="614" fill="#888">trigger 的 07/08 – 07/17 與兩端點一致</text>
+    </g>
+
+    <!-- Range, start-only transient state -->
+    <g id="date-picker-range-partial" transform="translate(800 64)">
+      <rect x="0" y="0" width="232" height="48" rx="24" fill="#666666"/>
+      <text class="body" x="24" y="30" fill="#f2f2f2">07/08 – 選擇結束日</text>
+      <circle cx="264" cy="24" r="24" fill="#333333"/>
+      <rect class="icon" x="254" y="16" width="20" height="18" rx="2" stroke="#f2f2f2"/>
+      <path class="icon" d="M254 22h20 M259 13v6 M269 13v6" stroke="#f2f2f2"/>
+      <path d="M92 64 L108 64 L100 56 Z" fill="#4d4d4d"/>
+      <rect x="0" y="64" width="312" height="472" rx="16" fill="#4d4d4d"/>
+      <g transform="translate(16 80)">
+        <path class="icon" d="M23 14l-6 6 6 6" stroke="#f2f2f2"/>
+        <text class="body" x="140" y="26" text-anchor="middle" font-weight="600" fill="#f2f2f2">2026 年 7 月</text>
+        <path class="icon" d="M257 14l6 6-6 6" stroke="#f2f2f2"/>
+        <text class="label" x="20" y="70" text-anchor="middle" fill="#666666">日</text>
+        <text class="label" x="60" y="70" text-anchor="middle" fill="#666666">一</text>
+        <text class="label" x="100" y="70" text-anchor="middle" fill="#666666">二</text>
+        <text class="label" x="140" y="70" text-anchor="middle" fill="#666666">三</text>
+        <text class="label" x="180" y="70" text-anchor="middle" fill="#666666">四</text>
+        <text class="label" x="220" y="70" text-anchor="middle" fill="#666666">五</text>
+        <text class="label" x="260" y="70" text-anchor="middle" fill="#666666">六</text>
+        <circle cx="140" cy="148" r="20" fill="#598ae8"/>
+        <text class="body" x="20" y="114" text-anchor="middle" fill="#f2f2f2" fill-opacity="0.55">28</text>
+        <text class="body" x="60" y="114" text-anchor="middle" fill="#f2f2f2" fill-opacity="0.55">29</text>
+        <text class="body" x="100" y="114" text-anchor="middle" fill="#f2f2f2" fill-opacity="0.55">30</text>
+        <text class="body" x="140" y="114" text-anchor="middle" fill="#f2f2f2">1</text>
+        <text class="body" x="180" y="114" text-anchor="middle" fill="#f2f2f2">2</text>
+        <text class="body" x="220" y="114" text-anchor="middle" fill="#f2f2f2">3</text>
+        <text class="body" x="260" y="114" text-anchor="middle" fill="#f2f2f2">4</text>
+        <text class="body" x="20" y="154" text-anchor="middle" fill="#f2f2f2">5</text>
+        <text class="body" x="60" y="154" text-anchor="middle" fill="#f2f2f2">6</text>
+        <text class="body" x="100" y="154" text-anchor="middle" fill="#f2f2f2">7</text>
+        <text class="body" x="140" y="154" text-anchor="middle" fill="#ffffff">8</text>
+        <text class="body" x="180" y="154" text-anchor="middle" fill="#f2f2f2">9</text>
+        <text class="body" x="220" y="154" text-anchor="middle" fill="#f2f2f2">10</text>
+        <text class="body" x="260" y="154" text-anchor="middle" fill="#f2f2f2">11</text>
+        <text class="body" x="20" y="194" text-anchor="middle" fill="#f2f2f2">12</text>
+        <text class="body" x="60" y="194" text-anchor="middle" fill="#f2f2f2">13</text>
+        <text class="body" x="100" y="194" text-anchor="middle" fill="#f2f2f2">14</text>
+        <text class="body" x="140" y="194" text-anchor="middle" fill="#f2f2f2">15</text>
+        <text class="body" x="180" y="194" text-anchor="middle" fill="#f2f2f2">16</text>
+        <text class="body" x="220" y="194" text-anchor="middle" fill="#f2f2f2">17</text>
+        <text class="body" x="260" y="194" text-anchor="middle" fill="#f2f2f2">18</text>
+        <text class="body" x="20" y="234" text-anchor="middle" fill="#f2f2f2">19</text>
+        <text class="body" x="60" y="234" text-anchor="middle" fill="#f2f2f2">20</text>
+        <text class="body" x="100" y="234" text-anchor="middle" fill="#f2f2f2">21</text>
+        <text class="body" x="140" y="234" text-anchor="middle" fill="#f2f2f2">22</text>
+        <text class="body" x="180" y="234" text-anchor="middle" fill="#f2f2f2">23</text>
+        <text class="body" x="220" y="234" text-anchor="middle" fill="#f2f2f2">24</text>
+        <text class="body" x="260" y="234" text-anchor="middle" fill="#f2f2f2">25</text>
+        <text class="body" x="20" y="274" text-anchor="middle" fill="#f2f2f2">26</text>
+        <text class="body" x="60" y="274" text-anchor="middle" fill="#f2f2f2">27</text>
+        <text class="body" x="100" y="274" text-anchor="middle" fill="#f2f2f2">28</text>
+        <text class="body" x="140" y="274" text-anchor="middle" fill="#f2f2f2">29</text>
+        <text class="body" x="180" y="274" text-anchor="middle" fill="#f2f2f2">30</text>
+        <text class="body" x="220" y="274" text-anchor="middle" fill="#f2f2f2">31</text>
+        <text class="body" x="260" y="274" text-anchor="middle" fill="#f2f2f2" fill-opacity="0.55">1</text>
+        <text class="body" x="20" y="314" text-anchor="middle" fill="#f2f2f2" fill-opacity="0.55">2</text>
+        <text class="body" x="60" y="314" text-anchor="middle" fill="#f2f2f2" fill-opacity="0.55">3</text>
+        <text class="body" x="100" y="314" text-anchor="middle" fill="#f2f2f2" fill-opacity="0.55">4</text>
+        <text class="body" x="140" y="314" text-anchor="middle" fill="#f2f2f2" fill-opacity="0.55">5</text>
+        <text class="body" x="180" y="314" text-anchor="middle" fill="#f2f2f2" fill-opacity="0.55">6</text>
+        <text class="body" x="220" y="314" text-anchor="middle" fill="#f2f2f2" fill-opacity="0.55">7</text>
+        <text class="body" x="260" y="314" text-anchor="middle" fill="#f2f2f2" fill-opacity="0.55">8</text>
+        <rect x="0" y="336" width="128" height="48" rx="24" fill="#666666"/>
+        <circle class="icon" cx="24" cy="360" r="7" stroke="#f2f2f2"/>
+        <path class="icon" d="M24 356v4l3 2" stroke="#f2f2f2"/>
+        <text class="body" x="48" y="366" fill="#f2f2f2">09:00</text>
+        <rect x="64" y="392" width="104" height="48" rx="24" fill="#333333"/>
+        <text class="body" x="116" y="422" text-anchor="middle" fill="#f2f2f2">取消</text>
+        <rect x="176" y="392" width="104" height="48" rx="24" fill="#666666"/>
+        <text class="body" x="228" y="422" text-anchor="middle" fill="#f2f2f2" fill-opacity="0.55">套用</text>
+      </g>
+      <text class="caption" x="0" y="560" fill="#888">暫態：只選到起點 7/8，尚未選結束日</text>
+      <text class="caption" x="0" y="578" fill="#888">→ 沒有中段淡圓、沒有第二個實心圓</text>
+      <text class="caption" x="0" y="596" fill="#888">trigger 文案與畫面狀態一致</text>
+      <text class="caption" x="0" y="614" fill="#888">「套用」在範圍不完整時停用</text>
+    </g>
+
+    <!-- Trigger states -->
+    <g id="date-picker-trigger-states" transform="translate(1200 64)">
+      <text class="label" x="0" y="0" fill="#f2f2f2">Trigger 狀態</text>
+      <g transform="translate(0 16)">
+        <g id="date-trigger-default">
+          <rect x="0" y="0" width="232" height="48" rx="24" fill="#666666"/>
+          <text class="body" x="24" y="30" fill="#f2f2f2">2026/07/15</text>
+          <circle cx="264" cy="24" r="24" fill="#333333"/>
+          <rect class="icon" x="254" y="16" width="20" height="18" rx="2" stroke="#f2f2f2"/>
+          <path class="icon" d="M254 22h20 M259 13v6 M269 13v6" stroke="#f2f2f2"/>
+          <text class="caption" x="0" y="72" fill="#888">default（面板未開啟）</text>
+        </g>
+        <g id="date-trigger-focused">
+          <rect x="0" y="96" width="232" height="48" rx="24" fill="#666666"/>
+          <rect x="1" y="97" width="230" height="46" rx="23" fill="none" stroke="#598ae8" stroke-width="2"/>
+          <text class="body" x="24" y="126" fill="#f2f2f2">2026/07/15</text>
+          <circle cx="264" cy="120" r="24" fill="#333333"/>
+          <rect class="icon" x="254" y="112" width="20" height="18" rx="2" stroke="#f2f2f2"/>
+          <path class="icon" d="M254 118h20 M259 109v6 M269 109v6" stroke="#f2f2f2"/>
+          <text class="caption" x="0" y="168" fill="#888">focused（欄位取得焦點，2px 內縮焦點框）</text>
+        </g>
+        <g id="date-trigger-empty">
+          <rect x="0" y="192" width="232" height="48" rx="24" fill="#666666"/>
+          <text class="body" x="24" y="222" fill="#4d4d4d">YYYY/MM/DD</text>
+          <circle cx="264" cy="216" r="24" fill="#333333"/>
+          <rect class="icon" x="254" y="208" width="20" height="18" rx="2" stroke="#f2f2f2"/>
+          <path class="icon" d="M254 214h20 M259 205v6 M269 205v6" stroke="#f2f2f2"/>
+          <text class="caption" x="0" y="264" fill="#888">empty（placeholder 沿用 text-input.placeholder gray-700）</text>
+        </g>
+        <g id="date-trigger-disabled">
+          <rect x="0" y="288" width="232" height="48" rx="24" fill="#666666"/>
+          <text class="body" x="24" y="318" fill="#f2f2f2" fill-opacity="0.55">2026/07/15</text>
+          <circle cx="264" cy="312" r="24" fill="#666666"/>
+          <rect class="icon" x="254" y="304" width="20" height="18" rx="2" stroke="#f2f2f2" stroke-opacity="0.55"/>
+          <path class="icon" d="M254 310h20 M259 301v6 M269 301v6" stroke="#f2f2f2" stroke-opacity="0.55"/>
+          <text class="caption" x="0" y="360" fill="#888">disabled（欄位與圖示按鈕同時停用，沿用 number-input 手法）</text>
+        </g>
+      </g>
+    </g>
+
+    <text class="note" x="0" y="700" fill="#a8a8a8">組合邊界：trigger 為 component.text-input（48px、radius.control、background-subdued）＋ component.icon-button（48px 圓形、background-neutral）；面板為上方 Popover（background-overlay、radius.lg、16px 內距、8px 錨點間距、箭頭指向 trigger）。</text>
+    <text class="note" x="0" y="724" fill="#a8a8a8">三者皆不複製 token，畢業時以 alias 重用；且依 batch4-plan.tmp.md 9.1，本元件要通過 SVG 之後的階段，必須先等 Popover（issue #11）完整畢業，這裡同時繪出只是為了讓組合結果能被一次審查。</text>
+    <text class="note" x="0" y="748" fill="#a8a8a8">月曆為 grid 結構，畢業時以 roving tabindex 或等效鍵盤模型操作（方向鍵、Home／End、PageUp／PageDown、Enter／Space、Esc）；本候選稿只表達視覺與內容一致性，鍵盤行為在 HTML/CSS 階段實證，不在此宣稱已驗證。</text>
+    <text class="note" x="0" y="772" fill="#a8a8a8">v0.1 不含：農曆、多語系／多曆法、時區選擇器、週數、快速預設範圍與重複排程。日期格式固定 YYYY/MM/DD、時間 24 小時制 HH:MM，僅為 v0.1 示例格式，不代表已支援多語系或多地區格式。</text>
+    <text class="note" x="0" y="796" fill="#a8a8a8">待 G1／G2 決定（本稿刻意未預設）：無效／不完整輸入是否需要獨立 danger 視覺（目前只以「套用」停用表達不完整範圍）；套用／取消是否必要，或改為選取即套用。</text>
+    <text class="note" x="0" y="820" fill="#a8a8a8">Range 中段視覺為 2026-07-30 人類選定：不畫連續色帶，中間日期改為每日各自的淡色圓。選定理由（使用者原話）：判讀上並沒有太過困難的地方，同時符合設計語言的風格。</text>
+    <text class="note" x="0" y="844" fill="#a8a8a8">被否決的原方案是 40px 直角色帶：相鄰兩列的色帶會上下相接成一塊方形色塊，且直角與圓形端點的形狀語彙互相衝突，與「處處是圓」不一致。另兩個備選（32px 圓角細帶、僅把色帶兩端改圓）同時提出，未獲選。</text>
+    <text class="caption" x="0" y="868" fill="#666">校準候選：日期格 40×40px（size.tag-md）、格心間距 40px；已選日與 range 兩端為 40px 實心圓（action-primary ＋ foreground-inverse 文字）</text>
+    <text class="caption" x="0" y="886" fill="#666">校準候選（續）：range 中段每日各自 36px 圓（action-primary ＋ opacity.selected-overlay 0.18，沿用 component.list-item.background-selected 的淡色手法），圓間 4px＝component.list-item.row-gap；今天 2px 外圈（border.width-focus／border-focus）</text>
+    <text class="caption" x="0" y="904" fill="#666">校準候選（續）：上／下月日期 off-white ＋ opacity.disabled 0.55；不可選日期 gray-600 #666666（沿用 component.menu.disabled-foreground 在 overlay 面板上的既有做法）。兩者刻意區分：上／下月日期可點擊並跳月，不可選日期不能點</text>
+    <text class="caption" x="0" y="922" fill="#666">校準候選（續）：星期列 14px（font.size-label）gray-600；面板寬 312px＝7×40＋2×16 內距；header 高 40px、與星期列間距 8px；時間欄位沿用 text-input 128×48px／radius.control；動作按鈕 48px（size.control-md）；月切換命中區 40px、chevron 16px（size.icon-sm）</text>
+  </g>
+
+</svg>
