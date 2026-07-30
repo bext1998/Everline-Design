@@ -10,12 +10,14 @@
   /* color.base.* */
   --everline-color-base-white: #fff;
   --everline-color-base-off-white: #f2f2f2;
+  --everline-color-base-gray-600: #666;
   --everline-color-base-gray-700: #4d4d4d;
   --everline-color-base-gray-800: #444;
   /* color.semantic.* */
   --everline-color-semantic-background-canvas: #1a1a1a;
   --everline-color-semantic-background-surface: #333;
   --everline-color-semantic-background-subdued: #666;
+  --everline-color-semantic-background-overlay: var(--everline-color-base-gray-700);
   --everline-color-semantic-foreground-primary: #f2f2f2;
   --everline-color-semantic-foreground-inverse: var(--everline-color-base-white);
   --everline-color-semantic-foreground-disabled: #f2f2f2;
@@ -32,6 +34,10 @@
   --everline-opacity-disabled: .55; --everline-opacity-hover-overlay: .06;
   /* size.* / font.* */
   --everline-size-control-md: 48px;
+  --everline-size-icon-sm: 16px;
+  --everline-size-icon-md: 24px;
+  --everline-icon-stroke-width: 2;
+  --everline-layer-overlay: 100;
   --everline-font-family-sans: "Noto Sans TC", system-ui, sans-serif;
   --everline-font-size-label: 14px; --everline-font-size-body: 16px;
   --everline-font-weight-regular: 400; --everline-font-weight-semibold: 600;
@@ -51,15 +57,65 @@
   --everline-component-button-foreground-disabled: var(--everline-color-semantic-foreground-disabled);
   --everline-component-button-border-focus: var(--everline-color-semantic-border-focus);
 
+  /* component.icon-button.* */
+  --everline-component-icon-button-size: var(--everline-size-control-md);
+  --everline-component-icon-button-icon-size: var(--everline-size-icon-md);
+  --everline-component-icon-button-radius: var(--everline-radius-control);
+  --everline-component-icon-button-background-primary: var(--everline-color-semantic-action-primary);
+  --everline-component-icon-button-background-neutral: var(--everline-color-semantic-background-surface);
+  --everline-component-icon-button-background-disabled: var(--everline-color-semantic-background-subdued);
+  --everline-component-icon-button-background-danger: var(--everline-color-semantic-action-danger);
+  --everline-component-icon-button-foreground: var(--everline-color-semantic-foreground-inverse);
+  --everline-component-icon-button-foreground-neutral: var(--everline-color-semantic-foreground-primary);
+  --everline-component-icon-button-foreground-disabled: var(--everline-color-semantic-foreground-disabled);
+  --everline-component-icon-button-border-width: var(--everline-border-width-focus);
+  --everline-component-icon-button-border-focus: var(--everline-color-semantic-border-focus);
+
+  /* component.switch.* */
+  --everline-component-switch-width: 96px;
+  --everline-component-switch-height: var(--everline-size-control-md);
+  --everline-component-switch-radius: var(--everline-radius-control);
+  --everline-component-switch-thumb-size: 40px;
+  --everline-component-switch-thumb-inset: 4px;
+  --everline-component-switch-track-on: var(--everline-color-semantic-action-primary);
+  --everline-component-switch-track-off: var(--everline-color-semantic-background-surface);
+  --everline-component-switch-track-disabled: var(--everline-color-semantic-background-surface);
+  --everline-component-switch-track-danger: var(--everline-color-semantic-action-danger);
+  --everline-component-switch-thumb: var(--everline-color-base-off-white);
+  --everline-component-switch-thumb-disabled: var(--everline-color-base-gray-600);
+
   /* component.checkbox.* */
   --everline-component-checkbox-size: 32px;
   --everline-component-checkbox-radius: var(--everline-radius-sm);
-  --everline-component-checkbox-indicator-size: 32px; /* mask covers the whole box; the drawn path already sits inset within it, see .checkbox::after */
   --everline-component-checkbox-background: var(--everline-color-semantic-background-surface);
   --everline-component-checkbox-indicator: var(--everline-color-semantic-action-primary);
   --everline-component-checkbox-disabled: var(--everline-color-semantic-background-subdued);
   --everline-component-checkbox-border: var(--everline-color-semantic-border-default);
   --everline-component-checkbox-border-width: var(--everline-border-width-default);
+
+  /* component.radio.* */
+  --everline-component-radio-size: 32px;
+  --everline-component-radio-indicator-size: 20px;
+  --everline-component-radio-background: var(--everline-color-semantic-background-surface);
+  --everline-component-radio-indicator: var(--everline-color-semantic-action-primary);
+  --everline-component-radio-disabled: var(--everline-color-semantic-background-subdued);
+  --everline-component-radio-border: var(--everline-color-semantic-border-default);
+  --everline-component-radio-border-width: var(--everline-border-width-default);
+
+  /* component.split-button.* */
+  --everline-component-split-button-width-reference: 180px;
+  --everline-component-split-button-height: var(--everline-size-control-md);
+  --everline-component-split-button-radius: var(--everline-radius-control);
+  --everline-component-split-button-disclosure-width: var(--everline-size-control-md);
+  --everline-component-split-button-divider-width: var(--everline-border-width-default);
+  --everline-component-split-button-menu-row-height: var(--everline-size-control-md);
+  --everline-component-split-button-menu-radius: var(--everline-radius-control);
+  --everline-component-split-button-background: var(--everline-color-semantic-action-primary);
+  --everline-component-split-button-menu-background: var(--everline-color-semantic-background-overlay);
+  --everline-component-split-button-foreground: var(--everline-color-semantic-foreground-inverse);
+  --everline-component-split-button-menu-foreground: var(--everline-color-semantic-foreground-primary);
+  --everline-component-split-button-divider-color: #4A76C9;
+  --everline-component-split-button-layer: var(--everline-layer-overlay);
 
   /* component.text-input.* */
   --everline-component-text-input-height: var(--everline-size-control-md);
@@ -171,35 +227,53 @@ h2 { font-size: var(--everline-space-3); line-height: 1.35; }
   box-shadow: inset 0 0 0 var(--everline-component-button-border-width) var(--everline-component-button-border-focus);
 }
 .button:hover:not(:disabled) { background-image: linear-gradient(var(--everline-hover-overlay), var(--everline-hover-overlay)); }
+/* Disabled Button: the approved SVG only dims the label text, not the button's own #666
+   background (fill-opacity was applied to the text node only, see c-button's disabled group).
+   Plain `opacity` on the whole element incorrectly faded the background too (found in PR #29
+   review, 2026-07-30) — use the same color-mix technique already established by Text
+   input/Textarea/Number input's disabled foreground instead. */
 .button:disabled {
   background: var(--everline-component-button-background-disabled);
-  color: var(--everline-component-button-foreground-disabled);
-  opacity: var(--everline-opacity-disabled);
+  color: color-mix(in srgb, var(--everline-component-button-foreground-disabled) calc(var(--everline-opacity-disabled) * 100%), var(--everline-component-button-background-disabled));
   cursor: not-allowed;
   box-shadow: none;
 }
 
 /* ---------- Checkbox ----------
-   Native <input type="checkbox"> with appearance:none. Checked/indeterminate glyphs are the
-   exact paths already hand-drawn in works/everline-components-master.svg c-checkbox (M8 16l6 6
-   10-12 / M8 16h16 inside a 32x32 box), reproduced as a mask-image so the check keeps
-   component.checkbox.indicator's colour instead of baking a fixed colour into the asset.
-   .indeterminate is set from JS (prototype.js) — it is not an HTML attribute. */
+   Native <input type="checkbox">, appearance:none, but the input itself is now sized to
+   component.control-md (48px) — the spec's own accessibility requirement ("32px 視覺控制置於至少
+   48×48px 命中區") that the first pass of this file missed (found in PR #29 review, 2026-07-30).
+   The input paints nothing directly; ::before draws the 32px visual box (background/border)
+   centred inside the 48px hit area via inset:0;margin:auto, and ::after draws the check/dash
+   glyph at that same 32px box. Both reuse component.checkbox.size (32px) as their coordinate
+   system — component.checkbox.indicator-size (20px) describes the glyph's own ink extent inside
+   that box, it is not a second box size, so no CSS custom property claims to be it; the first
+   pass wrongly aliased a 32px value to a property named "indicator-size", which never matched the
+   20px token. Checked/indeterminate glyphs are the exact paths already hand-drawn in
+   works/everline-components-master.svg c-checkbox (M8 16l6 6 10-12 / M8 16h16 inside a 32x32 box),
+   reproduced as a mask-image so the check keeps component.checkbox.indicator's colour instead of
+   baking a fixed colour into the asset. .indeterminate is set from JS (prototype.js) — it is not
+   an HTML attribute. */
 .checkbox-examples { display: flex; flex-direction: column; gap: var(--everline-space-2); }
 .checkbox-row { display: flex; align-items: center; gap: var(--everline-space-2); }
 .checkbox {
-  appearance: none; -webkit-appearance: none; margin: 0; flex: 0 0 auto; position: relative;
+  appearance: none; -webkit-appearance: none; margin: 0; padding: 0; border: 0; flex: 0 0 auto; position: relative;
+  width: var(--everline-size-control-md); height: var(--everline-size-control-md);
+  background: transparent;
+  cursor: pointer;
+}
+.checkbox::before {
+  content: ""; position: absolute; inset: 0; margin: auto;
   width: var(--everline-component-checkbox-size); height: var(--everline-component-checkbox-size);
   border-radius: var(--everline-component-checkbox-radius);
   background: var(--everline-component-checkbox-background);
   box-shadow: inset 0 0 0 var(--everline-component-checkbox-border-width) transparent;
-  cursor: pointer;
 }
-.checkbox:not(:checked):not(:indeterminate):not(:disabled) { box-shadow: inset 0 0 0 var(--everline-component-checkbox-border-width) var(--everline-component-checkbox-border); }
-.checkbox:hover:not(:disabled) { background-image: linear-gradient(var(--everline-hover-overlay), var(--everline-hover-overlay)); }
+.checkbox:not(:checked):not(:indeterminate):not(:disabled)::before { box-shadow: inset 0 0 0 var(--everline-component-checkbox-border-width) var(--everline-component-checkbox-border); }
+.checkbox:hover:not(:disabled)::before { background-image: linear-gradient(var(--everline-hover-overlay), var(--everline-hover-overlay)); }
 .checkbox::after {
-  content: ""; position: absolute; inset: 0;
-  width: var(--everline-component-checkbox-indicator-size); height: var(--everline-component-checkbox-indicator-size);
+  content: ""; position: absolute; inset: 0; margin: auto;
+  width: var(--everline-component-checkbox-size); height: var(--everline-component-checkbox-size);
   background: var(--everline-component-checkbox-indicator);
   mask-repeat: no-repeat; mask-position: center; mask-size: contain;
   -webkit-mask-repeat: no-repeat; -webkit-mask-position: center; -webkit-mask-size: contain;
@@ -215,7 +289,8 @@ h2 { font-size: var(--everline-space-3); line-height: 1.35; }
   mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M8 16h16' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M8 16h16' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
-.checkbox:disabled { background: var(--everline-component-checkbox-disabled); box-shadow: none; cursor: not-allowed; }
+.checkbox:disabled::before { background: var(--everline-component-checkbox-disabled); box-shadow: none; }
+.checkbox:disabled { cursor: not-allowed; }
 .checkbox-row label { cursor: pointer; }
 .checkbox:disabled ~ label, .checkbox-row:has(.checkbox:disabled) label { color: var(--everline-color-semantic-foreground-disabled); opacity: var(--everline-opacity-disabled); cursor: not-allowed; }
 
@@ -276,13 +351,181 @@ h2 { font-size: var(--everline-space-3); line-height: 1.35; }
 .textarea--lg::-webkit-scrollbar-track { background: transparent; margin-block: var(--everline-component-textarea-padding); }
 .textarea--lg::-webkit-scrollbar-thumb { background: var(--everline-component-textarea-scrollbar); border-radius: var(--everline-radius-pill); }
 
+/* ---------- Icon button ----------
+   Real <button> with a real inline icon (currentColor stroke) rather than the master SVG's
+   "圖示" text placeholder — graduating to HTML/CSS means real icon assets per the icon-system
+   rules in docs/design-system-v0.1-draft.md, not a re-drawn text label. Hit area is already
+   48x48 (no separate visual-vs-hit-area split needed, unlike Checkbox/Radio's 32px visual). */
+.icon-button-examples { display: flex; flex-wrap: wrap; gap: var(--everline-space-2); align-items: center; }
+.icon-button {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: var(--everline-component-icon-button-size); height: var(--everline-component-icon-button-size);
+  border: 0; border-radius: var(--everline-component-icon-button-radius);
+  background: var(--everline-component-icon-button-background-neutral);
+  color: var(--everline-component-icon-button-foreground-neutral);
+  padding: 0; cursor: pointer;
+}
+.icon-button svg { width: var(--everline-component-icon-button-icon-size); height: var(--everline-component-icon-button-icon-size); fill: none; stroke: currentColor; stroke-width: var(--everline-icon-stroke-width); stroke-linecap: round; stroke-linejoin: round; }
+.icon-button--primary { background: var(--everline-component-icon-button-background-primary); color: var(--everline-component-icon-button-foreground); }
+.icon-button--danger { background: var(--everline-component-icon-button-background-danger); color: var(--everline-component-icon-button-foreground); }
+.icon-button--outline {
+  background: var(--everline-component-icon-button-background-neutral);
+  color: var(--everline-component-icon-button-foreground-neutral);
+  box-shadow: inset 0 0 0 var(--everline-component-icon-button-border-width) var(--everline-component-icon-button-border-focus);
+}
+.icon-button:hover:not(:disabled) { background-image: linear-gradient(var(--everline-hover-overlay), var(--everline-hover-overlay)); }
+.icon-button:disabled {
+  background: var(--everline-component-icon-button-background-disabled);
+  color: color-mix(in srgb, var(--everline-component-icon-button-foreground-disabled) calc(var(--everline-opacity-disabled) * 100%), var(--everline-component-icon-button-background-disabled));
+  cursor: not-allowed; box-shadow: none;
+}
+
+/* ---------- Switch ----------
+   Native <input type="checkbox" role="switch">: the browser derives the accessible checked
+   state from the real `checked` IDL property for role=switch on a native checkbox, so no manual
+   aria-checked mirroring is added (mirroring a natively-derived value only risks the two drifting
+   apart). Space and click already toggle a native checkbox; Enter does not by native behaviour,
+   so prototype.js adds a minimal keydown handler that treats Enter the same as a click for
+   role=switch controls specifically (issue #31's own interaction requirement), without touching
+   Checkbox/Radio's native-only behaviour. No transition: the approved SVG never showed a slide
+   animation and motion.duration-base is still an unverified candidate token (same reasoning
+   batch 4 already applied to Accordion/Popover) — the thumb snaps to position instead. */
+.switch-examples { display: flex; flex-direction: column; gap: var(--everline-space-2); }
+.switch-row { display: flex; align-items: center; gap: var(--everline-space-2); }
+.switch {
+  appearance: none; -webkit-appearance: none; margin: 0; padding: 0; border: 0; position: relative; flex: 0 0 auto;
+  width: var(--everline-component-switch-width); height: var(--everline-component-switch-height);
+  border-radius: var(--everline-component-switch-radius);
+  background: var(--everline-component-switch-track-off);
+  cursor: pointer;
+}
+.switch::after {
+  content: ""; position: absolute; top: var(--everline-component-switch-thumb-inset); left: var(--everline-component-switch-thumb-inset);
+  width: var(--everline-component-switch-thumb-size); height: var(--everline-component-switch-thumb-size);
+  border-radius: 50%; background: var(--everline-component-switch-thumb);
+}
+.switch:checked { background: var(--everline-component-switch-track-on); }
+.switch:checked::after { left: calc(var(--everline-component-switch-width) - var(--everline-component-switch-thumb-size) - var(--everline-component-switch-thumb-inset)); }
+.switch--danger:checked { background: var(--everline-component-switch-track-danger); }
+.switch:hover:not(:disabled) { background-image: linear-gradient(var(--everline-hover-overlay), var(--everline-hover-overlay)); }
+.switch:disabled { background: var(--everline-component-switch-track-disabled); cursor: not-allowed; }
+.switch:disabled::after { background: var(--everline-component-switch-thumb-disabled); }
+.switch-row label { cursor: pointer; }
+.switch:disabled ~ label, .switch-row:has(.switch:disabled) label { color: var(--everline-color-semantic-foreground-disabled); opacity: var(--everline-opacity-disabled); cursor: not-allowed; }
+
+/* ---------- Radio ----------
+   Same 48x48 native-hit-area / 32x32 visual split as Checkbox (::before draws the visual circle,
+   ::after draws the selected dot), for the same reason: the spec requires the hit area regardless
+   of visual size, and this pattern is already established rather than new. Real same-name
+   <input type="radio"> group: ArrowUp/Down/Left/Right moving selection between radios in the same
+   name group, and Tab entering/leaving the group as a whole, are native browser behaviour — no JS
+   is needed or added for it. */
+.radio-examples { display: flex; flex-direction: column; gap: var(--everline-space-2); }
+.radio-row { display: flex; align-items: center; gap: var(--everline-space-2); }
+fieldset.radio-group { border: 0; margin: 0; padding: 0; }
+fieldset.radio-group legend { font-size: var(--everline-font-size-label); font-weight: var(--everline-font-weight-semibold); margin-bottom: var(--everline-space-2); padding: 0; }
+.radio {
+  appearance: none; -webkit-appearance: none; margin: 0; padding: 0; border: 0; flex: 0 0 auto; position: relative;
+  width: var(--everline-size-control-md); height: var(--everline-size-control-md);
+  background: transparent; cursor: pointer;
+}
+.radio::before {
+  content: ""; position: absolute; inset: 0; margin: auto;
+  width: var(--everline-component-radio-size); height: var(--everline-component-radio-size);
+  border-radius: 50%; background: var(--everline-component-radio-background);
+  box-shadow: inset 0 0 0 var(--everline-component-radio-border-width) transparent;
+}
+.radio:not(:checked):not(:disabled)::before { box-shadow: inset 0 0 0 var(--everline-component-radio-border-width) var(--everline-component-radio-border); }
+.radio:hover:not(:disabled)::before { background-image: linear-gradient(var(--everline-hover-overlay), var(--everline-hover-overlay)); }
+.radio::after {
+  content: ""; position: absolute; inset: 0; margin: auto;
+  width: var(--everline-component-radio-indicator-size); height: var(--everline-component-radio-indicator-size);
+  border-radius: 50%; background: var(--everline-component-radio-indicator); opacity: 0;
+}
+.radio:checked::after { opacity: 1; }
+.radio:disabled::before { background: var(--everline-component-radio-disabled); box-shadow: none; }
+.radio:disabled { cursor: not-allowed; }
+.radio-row label { cursor: pointer; }
+.radio:disabled ~ label, .radio-row:has(.radio:disabled) label { color: var(--everline-color-semantic-foreground-disabled); opacity: var(--everline-opacity-disabled); cursor: not-allowed; }
+
+/* ---------- Split button / Dropdown ----------
+   Main action and disclosure are two independent real <button>s (never one clickable region doing
+   double duty). The menu is a real role="menu" with role="menuitem" children and roving tabindex
+   (only the currently-focused item is in the tab sequence, matching the ARIA APG menu-button
+   pattern) — not a styled <select> or a div soup. Only the states the approved SVG actually drew
+   are implemented: closed, open, and each button's own hover/focus/disabled. Per-item hover,
+   selected, disabled and loading states were never drawn for this component's menu and are
+   deliberately NOT implemented — see index.html's scope note; inventing them would be exactly the
+   "SVG 未畫出的視覺不得自行發明" violation AGENTS.md warns against. No transition/animation for
+   the same reason as Switch above: the SVG's own "needs transition animation" note can't be
+   satisfied without a validated motion token, so the menu opens/closes instantly via the `hidden`
+   attribute. */
+.split-button-examples { display: flex; flex-wrap: wrap; gap: var(--everline-space-4); align-items: flex-start; }
+.split-button { position: relative; display: inline-flex; align-items: stretch; height: var(--everline-component-split-button-height); }
+.split-button__main {
+  display: flex; align-items: center;
+  padding-inline: var(--everline-space-2); border: 0;
+  border-start-start-radius: var(--everline-component-split-button-radius); border-end-start-radius: var(--everline-component-split-button-radius);
+  background: var(--everline-component-split-button-background); color: var(--everline-component-split-button-foreground);
+  font: inherit; font-weight: var(--everline-font-weight-semibold); cursor: pointer;
+}
+/* Divider is inset top/bottom by space.1 (8px), not full height — matches the approved SVG's
+   own line (y1=8, y2=40 inside a 48px-tall button = 32px tall, 8px clear at each end), found
+   missing when compared against the SVG screenshot (2026-07-31). Reuses the existing space.1
+   token, not a new value. */
+.split-button__divider { display: block; flex: 0 0 auto; align-self: center; width: var(--everline-component-split-button-divider-width); height: calc(100% - var(--everline-space-1) * 2); background: var(--everline-component-split-button-divider-color); }
+.split-button__disclosure {
+  display: flex; align-items: center; justify-content: center;
+  width: var(--everline-component-split-button-disclosure-width); border: 0;
+  border-start-end-radius: var(--everline-component-split-button-radius); border-end-end-radius: var(--everline-component-split-button-radius);
+  background: var(--everline-component-split-button-background); color: var(--everline-component-split-button-foreground);
+  cursor: pointer;
+}
+.split-button__disclosure svg { width: var(--everline-size-icon-sm); height: var(--everline-size-icon-sm); fill: none; stroke: currentColor; stroke-width: var(--everline-icon-stroke-width); stroke-linecap: round; stroke-linejoin: round; }
+/* The approved SVG's open state flips the chevron to point up — a static rotated state, not an
+   animation (same reasoning already applied to the Accordion disclosure icon in batch 4: "a
+   static state, not motion"), so no transition is declared. */
+.split-button__disclosure[aria-expanded="true"] svg { transform: rotate(180deg); }
+.split-button__main:hover, .split-button__disclosure:hover { background-image: linear-gradient(var(--everline-hover-overlay), var(--everline-hover-overlay)); }
+/* When open, the approved SVG merges the button and the panel below into one continuous shape —
+   the button's own bottom corners square off and the panel's top corners square off, so there is
+   no visible gap or double-rounded seam between them (found missing when compared against the
+   SVG screenshot, 2026-07-31: the first pass left both independently full-rounded, reading as two
+   separate floating shapes with a gap). */
+.split-button:has(.split-button__disclosure[aria-expanded="true"]) .split-button__main { border-end-start-radius: 0; }
+.split-button:has(.split-button__disclosure[aria-expanded="true"]) .split-button__disclosure { border-end-end-radius: 0; }
+.split-button:has(.split-button__disclosure[aria-expanded="true"]) .split-button__menu { border-start-start-radius: 0; border-start-end-radius: 0; }
+/* width: 100% only — no min-width off width-reference. That token (180px) is a catalog
+   measurement of the approved SVG's specific demo content, the same "reference, not an enforced
+   value" role component.button.width-reference (128px) already plays without ever being consumed
+   in Button's own CSS. A min-width here forced the menu wider than the button itself whenever the
+   button's real (content-driven) width was under 180px, reading as visually disproportionate —
+   found by comparing against a live render, 2026-07-31. The menu must always match whatever width
+   the button actually renders at, not a fixed catalog number. */
+.split-button__menu {
+  position: absolute; top: 100%; left: 0; z-index: var(--everline-component-split-button-layer);
+  width: 100%;
+  margin: 0; padding: 0; border: 0; border-radius: var(--everline-component-split-button-menu-radius);
+  background: var(--everline-component-split-button-menu-background);
+  overflow: hidden;
+}
+.split-button__menu[hidden] { display: none; }
+.split-button__item {
+  display: flex; align-items: center; width: 100%; height: var(--everline-component-split-button-menu-row-height);
+  padding-inline: var(--everline-space-2); border: 0; background: transparent;
+  color: var(--everline-component-split-button-menu-foreground); font: inherit; text-align: start; cursor: pointer;
+}
+
 @media (max-width: 760px) {
   .catalog { padding: var(--everline-space-2); }
   .catalog-header { flex-direction: column; }
   .candidate-badge { white-space: normal; }
   .text-input, .textarea { width: 100%; }
+  .split-button-examples { flex-direction: column; }
 }
 
 /* No transition, animation or keyframe is declared anywhere in this batch — Button/Checkbox/
-   Text input/Textarea have no drawn hover/pressed/loading motion (see index.html scope note),
-   so there is nothing for prefers-reduced-motion to switch off and no override is needed. */
+   Text input/Textarea/Icon button/Switch/Radio/Split button have no drawn hover/pressed/loading
+   motion, and Split button's own "needs transition animation" SVG note can't be honoured without
+   a validated motion token (see index.html scope note), so there is nothing for
+   prefers-reduced-motion to switch off and no override is needed. */

@@ -3,38 +3,59 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Everline v0.1 — 第一批 HTML/CSS 候選元件（issue #17 試辦）</title>
+    <title>Everline v0.1 — 第一批 HTML/CSS 候選元件（issue #17，Button/Checkbox/Text input/Textarea 已畢業，Icon button/Switch/Radio/Split button 等待 G1）</title>
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <main class="catalog" aria-labelledby="page-title">
       <header class="catalog-header">
         <div>
-          <p class="eyebrow">Everline v0.1 · 第一批試辦（issue #17，P0+P1，僅 3 群，等待 G1）</p>
-          <h1 id="page-title">Everline Design Language — Components Batch 1 HTML/CSS Candidate (Pilot)</h1>
-          <p class="lede">Button · Checkbox · Text input / Textarea</p>
-          <p class="trace">驗證：<code>node works/html/batch1/verify.mjs</code>（零相依，只需 Node 22+ 與 Chrome）· Graduated from <code>works/everline-components-master.svg</code>（c-button／c-checkbox／c-text-input／c-textarea 群組）· master SVG 尚未標記 <code>superseded-by</code>，等待人類 G1 審查後才會標記 · 此 HTML/CSS 為這 3 群目前的候選規格來源，其餘 12 群仍以 master SVG 為權威來源，不受本批影響。</p>
+          <p class="eyebrow">Everline v0.1 · 第一批（issue #17）· 3／15 群已畢業，issues #30–#33 共 4 群等待 G1</p>
+          <h1 id="page-title">Everline Design Language — Components Batch 1 HTML/CSS Candidate</h1>
+          <p class="lede">Button · Icon button · Switch · Checkbox · Radio · Split button / Dropdown · Text input / Textarea</p>
+          <p class="trace">驗證：<code>node works/html/batch1/verify.mjs</code>（零相依，只需 Node 22+ 與 Chrome）· Button／Checkbox／Text input／Textarea（c-button／c-checkbox／c-text-input／c-textarea 共 4 個 SVG 群組）2026-07-30 人類 G1 審查通過後已標記群組級 <code>superseded-by</code>，是這 4 個 SVG 群組目前的候選規格來源。Icon button（issue #30）／Switch（issue #31）／Radio（issue #32）／Split button（issue #33）此輪新增為 <strong>candidate ready for G1，尚未通過人類審查，master.svg 對應的 c-icon-button／c-switch／c-radio／c-split-button 群組尚未標記 <code>superseded-by</code></strong>，master SVG 仍是這 4 群目前的權威來源。master.svg 除 c-color-swatch 外共 16 個產品元件群組，此輪畢業＋等待 G1 合計 8 個，其餘 8 個 SVG 群組不受影響；issue #17 15 群清單中，已畢業 3 群＋等待 G1 的 4 群共 7 群，仍有 8 群未動工。整份仍是 candidate，未宣告 stable。</p>
         </div>
-        <p class="candidate-badge"><span aria-hidden="true"></span> PILOT CANDIDATE · AWAITING G1</p>
+        <p class="candidate-badge"><span aria-hidden="true"></span> CANDIDATE · MIXED G1 STATUS, SEE TRACE</p>
       </header>
 
       <aside class="scope-note" aria-labelledby="scope-title">
         <h2 id="scope-title">本輪範圍、token 缺口與刻意未實作項目</h2>
-        <p>依 issue #17 建議，本輪只試做 Button、Checkbox、Text input／Textarea 三群（15 群中的 3 群），完成後停在人類審查閘門（G1），不繼續其餘 12 群。</p>
+        <p>依 issue #17 建議，本輪只試做 Button、Checkbox、Text input／Textarea 三群（15 群中的 3 群），2026-07-30 通過人類審查閘門（G1），暫不繼續其餘 12 群。PR #29 合併前審查（codex）另找出 3 個 Major 問題，已於本輪一併修正：disabled Button 誤將整顆元件套用 <code>opacity</code>（背景一併變暗，已改回只混合前景文字）、checkbox 的 <code>indicator-size</code> custom property 誤標成 32px（實際 token 是 20px，已改用正確的 <code>component.checkbox.size</code> 作為 mask 畫布）、checkbox 命中區只有 32×32px（已補到 48×48px，視覺仍維持 32×32px）。</p>
         <p><strong>P0 token 完整性核對發現並已最小補上的 4 個缺口</strong>（詳見 <code>tokens/everline-draft.tokens.json</code> 各欄位 <code>$description</code>，皆為新增、未改動任何既有解析值）：</p>
         <ul>
           <li><code>component.button.foreground-neutral</code> — neutral／outline 變體的文字色其實是 off-white，不是既有 <code>foreground</code>（white）token 所指的顏色；來源 SVG 只有 primary／danger 兩個變體的文字有 <code>fill="#fff"</code> 覆寫。</li>
           <li><code>component.checkbox.border</code>／<code>border-width</code> — 未勾選狀態的 1px <code>#444</code> 描邊（<code>border-default</code>）先前未被任何 checkbox token 涵蓋。</li>
           <li><code>component.text-input.foreground-disabled</code> — Text input 自己的 SVG 群組從未畫出 disabled 狀態，此值沿用 batch 3 Number input 欄位已審查通過的 disabled 處理方式（背景維持實色、前景以 <code>color-mix()</code> 混合），非新視覺決定。</li>
-          <li><code>component.textarea.foreground</code>／<code>placeholder</code>／<code>border-width-focus</code>／<code>border-focus</code> — Textarea 先前完全沒有這些 token，儘管 SVG 已經畫出 placeholder 文字（<code>foreground</code>／<code>placeholder</code> 直接依 SVG 實測值補上），focus 邊框則沿用 Text input／Search field／Number input 已建立的同一套技法。</li>
+          <li><code>component.textarea.placeholder</code> 直接依 SVG 實測值補上；<code>component.textarea.foreground</code>（未填寫時的預設文字色）SVG 兩個範例其實都只畫了 placeholder 樣式文字、沒有 filled 範例可查證，是 G1 接受的延伸決定，沿用 Text input 已建立的同一角色，而不是 SVG 量測值；<code>border-width-focus</code>／<code>border-focus</code> 沿用 Text input／Search field／Number input 已建立的同一套 focus 技法。</li>
         </ul>
-        <p><strong>刻意未實作、留給 G1 決定的項目</strong>（依 <code>AGENTS.md</code>：SVG 未畫出的視覺不得自行發明）：</p>
+        <p><strong>刻意未實作、留給後續審查決定的項目</strong>（依 <code>AGENTS.md</code>：SVG 未畫出的視覺不得自行發明）：</p>
         <ul>
           <li>Button 的 <code>pressed</code>、<code>loading</code> 狀態——沒有任何已核准的視覺依據，本批完全不實作。</li>
-          <li><strong>Button outline 變體與 focus ring 共用同一組 2px 藍色描邊視覺，這是 <code>docs/design-system-v0.1-draft.md</code> 已記錄的既有未決問題，本批未解決</strong>：outline 按鈕本身已有 2px 藍色描邊，鍵盤 focus 時會在外側再疊加一圈 <code>outline</code>，兩者在 outline 變體上會同時可見、視覺上更接近雙圈而非單一語意，是否需要獨立的 focus 表現方式（例如外擴光暈）留待人類審查決定，不在本輪擅自結案。</li>
+          <li><strong>Button outline 變體與 focus ring 共用同一組 2px 藍色描邊視覺，這是 <code>docs/design-system-v0.1-draft.md</code> 已記錄的既有未決問題，本批未解決</strong>：outline 按鈕本身已有 2px 藍色描邊，鍵盤 focus 時會在外側再疊加一圈 <code>outline</code>，兩者在 outline 變體上會同時可見、視覺上更接近雙圈而非單一語意，是否需要獨立的 focus 表現方式（例如外擴光暈）留待後續審查決定，不在本輪擅自結案。</li>
           <li>Text input／Textarea 的 <code>error</code> 狀態——需要新的語意色決策，本批不實作；<code>readonly</code> 僅做原生語意支援（游標與可否編輯），沒有專屬視覺語言。</li>
           <li>Checkbox 的 <code>focused</code>／<code>error group</code>——focus 沿用既有全域 <code>:focus-visible</code> 技法（非新視覺決定），error group 因涉及多選欄位層級的產品決策，本批不實作。</li>
           <li>Button／Checkbox 的 <code>hover</code> 一律沿用既有跨元件的 6% 白色疊加技法（<code>opacity.hover-overlay</code>，Tabs／Menu／List-item／Breadcrumb／Accordion 已用過的既有作法），不是本批新增的視覺決定；Text input／Textarea 則不加 hover（既有的 Search field／Number input 欄位同樣沒有 hover 處理，維持一致）。</li>
+        </ul>
+      </aside>
+
+      <aside class="scope-note" aria-labelledby="scope-title-2">
+        <h2 id="scope-title-2">本輪新增（issues #30–#33）：token 缺口與 G1 決策清單 — candidate ready for G1，尚未通過人類審查</h2>
+        <p>本輪新增 Icon button（issue #30）、Switch（issue #31）、Radio（issue #32）、Split button／Dropdown（issue #33），對應 <code>works/everline-components-master.svg</code> 的 <code>c-icon-button</code>／<code>c-switch</code>／<code>c-radio</code>／<code>c-split-button</code> 四個 SVG 群組。<strong>這 4 群完成 P0–P2，尚未通過 G1 人類視覺審查</strong>，master.svg 對應區塊未標記 <code>superseded-by</code>，<code>docs/STATUS.md</code>／<code>docs/design-system-v0.1-draft.md</code> 只記錄「等待 G1」事實，未宣稱已畢業或 stable，issue #30–#33 亦未打勾關閉。</p>
+        <p><strong>P0 token 完整性核對發現並已最小補上的缺口</strong>（詳見 <code>tokens/everline-draft.tokens.json</code> 各欄位 <code>$description</code>，皆為新增、未改動任何既有解析值）：</p>
+        <ul>
+          <li><code>component.icon-button.foreground</code>／<code>foreground-neutral</code>／<code>foreground-disabled</code>／<code>border-width</code>／<code>border-focus</code> — 與 Button 完全相同的缺口模式：primary／danger 文字為 white，neutral／outline 其實是 off-white（先前一個 token 都沒有），outline 描邊的 2px／<code>#598ae8</code> 也未被 token 化。</li>
+          <li><code>component.radio.border</code>／<code>border-width</code> — 與 Checkbox 完全相同的缺口：未勾選狀態的 1px <code>#444</code> 描邊先前未被任何 radio token 涵蓋。</li>
+          <li><code>component.split-button.foreground</code>（white，主標籤／chevron）、<code>menu-foreground</code>（off-white，選單項目文字，比照 Popover 既有慣例明確宣告而非留給隱式繼承）、<code>divider-color</code>（<code>#4A76C9</code>，disclosure 分隔線，SVG 已畫出但從未被任何 token 涵蓋的既有顏色，非新設計）、<code>layer</code>（alias <code>layer.overlay</code>，比照 Popover 既有做法）。</li>
+          <li>Switch 核對後<strong>沒有發現缺口</strong>：on／off／disabled／danger-on 四個已畫出狀態的尺寸與顏色，<code>component.switch.*</code> 先前已完整涵蓋且數值一致。</li>
+        </ul>
+        <p><strong>刻意未實作、留給 G1 決定的項目</strong>（依 <code>AGENTS.md</code>：SVG 未畫出的視覺不得自行發明——人類審查前必須停在這裡，不得自行結案）：</p>
+        <ul>
+          <li>Icon button 的 <code>pressed</code>、<code>selected</code>、<code>tooltip</code> 搭配——SVG 未畫出，本批不實作；<code>hover</code> 沿用既有跨元件 6% 白色疊加技法（非新視覺決定）。<strong>outline 變體與 focus ring 共用同一組視覺的既有未決問題，與 Button 相同，本批同樣未解決。</strong></li>
+          <li>Switch 的 <code>focused</code>（沿用既有全域 <code>:focus-visible</code>，非新決定）／<code>loading</code>／<code>error feedback</code>——後兩者 SVG 未畫出，本批不實作。</li>
+          <li>Radio 的 <code>focused</code>（沿用既有全域 <code>:focus-visible</code>）／<code>error group</code>——error group 涉及多選欄位層級的產品決策，本批不實作。</li>
+          <li><strong>Split button 選單本身的 <code>hover</code>／<code>selected item</code>／<code>disabled item</code>／<code>loading</code> 皆未實作</strong>：SVG 的 open 範例只畫出兩個純文字選項，未畫出任何互動狀態組合，不得假設沿用 hover-overlay 等其他元件的既有技法涵蓋這裡——這點與 Button／Checkbox／Icon button 的 hover 處理刻意不同，因為母票要求明確排除。主動作與 disclosure 兩顆按鈕本身的 hover／focus／disabled 不在此限（那是 Button-like 觸發元件，不是選單項目）。<strong>鍵盤 focus 說明修正（找 codex 復審後修正）</strong>：選單項目本身是真實 <code>&lt;button&gt;</code>，全域 <code>:focus-visible</code> 規則本來就會套用在它們身上，鍵盤移動到某一項時並非完全沒有視覺回饋；本批只是沒有替 menu item 另外定義一套專屬的 focus 視覺（例如 Menu 元件既有規格描述的「keyboard focus item」那種 2px 藍色 focus ring 專屬處理），目前僅沿用跨元件共用的全域 focus ring 作為最低限度的可見鍵盤焦點，兩者不是同一件事，先前文字誤寫成「不附加任何視覺回饋」，予以更正。</li>
+          <li>Split button 的動畫——SVG 註記「needs transition animation」，但 <code>motion.duration-base</code>／<code>easing-standard</code> 仍是未驗證 candidate，比照 batch 4 Accordion／Popover 的既有決定不加動畫，開合皆為瞬時（<code>hidden</code> 屬性切換）。</li>
+          <li>Split button 選單與 Tooltip／Modal／Toast 等其他浮層同時存在時的疊放順序——<code>layer.overlay</code> 本身仍是未驗證 candidate（與 Popover 已記錄的相同保留事項），本批僅記錄不驗證。</li>
         </ul>
       </aside>
 
@@ -55,12 +76,67 @@
         <p class="example-label">依序：primary、neutral、disabled（原生 <code>disabled</code>）、danger、outline。文字色 primary／danger 為 white（<code>component.button.foreground</code>），neutral／outline 為 off-white（<code>component.button.foreground-neutral</code>，本輪新增）。</p>
       </section>
 
+      <!-- ===================== Icon button ===================== -->
+      <section class="component-section" aria-labelledby="icon-button-title">
+        <div class="section-heading">
+          <p class="eyebrow">Action</p>
+          <h2 id="icon-button-title">Icon button</h2>
+          <p>48 × 48px · circular · 24px icon area · primary／neutral／disabled／danger／outline</p>
+        </div>
+        <div class="icon-button-examples">
+          <button class="icon-button icon-button--primary" type="button" aria-label="刪除項目">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12"/><path d="M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3"/></svg>
+          </button>
+          <button class="icon-button" type="button" aria-label="刪除項目">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12"/><path d="M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3"/></svg>
+          </button>
+          <button class="icon-button" type="button" aria-label="刪除項目" disabled>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12"/><path d="M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3"/></svg>
+          </button>
+          <button class="icon-button icon-button--danger" type="button" aria-label="刪除項目">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12"/><path d="M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3"/></svg>
+          </button>
+          <button class="icon-button icon-button--outline" type="button" aria-label="刪除項目">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12"/><path d="M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3"/></svg>
+          </button>
+        </div>
+        <p class="example-label">依序：primary、neutral、disabled（原生 <code>disabled</code>）、danger、outline，皆為同一個「刪除項目」動作的五種視覺變體（找 codex 復審後修正：先前五個範例圖示相同卻各自標成確認／編輯／已停用／刪除任務／重設，圖意與 <code>aria-label</code> 不一致）。<code>aria-label</code> 統一為「刪除項目」，disabled 變體同樣保留動作用途、不只說「已停用」——原生 <code>disabled</code> 狀態本身已會被輔助科技宣告為不可用，不需要在名稱裡重複。圖示為真實 SVG（沿用 batch 3 已建立的 icon 慣例），取代 master SVG 手繪的「圖示」文字佔位；文字色 primary／danger 為 white（<code>component.icon-button.foreground</code>，本輪新增），neutral／outline 為 off-white（<code>component.icon-button.foreground-neutral</code>，本輪新增）。</p>
+      </section>
+
+      <!-- ===================== Switch ===================== -->
+      <section class="component-section" aria-labelledby="switch-title">
+        <div class="section-heading">
+          <p class="eyebrow">Input</p>
+          <h2 id="switch-title">Switch</h2>
+          <p>track 96 × 48px · thumb 40px · 4px optical inset · on／off／disabled／danger-on</p>
+        </div>
+        <div class="switch-examples">
+          <div class="switch-row">
+            <input class="switch" type="checkbox" role="switch" id="sw-on" checked>
+            <label for="sw-on">允許公開分享</label>
+          </div>
+          <div class="switch-row">
+            <input class="switch" type="checkbox" role="switch" id="sw-off">
+            <label for="sw-off">自動儲存草稿</label>
+          </div>
+          <div class="switch-row">
+            <input class="switch" type="checkbox" role="switch" id="sw-disabled" disabled>
+            <label for="sw-disabled">已停用設定</label>
+          </div>
+          <div class="switch-row">
+            <input class="switch switch--danger" type="checkbox" role="switch" id="sw-danger" checked>
+            <label for="sw-danger">公開刪除紀錄（啟用後具風險）</label>
+          </div>
+        </div>
+        <p class="example-label">原生 <code>&lt;input type="checkbox" role="switch"&gt;</code>：accessible checked 狀態由瀏覽器依真實 <code>checked</code> 屬性自動推導，不手動鏡射 <code>aria-checked</code>。Click／Space 為原生行為；Enter 由 <code>prototype.js</code> 補上（同一顆 switch 上，非新邏輯路徑）。<code>focused</code>／<code>loading</code>／<code>error</code> 狀態 SVG 未畫出，本批不實作，focus 沿用既有全域 <code>:focus-visible</code>。</p>
+      </section>
+
       <!-- ===================== Checkbox ===================== -->
       <section class="component-section" aria-labelledby="checkbox-title">
         <div class="section-heading">
           <p class="eyebrow">Input</p>
           <h2 id="checkbox-title">Checkbox</h2>
-          <p>32 × 32px · radius 8px · indicator 沿用 master SVG c-checkbox 原始路徑 · unchecked／checked／indeterminate／disabled</p>
+          <p>32 × 32px 視覺 · 48 × 48px 命中區（原生 <code>&lt;input&gt;</code> 本體） · radius 8px · indicator 沿用 master SVG c-checkbox 原始路徑 · unchecked／checked／indeterminate／disabled</p>
         </div>
         <div class="checkbox-examples">
           <div class="checkbox-row">
@@ -84,6 +160,56 @@
             <label for="cb-disabled-checked">已停用且已勾選（SVG 未畫出此組合，功能上合成既有 token，非新視覺決定）</label>
           </div>
         </div>
+      </section>
+
+      <!-- ===================== Radio ===================== -->
+      <section class="component-section" aria-labelledby="radio-title">
+        <div class="section-heading">
+          <p class="eyebrow">Input</p>
+          <h2 id="radio-title">Radio</h2>
+          <p>32 × 32px 視覺 · 48 × 48px 命中區（與 Checkbox 相同技法） · 20px indicator · checked／unchecked／disabled，恆以群組存在</p>
+        </div>
+        <fieldset class="radio-group">
+          <legend>任務優先級</legend>
+          <div class="radio-examples">
+            <div class="radio-row">
+              <input class="radio" type="radio" name="radio-priority" id="radio-high" value="high">
+              <label for="radio-high">高</label>
+            </div>
+            <div class="radio-row">
+              <input class="radio" type="radio" name="radio-priority" id="radio-medium" value="medium" checked>
+              <label for="radio-medium">中（已勾選狀態）</label>
+            </div>
+            <div class="radio-row">
+              <input class="radio" type="radio" name="radio-priority" id="radio-low" value="low" disabled>
+              <label for="radio-low">低（已停用狀態）</label>
+            </div>
+          </div>
+        </fieldset>
+        <p class="example-label">同 <code>name</code> 的原生 <code>&lt;input type="radio"&gt;</code> 群組：方向鍵在群組內移動並更新選擇、Tab 整組進出，皆為瀏覽器原生行為，未另寫 JS。未勾選狀態的 1px <code>#444</code> 描邊（<code>component.radio.border</code>，本輪新增）沿用 Checkbox 相同缺口與修法。</p>
+      </section>
+
+      <!-- ===================== Split button / Dropdown ===================== -->
+      <section class="component-section" aria-labelledby="split-button-title">
+        <div class="section-heading">
+          <p class="eyebrow">Action</p>
+          <h2 id="split-button-title">Split button / Dropdown</h2>
+          <p>closed 180 × 48px · disclosure 48px · menu row 48px · closed／open</p>
+        </div>
+        <div class="split-button-examples">
+          <div class="split-button" data-split-button>
+            <button class="split-button__main" type="button" data-split-main>分割</button>
+            <span class="split-button__divider" aria-hidden="true"></span>
+            <button class="split-button__disclosure" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="split-menu-1" data-split-disclosure>
+              <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg>
+            </button>
+            <div class="split-button__menu" id="split-menu-1" role="menu" aria-label="分割按鈕選單" hidden data-split-menu>
+              <button class="split-button__item" role="menuitem" type="button" tabindex="-1">選項一</button>
+              <button class="split-button__item" role="menuitem" type="button" tabindex="-1">選項二</button>
+            </div>
+          </div>
+        </div>
+        <p class="example-label" data-split-status>主動作與 disclosure 為兩個獨立 <code>&lt;button&gt;</code>；<code>ArrowDown</code>／<code>Enter</code>／<code>Space</code> 開啟選單並移入第一項，方向鍵在選單內移動（roving <code>tabindex</code>），<code>Enter</code> 執行選項並把焦點還給 disclosure，<code>Escape</code> 關閉並還焦；點擊選單外（light dismiss）也會關閉。選單項目的 <code>hover</code>／<code>selected</code>／<code>disabled</code>／<code>loading</code> 狀態 SVG 未畫出，本批不實作。divider 顏色 <code>#4A76C9</code>（<code>component.split-button.divider-color</code>，本輪新增）取自已核准 SVG，非新視覺決定。動畫：SVG 註記「needs transition animation」，但 motion token 仍是未驗證 candidate，比照 batch 4 Accordion／Popover 的既有決定，本批不加動畫。</p>
       </section>
 
       <!-- ===================== Text input / Textarea ===================== -->

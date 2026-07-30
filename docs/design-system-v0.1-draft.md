@@ -6,7 +6,8 @@
 候選向量稿：`works/everline-components-master.svg`（目前持續維護的完整候選視覺來源，涵蓋既有元件與第一批新元件）  
 歷史候選稿：`works/everline-agent-components-v0.1.svg`（已由總表取代，僅保留為歷史快照，不再更新）  
 第二批：`works/everline-components-batch2.svg` 與 `docs/design-system-v0.1-batch2-draft.md`（2026-07-20 起，Sidebar／Toolbar／Card／List／Data table／Task card／Kanban column，獨立於本檔案與 master.svg 的同層檔案，不是取代關係）
-第一批畢業試辦（issue #17，2026-07-30）：`works/html/batch1/`（Button、Checkbox、Text input／Textarea 三群 pilot candidate，**等待人類 G1 審查，尚未畢業**；master.svg 對應區塊尚未標記 `superseded-by`）。其餘 12 群仍以本檔案與 `works/everline-components-master.svg` 為權威來源。
+第一批畢業（issue #17，1/4，2026-07-30）：`works/html/batch1/`（issue #17 15 群清單中的 Button、Checkbox、Text input／Textarea 三群，**2026-07-30 人類 G1 審查通過，已畢業，仍是 candidate 未宣告 stable**）；`works/everline-components-master.svg` 對應的 c-button／c-checkbox／c-text-input／c-textarea 四個 SVG 群組已標記群組級 `superseded-by: works/html/batch1/index.html`（master.svg 整份檔案狀態不變；除 c-color-swatch 外共 16 個產品元件群組，扣除這 4 個，其餘 12 個 SVG 群組不受影響）。issue #17 其餘 12 群（15 群中未畢業的部分）仍以本檔案與 `works/everline-components-master.svg` 為權威來源。
+Icon button（issue #30）／Switch（issue #31）／Radio（issue #32）／Split button／Dropdown（issue #33）（2026-07-31）：`works/html/batch1/` 已擴充這 4 群的 HTML/CSS candidate，**candidate ready for G1，尚未通過人類視覺審查，未畢業**；master.svg 對應的 c-icon-button／c-switch／c-radio／c-split-button 群組尚未標記 `superseded-by`，仍是這 4 群目前的權威來源。issue #17 15 群清單中，已畢業 3 群＋等待 G1 的 4 群共 7 群，仍有 8 群未動工。
 
 本文件是受控延伸用的校準稿，不是穩定版規格。已觀察到的值與本次推導值分開記錄；使用者確認前，不應將候選內容視為 Everline 的凍結決策。
 
@@ -156,7 +157,7 @@
 
 ## Icon button
 
-狀態：來源元件，規格草稿
+狀態：來源元件，規格草稿；`works/html/batch1/index.html` 已有 HTML/CSS candidate（issue #30，2026-07-31），**尚未通過 G1 人類視覺審查，未畢業**，master SVG 的 `c-icon-button` 仍是目前權威來源
 
 ### 用途與邊界
 
@@ -179,7 +180,7 @@
 
 ## Switch
 
-狀態：來源元件，規格草稿
+狀態：來源元件，規格草稿；`works/html/batch1/index.html` 已有 HTML/CSS candidate（issue #31，2026-07-31），**尚未通過 G1 人類視覺審查，未畢業**，master SVG 的 `c-switch` 仍是目前權威來源
 
 ### 用途與邊界
 
@@ -227,7 +228,7 @@
 
 ## Radio
 
-狀態：來源元件，規格草稿
+狀態：來源元件，規格草稿；`works/html/batch1/index.html` 已有 HTML/CSS candidate（issue #32，2026-07-31），**尚未通過 G1 人類視覺審查，未畢業**，master SVG 的 `c-radio` 仍是目前權威來源
 
 ### 用途與邊界
 
@@ -250,7 +251,7 @@
 
 ## Split button / Dropdown
 
-狀態：來源元件，規格草稿
+狀態：來源元件，規格草稿；`works/html/batch1/index.html` 已有 HTML/CSS candidate（issue #33，2026-07-31），**尚未通過 G1 人類視覺審查，未畢業**，master SVG 的 `c-split-button` 仍是目前權威來源
 
 ### 用途與邊界
 
@@ -537,7 +538,8 @@ Text input 用於單行短文字；Textarea 用於描述、備註與多行內容
 - 待補 success／warning 語意色，但在有實際產品情境前不新增。
 - 待將確認後的元件回填至 Illustrator 主來源；本批不修改 `works/illustrator/everline_p1.ai`。
 - 第一批新元件（Select/Combobox、Menu/Context menu、Tabs、Tooltip、Modal/Dialog、Toast/Snackbar）僅畫出核心狀態，見各元件小節「狀態、互動與內容」，尚未涵蓋完整無障礙與鍵盤操作驗證。
-- 2026-07-30（issue #17 pilot）：Button／Checkbox／Text input／Textarea 四個 token 缺口已最小補上（`component.button.foreground-neutral`、`component.checkbox.border`/`border-width`、`component.text-input.foreground-disabled`、`component.textarea.foreground`/`placeholder`/`border-width-focus`/`border-focus`），皆為新增、未改動既有解析值，詳見 `tokens/everline-draft.tokens.json` 各欄位 `$description`。同輪也確認 Button 的 outline 變體與（尚未畫出的）focus 狀態共用同一組視覺這個既有未決問題仍未解決，見上方 Button 小節與 `works/html/batch1/index.html` scope note。
+- 2026-07-30（issue #17，1/4）：Button／Checkbox／Text input／Textarea 四個 token 缺口已最小補上（`component.button.foreground-neutral`、`component.checkbox.border`/`border-width`、`component.text-input.foreground-disabled`、`component.textarea.foreground`/`placeholder`/`border-width-focus`/`border-focus`），皆為新增、未改動既有解析值，詳見 `tokens/everline-draft.tokens.json` 各欄位 `$description`。同輪也確認 Button 的 outline 變體與（尚未畫出的）focus 狀態共用同一組視覺這個既有未決問題仍未解決，見上方 Button 小節與 `works/html/batch1/index.html` scope note。PR #29 合併前審查（codex）另發現 3 個 Major：disabled Button 誤對整顆元件套 `opacity`（背景一併變暗，已改回只混合前景文字色，維持 `#666666` 實色背景）、`component.checkbox.indicator-size`（20px）與 CSS 同名 custom property 被誤標成 32px（已改用正確的 `component.checkbox.size` 作為 mask 畫布，`indicator-size` 不再被冒充）、checkbox 命中區只有 32×32px 未達規格要求的 48×48px（已將 `<input>` 本體擴到 48×48px、視覺仍維持 32×32px，透過 `::before`/`::after` 偽元素置中呈現）。另修正 `component.textarea.foreground` 的 token 描述——先前誤寫成「依 SVG 量測」，實際上 SVG 只畫了 placeholder 樣式文字，沒有可查證的 filled 範例，已改記為 G1 接受的延伸決定。
+- 2026-07-31（issues #30-#33）：Icon button／Switch／Radio／Split button 完成 P0–P2，**尚未通過 G1**。Icon button 補上 `foreground`／`foreground-neutral`／`foreground-disabled`／`border-width`／`border-focus`，與 Button 完全相同的既有缺口模式（純新增）；Radio 補上 `border`／`border-width`，與 Checkbox 完全相同的既有缺口模式；Split button 補上 `foreground`（white）、`menu-foreground`（off-white，比照 Popover 既有慣例明確宣告而非隱式繼承）、`divider-color`（`#4A76C9`，SVG 已畫出但從未 token 化的既有分隔線顏色，backfill 手法比照 `color.base.gray-850`）、`layer`（alias `layer.overlay`，與 Popover 相同的「已記錄未驗證」保留事項）；Switch 核對後沒有發現任何缺口。Split button 選單本身的 hover／selected item／disabled item／loading，以及 Icon button 的 pressed／selected／tooltip 搭配、Switch 的 focused／loading／error feedback、Radio 的 error group，SVG 皆未畫出，本輪刻意不實作，列為 G1 決策清單，見 `works/html/batch1/index.html` 第二個 scope note。選單項目本身是真實 `<button>`，全域 `:focus-visible` 規則本來就會套用，鍵盤移動時並非完全沒有視覺回饋（找 codex 復審後修正先前「不附加任何視覺回饋」的誤寫）——只是尚未替 menu item 定義一套如 Menu 元件既有規格所述的專屬 focus ring，目前僅沿用全域共用技法作最低限度可見焦點。`node works/html/batch1/verify.mjs` 125/125 通過。
 
 ## 設計系統／Token 全面檢查（2026-07-19）
 

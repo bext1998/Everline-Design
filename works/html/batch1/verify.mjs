@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 /**
- * Everline batch 1 pilot (issue #17, Button / Checkbox / Text input / Textarea only) —
- * reproducible verification.
+ * Everline batch 1 (issue #17) — reproducible verification.
+ * Button / Checkbox / Text input / Textarea graduated (G1 passed 2026-07-30).
+ * Icon button (#30) / Switch (#31) / Radio (#32) / Split button/Dropdown (#33) added
+ * 2026-07-31 — candidate ready for G1, awaiting human visual review.
  *
  *   node works/html/batch1/verify.mjs
  *   CHROME="/path/to/chrome" node works/html/batch1/verify.mjs     # if auto-detection fails
@@ -10,10 +12,17 @@
  * No package.json, no install step, no framework — the repo has no build pipeline and this
  * must not introduce one. Modeled directly on works/html/batch4/verify.mjs.
  *
- * Coverage: token integrity (including the 4 gaps this pilot's P0 audit added), the
- * CSS-has-no-raw-dimensions contract, computed dimensions against the approved master SVG
- * measurements, real DOM state (native disabled/readonly/indeterminate — not class simulation),
- * RGB samples decoded from a real screenshot, responsive overflow, and a no-motion scan.
+ * Coverage: token integrity (including every gap each round's P0 audit added), the
+ * CSS-has-no-raw-dimensions contract, a custom-property-VALUE-equals-token-VALUE contract (added
+ * 2026-07-30 after PR #29 review found the name-only version let component.checkbox.indicator-size
+ * drift from its 20px token to a CSS declaration of 32px undetected), computed dimensions against
+ * the approved master SVG measurements, real DOM state (native disabled/readonly/indeterminate/
+ * checked — not class simulation), real click/keyboard tests for the 48x48 hit areas (Checkbox,
+ * Radio) and for Switch (click/Space/Enter) and Split button's full menu-button keyboard model
+ * (ArrowDown/Enter/Space to open, arrow keys + roving tabindex inside the menu, Enter to activate,
+ * Escape and light-dismiss to close, focus always returns to the disclosure), RGB samples decoded
+ * from real screenshots (including the disabled Button's background, added 2026-07-30 after a
+ * plain `opacity` was found dimming it), responsive overflow, and a no-motion scan.
  *
  * Exit code 0 means every check passed; 1 means at least one failed.
  */
@@ -117,6 +126,32 @@ function verifyTokens() {
     px(resolved.get('component.textarea.border-width-focus')) === '2px', resolved.get('component.textarea.border-width-focus'));
   check('component.textarea.border-focus resolves to border-focus #598AE8',
     px(resolved.get('component.textarea.border-focus')) === '#598AE8', resolved.get('component.textarea.border-focus'));
+  // The gaps this round (issues #30/#32/#33) added, each verified against the SVG audit.
+  check('component.icon-button.foreground-neutral resolves to off-white #F2F2F2',
+    px(resolved.get('component.icon-button.foreground-neutral')) === '#F2F2F2', resolved.get('component.icon-button.foreground-neutral'));
+  check('component.icon-button.foreground resolves to white #FFFFFF',
+    px(resolved.get('component.icon-button.foreground')) === '#FFFFFF', resolved.get('component.icon-button.foreground'));
+  check('component.icon-button.border-focus resolves to border-focus #598AE8',
+    px(resolved.get('component.icon-button.border-focus')) === '#598AE8', resolved.get('component.icon-button.border-focus'));
+  check('component.radio.border resolves to border-default #444444',
+    px(resolved.get('component.radio.border')) === '#444444', resolved.get('component.radio.border'));
+  check('component.radio.border-width resolves to 1px',
+    px(resolved.get('component.radio.border-width')) === '1px', resolved.get('component.radio.border-width'));
+  check('component.split-button.foreground resolves to white #FFFFFF',
+    px(resolved.get('component.split-button.foreground')) === '#FFFFFF', resolved.get('component.split-button.foreground'));
+  check('component.split-button.menu-foreground resolves to off-white #F2F2F2',
+    px(resolved.get('component.split-button.menu-foreground')) === '#F2F2F2', resolved.get('component.split-button.menu-foreground'));
+  check('component.split-button.divider-color resolves to the SVG-backfilled #4A76C9 (not action-primary)',
+    px(resolved.get('component.split-button.divider-color')) === '#4A76C9', resolved.get('component.split-button.divider-color'));
+  check('component.split-button.layer resolves to layer.overlay = 100',
+    resolved.get('component.split-button.layer') === 100, resolved.get('component.split-button.layer'));
+  // Switch: P0 audit found no gaps at all — confirm every drawn value is exactly what was already there.
+  check('component.switch.width is 96px (unchanged)', px(resolved.get('component.switch.width')) === '96px');
+  check('component.switch.thumb-size is 40px (unchanged)', px(resolved.get('component.switch.thumb-size')) === '40px');
+  check('component.switch.track-on resolves to action-primary #598AE8 (unchanged)',
+    px(resolved.get('component.switch.track-on')) === '#598AE8');
+  check('component.switch.track-danger resolves to action-danger #C1272D (unchanged)',
+    px(resolved.get('component.switch.track-danger')) === '#C1272D');
   // Existing values this pilot must NOT have touched.
   check('component.button.height is still 48px (unchanged)', px(resolved.get('component.button.height')) === '48px');
   check('component.checkbox.size is still 32px (unchanged)', px(resolved.get('component.checkbox.size')) === '32px');
@@ -126,10 +161,45 @@ function verifyTokens() {
 }
 
 /* ------------------------------------------------------------------ CSS contract */
+// PR #29 review (2026-07-30) found this contract only checked that a custom property's NAME
+// mapped onto some token path, never that its declared VALUE actually equalled that token's
+// resolved value — which is exactly how component.checkbox.indicator-size (20px) drifted to a
+// CSS declaration of 32px undetected. resolveCssVarValue below chains through :root's own
+// var(--everline-x) references down to a literal, so the comparison below is against what the
+// browser will actually paint, not just a name match.
+function resolveCssVarValue(declMap, name, seen = []) {
+  if (seen.includes(name)) return null;
+  const raw = declMap.get(name);
+  if (raw === undefined) return null;
+  const m = /^var\(\s*--everline-([a-z0-9-]+)\s*\)$/.exec(raw.trim());
+  if (m) return resolveCssVarValue(declMap, m[1], [...seen, name]);
+  return raw.trim();
+}
+function normalizeHex(h) {
+  let s = h.trim().toLowerCase();
+  if (/^#[0-9a-f]{3}$/.test(s)) s = '#' + [...s.slice(1)].map((c) => c + c).join('');
+  return s.toUpperCase();
+}
+function valuesMatch(tokenResolved, cssLiteral) {
+  if (cssLiteral == null) return null; // not a resolvable literal (e.g. calc()/rgb(from ...)) — not applicable
+  if (typeof tokenResolved === 'string' && tokenResolved.startsWith('#')) {
+    if (!cssLiteral.startsWith('#')) return null;
+    return normalizeHex(tokenResolved) === normalizeHex(cssLiteral);
+  }
+  if (typeof tokenResolved === 'number') {
+    const n = Number.parseFloat(cssLiteral);
+    return Number.isFinite(n) && Math.abs(n - tokenResolved) < 1e-6;
+  }
+  if (tokenResolved && typeof tokenResolved === 'object' && 'value' in tokenResolved) {
+    return cssLiteral.replace(/\s+/g, '') === px(tokenResolved).replace(/\s+/g, '');
+  }
+  return null; // fontFamily arrays, cubicBezier arrays, etc. — not meaningfully string-comparable here
+}
+
 function verifyCssContract(resolvedTokens) {
   section('works/html/batch1/styles.css — no raw dimensions in component rules');
   const css = readFileSync(CSS, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
-  const COMPONENT = /^[^@]*?(\.button|\.checkbox|\.text-input|\.textarea|:where)/;
+  const COMPONENT = /^[^@]*?(\.button|\.checkbox|\.text-input|\.textarea|\.icon-button|\.switch|\.radio|\.split-button|fieldset\.radio-group|:where)/;
   const offenders = [];
   for (const m of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
     const selector = m[1].trim();
@@ -147,6 +217,29 @@ function verifyCssContract(resolvedTokens) {
     return !candidates.some((c) => [...resolvedTokens.keys()].some((k) => k.replace(/[-.]/g, '') === c.replace(/[-.]/g, '')));
   });
   check('every --everline-* custom property maps onto a token path', unknown.length === 0, unknown.slice(0, 6));
+
+  // Build a name -> raw declared value map from the :root block only (declaration order matters
+  // for var() chaining, but a Map from a single top-to-bottom pass is enough since every var()
+  // reference here points at something declared earlier in the same block).
+  const rootBlock = /:root\s*\{([^{}]*)\}/.exec(css)?.[1] ?? '';
+  const declMap = new Map();
+  for (const m of rootBlock.matchAll(/--everline-([a-z0-9-]+)\s*:\s*([^;]+);/g)) declMap.set(m[1], m[2]);
+  const mismatches = [];
+  let checkedCount = 0;
+  for (const name of declared) {
+    if (name === 'hover-overlay') continue;
+    const candidates = [name.replace(/-/g, '.'), name.replace(/^component-/, 'component.')];
+    const tokenKey = [...resolvedTokens.keys()].find((k) =>
+      candidates.some((c) => k.replace(/[-.]/g, '') === c.replace(/[-.]/g, '')));
+    if (!tokenKey) continue;
+    const literal = resolveCssVarValue(declMap, name);
+    const result = valuesMatch(resolvedTokens.get(tokenKey), literal);
+    if (result === null) continue; // not comparable (computed expression, array-typed token, etc.)
+    checkedCount += 1;
+    if (!result) mismatches.push(`--everline-${name}: ${literal} != ${tokenKey} = ${JSON.stringify(resolvedTokens.get(tokenKey))}`);
+  }
+  check(`every custom property with a directly-comparable literal resolves to its token's value (${checkedCount} compared)`,
+    mismatches.length === 0, mismatches.slice(0, 6));
 }
 
 /* ------------------------------------------------------------------ PNG (screenshots) */
@@ -240,6 +333,14 @@ class Cdp {
     }
     await sleep(120);
   }
+  async key(key, code) {
+    const base = { key, code: code ?? key, windowsVirtualKeyCode: KEYCODES[key] ?? 0, nativeVirtualKeyCode: KEYCODES[key] ?? 0 };
+    // Without the text payload Chrome delivers the keydown but never activates a button.
+    const down = key === 'Enter' ? { ...base, text: '\r' } : base;
+    await this.send('Input.dispatchKeyEvent', { type: 'keyDown', ...down });
+    await this.send('Input.dispatchKeyEvent', { type: 'keyUp', ...base });
+    await sleep(70);
+  }
   async clickEl(expr) {
     const box = await this.js(`(()=>{const e=${expr};if(!e)return null;e.scrollIntoView({block:'center'});const b=e.getBoundingClientRect();return{x:b.left+b.width/2,y:b.top+b.height/2};})()`);
     if (!box) throw new Error(`no element: ${expr}`);
@@ -250,7 +351,18 @@ class Cdp {
     return decodePng(Buffer.from(r.data, 'base64'));
   }
 }
+const KEYCODES = { Escape: 27, ArrowLeft: 37, ArrowUp: 38, ArrowRight: 39, ArrowDown: 40, Home: 36, End: 35, Enter: 13 };
 const sel = (s) => `document.querySelector(${JSON.stringify(s)})`;
+// Chrome resolves color-mix() to the color(srgb ...) function syntax rather than rgb() for some
+// inputs (documented in docs/STATUS.md for Number input's identical disabled technique). Shared
+// by every component below that uses the same color-mix disabled-foreground technique.
+function parseAnyColor(s) {
+  let m = /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/.exec(s);
+  if (m) return [Number(m[1]), Number(m[2]), Number(m[3])];
+  m = /^color\(srgb\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)\)$/.exec(s);
+  if (m) return [Math.round(Number(m[1]) * 255), Math.round(Number(m[2]) * 255), Math.round(Number(m[3]) * 255)];
+  return null;
+}
 
 /* ------------------------------------------------------------------ main */
 async function main() {
@@ -303,7 +415,8 @@ async function main() {
         neutralBg: cs(neutral).backgroundColor, neutralFg: cs(neutral).color,
         dangerBg: cs(danger).backgroundColor,
         outlineShadow: cs(outline).boxShadow !== 'none',
-        disabledAttr: disabled.disabled, disabledOpacity: cs(disabled).opacity
+        disabledAttr: disabled.disabled, disabledOpacity: cs(disabled).opacity,
+        disabledBg: cs(disabled).backgroundColor, disabledFg: cs(disabled).color
       };
     })()`);
     check('button height is 48px', btn.h === '48px', btn.h);
@@ -316,23 +429,246 @@ async function main() {
     check('danger background is action-danger rgb(193, 39, 45)', btn.dangerBg === 'rgb(193, 39, 45)', btn.dangerBg);
     check('outline variant draws a border via box-shadow', btn.outlineShadow);
     check('disabled button uses the native disabled attribute', btn.disabledAttr === true, btn.disabledAttr);
-    check('disabled button is at opacity.disabled 0.55', btn.disabledOpacity === '0.55', btn.disabledOpacity);
+    // PR #29 review (2026-07-30): plain `opacity: .55` on the whole disabled button dimmed the
+    // approved SVG's solid #666666 background to ~#434343 — the SVG only dims the label text.
+    // The element itself must no longer carry a computed opacity below 1; the background stays
+    // the exact token colour (confirmed again below via a real screenshot sample), and only the
+    // text uses the disabled colour-mix technique already established elsewhere in this file.
+    check('disabled button no longer has element-level opacity (background must not be dimmed)',
+      btn.disabledOpacity === '1', btn.disabledOpacity);
+    check('disabled button computed background is the solid token colour rgb(102, 102, 102), not dimmed',
+      btn.disabledBg === 'rgb(102, 102, 102)', btn.disabledBg);
+    // Chrome resolves this color-mix() to the color(srgb ...) function syntax rather than rgb(),
+    // same quirk already documented in docs/STATUS.md for Number input's identical technique
+    // (there measured "color(srgb .702 .702 .702) ≈ rgb(179,179,179)"). Parse either syntax.
+    const disabledFgRgb = parseAnyColor(btn.disabledFg);
+    check('disabled button text is the color-mix composite of foreground-disabled over the solid background (≈rgb(179, 179, 179), same technique as batch 3 Number input)',
+      !!disabledFgRgb && disabledFgRgb.every((v) => Math.abs(v - 179) <= 1), { raw: btn.disabledFg, parsed: disabledFgRgb });
+
+    /* ---------------- Icon button ---------------- */
+    section('Icon button');
+    const iconButtons = await c.js(`(()=>{
+      const all = document.querySelectorAll('.icon-button');
+      const primary=all[0], neutral=all[1], disabled=all[2], danger=all[3], outline=all[4];
+      const cs=(e)=>getComputedStyle(e);
+      return {
+        w: cs(primary).width, h: cs(primary).height, r: cs(primary).borderRadius,
+        primaryBg: cs(primary).backgroundColor, primaryFg: cs(primary).color,
+        neutralBg: cs(neutral).backgroundColor, neutralFg: cs(neutral).color,
+        dangerBg: cs(danger).backgroundColor,
+        outlineShadow: cs(outline).boxShadow !== 'none',
+        disabledAttr: disabled.disabled, disabledOpacity: cs(disabled).opacity, disabledBg: cs(disabled).backgroundColor, disabledFg: cs(disabled).color,
+        everyHasLabel: [...all].every((b) => !!b.getAttribute('aria-label')),
+        everySvgHidden: [...all].every((b) => b.querySelector('svg').getAttribute('aria-hidden') === 'true'),
+        iconW: cs(primary.querySelector('svg')).width
+      };
+    })()`);
+    check('icon button is 48x48px', iconButtons.w === '48px' && iconButtons.h === '48px', [iconButtons.w, iconButtons.h]);
+    check('icon button radius is 24px', iconButtons.r === '24px', iconButtons.r);
+    check('icon size is 24px', iconButtons.iconW === '24px', iconButtons.iconW);
+    check('primary background is action-primary rgb(89, 138, 232)', iconButtons.primaryBg === 'rgb(89, 138, 232)', iconButtons.primaryBg);
+    check('primary foreground is white rgb(255, 255, 255)', iconButtons.primaryFg === 'rgb(255, 255, 255)', iconButtons.primaryFg);
+    check('neutral foreground is off-white rgb(242, 242, 242), NOT white (the P0 gap this round fixed)',
+      iconButtons.neutralFg === 'rgb(242, 242, 242)', iconButtons.neutralFg);
+    check('danger background is action-danger rgb(193, 39, 45)', iconButtons.dangerBg === 'rgb(193, 39, 45)', iconButtons.dangerBg);
+    check('outline variant draws a border via box-shadow', iconButtons.outlineShadow);
+    check('disabled icon button uses the native disabled attribute', iconButtons.disabledAttr === true, iconButtons.disabledAttr);
+    check('disabled icon button has no element-level opacity (background must not be dimmed)', iconButtons.disabledOpacity === '1', iconButtons.disabledOpacity);
+    check('disabled icon button background is the solid token colour rgb(102, 102, 102), not dimmed', iconButtons.disabledBg === 'rgb(102, 102, 102)', iconButtons.disabledBg);
+    const iconDisabledFgRgb = parseAnyColor(iconButtons.disabledFg);
+    check('disabled icon button foreground is the color-mix composite (≈rgb(179, 179, 179))',
+      !!iconDisabledFgRgb && iconDisabledFgRgb.every((v) => Math.abs(v - 179) <= 1), { raw: iconButtons.disabledFg, parsed: iconDisabledFgRgb });
+    check('every icon button has an accessible name (aria-label)', iconButtons.everyHasLabel, iconButtons.everyHasLabel);
+    check('every icon button svg is aria-hidden (decorative, name comes from aria-label)', iconButtons.everySvgHidden, iconButtons.everySvgHidden);
+
+    /* ---------------- Switch ---------------- */
+    section('Switch');
+    const sw = await c.js(`(()=>{
+      const cs=(e)=>getComputedStyle(e);
+      const on=${sel('#sw-on')}, off=${sel('#sw-off')}, disabled=${sel('#sw-disabled')}, danger=${sel('#sw-danger')};
+      return {
+        w: cs(on).width, h: cs(on).height,
+        role: on.getAttribute('role'),
+        onChecked: on.checked, offChecked: off.checked,
+        onBg: cs(on).backgroundColor, offBg: cs(off).backgroundColor, dangerBg: cs(danger).backgroundColor,
+        disabledAttr: disabled.disabled
+      };
+    })()`);
+    check('switch track is 96x48px', sw.w === '96px' && sw.h === '48px', [sw.w, sw.h]);
+    check('switch has role="switch"', sw.role === 'switch', sw.role);
+    check('the "on" example is natively checked, "off" is not', sw.onChecked === true && sw.offChecked === false, sw);
+    check('on track renders as action-primary rgb(89, 138, 232)', sw.onBg === 'rgb(89, 138, 232)', sw.onBg);
+    check('off track renders as background-surface rgb(51, 51, 51)', sw.offBg === 'rgb(51, 51, 51)', sw.offBg);
+    check('danger-on track renders as action-danger rgb(193, 39, 45)', sw.dangerBg === 'rgb(193, 39, 45)', sw.dangerBg);
+    check('disabled switch uses the native disabled attribute', sw.disabledAttr === true, sw.disabledAttr);
+
+    // Real click test: clicking the off switch toggles its real `checked` property.
+    const beforeSwitchClick = await c.js(`${sel('#sw-off')}.checked`);
+    await c.clickEl(sel('#sw-off'));
+    const afterSwitchClick = await c.js(`${sel('#sw-off')}.checked`);
+    check('clicking the switch toggles its native checked property', beforeSwitchClick !== afterSwitchClick, { beforeSwitchClick, afterSwitchClick });
+    await c.clickEl(sel('#sw-off')); // restore
+
+    // Real keyboard test: Enter toggles (the one path native checkboxes don't support natively,
+    // added specifically because issue #31 asks for it).
+    await c.js(`${sel('#sw-off')}.focus()`);
+    const beforeEnter = await c.js(`${sel('#sw-off')}.checked`);
+    await c.key('Enter');
+    const afterEnter = await c.js(`${sel('#sw-off')}.checked`);
+    check('Enter toggles the switch (native checkbox does not support this; added by prototype.js)', beforeEnter !== afterEnter, { beforeEnter, afterEnter });
+    await c.key('Enter'); // restore
+
+    // Real keyboard test: Space toggles too (native checkbox behaviour, not a custom handler).
+    const beforeSpace = await c.js(`${sel('#sw-off')}.checked`);
+    await c.send('Input.dispatchKeyEvent', { type: 'keyDown', key: ' ', code: 'Space' });
+    await c.send('Input.dispatchKeyEvent', { type: 'keyUp', key: ' ', code: 'Space' });
+    await sleep(70);
+    const afterSpace = await c.js(`${sel('#sw-off')}.checked`);
+    check('Space toggles the switch (native checkbox behaviour)', beforeSpace !== afterSpace, { beforeSpace, afterSpace });
+    await c.send('Input.dispatchKeyEvent', { type: 'keyDown', key: ' ', code: 'Space' });
+    await c.send('Input.dispatchKeyEvent', { type: 'keyUp', key: ' ', code: 'Space' });
+    await sleep(70); // restore
+
+    /* ---------------- Radio ---------------- */
+    section('Radio');
+    const rd = await c.js(`(()=>{
+      const cs=(e)=>getComputedStyle(e, null);
+      const csBefore=(e)=>getComputedStyle(e, '::before');
+      const high=${sel('#radio-high')}, medium=${sel('#radio-medium')}, low=${sel('#radio-low')};
+      return {
+        hitW: cs(high).width, hitH: cs(high).height,
+        visualW: csBefore(high).width, visualH: csBefore(high).height,
+        name: high.name,
+        mediumChecked: medium.checked, highChecked: high.checked,
+        disabledAttr: low.disabled,
+        fieldsetTag: high.closest('fieldset')?.tagName, legendText: high.closest('fieldset')?.querySelector('legend')?.textContent
+      };
+    })()`);
+    check('radio native hit area is 48x48px', rd.hitW === '48px' && rd.hitH === '48px', [rd.hitW, rd.hitH]);
+    check('radio visual box (::before) is 32x32px', rd.visualW === '32px' && rd.visualH === '32px', [rd.visualW, rd.visualH]);
+    check('radios share the same name attribute (a real group)', rd.name === 'radio-priority', rd.name);
+    check('exactly one radio ("medium") is checked initially', rd.mediumChecked === true && rd.highChecked === false, rd);
+    check('disabled radio uses the native disabled attribute', rd.disabledAttr === true, rd.disabledAttr);
+    check('the group is wrapped in a real <fieldset> with a <legend>', rd.fieldsetTag === 'FIELDSET' && !!rd.legendText, rd);
+
+    // Real keyboard test: ArrowDown moves selection to the next radio in the same-name group —
+    // this is native <input type="radio"> behaviour, no JS was written for it. DOM order is
+    // high, medium (checked), low (disabled), so from medium the only enabled radio left to move
+    // to is high — Chrome's native radio-group navigation skips disabled options and wraps
+    // around, so ArrowDown from medium lands on high, not low.
+    await c.js(`${sel('#radio-medium')}.focus()`);
+    await c.key('ArrowDown');
+    const afterArrowDown = await c.js(`[${sel('#radio-high')}.checked,${sel('#radio-medium')}.checked,${sel('#radio-low')}.checked,document.activeElement.id]`);
+    check('ArrowDown from medium wraps past the disabled "low" radio and lands on "high" (native Chrome behaviour: disabled options are skipped in group navigation)',
+      afterArrowDown[0] === true && afterArrowDown[1] === false && afterArrowDown[2] === false && afterArrowDown[3] === 'radio-high',
+      afterArrowDown);
+    // Restore: click "medium" back to the documented initial state.
+    await c.clickEl(sel('#radio-medium'));
+
+    /* ---------------- Split button / Dropdown ---------------- */
+    section('Split button / Dropdown');
+    const spBefore = await c.js(`(()=>{
+      const cs=(e)=>getComputedStyle(e);
+      const root=${sel('[data-split-button]')}, main=${sel('[data-split-main]')}, disclosure=${sel('[data-split-disclosure]')}, menu=${sel('[data-split-menu]')}, divider=document.querySelector('.split-button__divider');
+      return {
+        w: cs(root).height, mainBg: cs(main).backgroundColor, mainFg: cs(main).color,
+        dividerBg: cs(divider).backgroundColor,
+        menuHidden: menu.hidden, expanded: disclosure.getAttribute('aria-expanded'),
+        hasPopup: disclosure.getAttribute('aria-haspopup'), controls: disclosure.getAttribute('aria-controls') === menu.id
+      };
+    })()`);
+    check('split button height is 48px', spBefore.w === '48px', spBefore.w);
+    check('main action background is action-primary rgb(89, 138, 232)', spBefore.mainBg === 'rgb(89, 138, 232)', spBefore.mainBg);
+    check('main action foreground is white rgb(255, 255, 255)', spBefore.mainFg === 'rgb(255, 255, 255)', spBefore.mainFg);
+    check('divider renders as the SVG-backfilled rgb(74, 118, 201) (#4A76C9), not action-primary',
+      spBefore.dividerBg === 'rgb(74, 118, 201)', spBefore.dividerBg);
+    check('menu starts hidden with aria-expanded="false"', spBefore.menuHidden === true && spBefore.expanded === 'false', spBefore);
+    check('disclosure has aria-haspopup="menu" and aria-controls pointing at the real menu id', spBefore.hasPopup === 'menu' && spBefore.controls, spBefore);
+
+    // Real click test: the main action and disclosure are independent — clicking main must not open the menu.
+    await c.clickEl(sel('[data-split-main]'));
+    const afterMainClick = await c.js(`${sel('[data-split-menu]')}.hidden`);
+    check('clicking the main action does not open the menu (independent controls)', afterMainClick === true, afterMainClick);
+
+    // Real click test: open via disclosure, first item receives focus, aria-expanded flips.
+    await c.clickEl(sel('[data-split-disclosure]'));
+    const afterDisclosureClick = await c.js(`(()=>{
+      const menu=${sel('[data-split-menu]')}, disclosure=${sel('[data-split-disclosure]')};
+      return { hidden: menu.hidden, expanded: disclosure.getAttribute('aria-expanded'), focusedText: document.activeElement.textContent.trim() };
+    })()`);
+    check('clicking the disclosure opens the menu, sets aria-expanded=true, and focuses the first item',
+      afterDisclosureClick.hidden === false && afterDisclosureClick.expanded === 'true' && afterDisclosureClick.focusedText === '選項一', afterDisclosureClick);
+
+    // Real keyboard test: ArrowDown moves roving tabindex/focus to the next item.
+    await c.key('ArrowDown');
+    const afterArrowDownMenu = await c.js(`(()=>{
+      const items=[...${sel('[data-split-menu]')}.querySelectorAll('[role=menuitem]')];
+      return { focusedText: document.activeElement.textContent.trim(), tabindexes: items.map((i) => i.tabIndex) };
+    })()`);
+    check('ArrowDown in the open menu moves focus to the next item with roving tabindex',
+      afterArrowDownMenu.focusedText === '選項二' && JSON.stringify(afterArrowDownMenu.tabindexes) === '[-1,0]', afterArrowDownMenu);
+
+    // Menu items never had a bespoke focus visual drawn or implemented, but they are real
+    // <button>s, so the page's global :where(button, ...):focus-visible rule already applies to
+    // them — confirm that's actually true rather than just asserting it in prose (codex review
+    // flagged the prior wording as claiming "no visual feedback at all", which this disproves).
+    const focusedMenuItemOutline = await c.js('getComputedStyle(document.activeElement).outlineStyle');
+    check('the currently-focused menu item picks up the shared global focus-visible outline (not a bespoke menu-item style, but not literally invisible either)',
+      focusedMenuItemOutline === 'solid', focusedMenuItemOutline);
+
+    // Real keyboard test: Enter on a menu item activates it, closes the menu, and returns focus
+    // to the disclosure button (not the trigger that opened it via click — the APG spec, and this
+    // implementation, always return focus to the disclosure since that is what owns the menu).
+    await c.key('Enter');
+    const afterItemEnter = await c.js(`(()=>{
+      const menu=${sel('[data-split-menu]')}, disclosure=${sel('[data-split-disclosure]')};
+      return { hidden: menu.hidden, expanded: disclosure.getAttribute('aria-expanded'), focusIsDisclosure: document.activeElement===disclosure, lastAction: ${sel('[data-split-status]')}.dataset.lastAction };
+    })()`);
+    check('Enter on a menu item closes the menu, clears aria-expanded, returns focus to disclosure, and records which item fired',
+      afterItemEnter.hidden === true && afterItemEnter.expanded === 'false' && afterItemEnter.focusIsDisclosure && afterItemEnter.lastAction === '選項二', afterItemEnter);
+
+    // Real keyboard test: ArrowDown/Enter/Space on the (closed) disclosure opens the menu.
+    await c.js(`${sel('[data-split-disclosure]')}.focus()`);
+    await c.key('ArrowDown');
+    const openedByArrowDown = await c.js(`!${sel('[data-split-menu]')}.hidden`);
+    check('ArrowDown on the closed disclosure opens the menu', openedByArrowDown === true, openedByArrowDown);
+
+    // Real keyboard test: Escape closes the menu and returns focus to the disclosure.
+    await c.key('Escape');
+    const afterEscape = await c.js(`(()=>{
+      const menu=${sel('[data-split-menu]')}, disclosure=${sel('[data-split-disclosure]')};
+      return { hidden: menu.hidden, focusIsDisclosure: document.activeElement===disclosure };
+    })()`);
+    check('Escape closes the menu and returns focus to the disclosure', afterEscape.hidden === true && afterEscape.focusIsDisclosure, afterEscape);
+
+    // Real click test: light dismiss — clicking outside the split button closes the open menu.
+    await c.clickEl(sel('[data-split-disclosure]'));
+    await c.click(20, 20);
+    const afterOutsideClick = await c.js(`${sel('[data-split-menu]')}.hidden`);
+    check('clicking outside the open menu closes it (light dismiss)', afterOutsideClick === true, afterOutsideClick);
 
     /* ---------------- Checkbox ---------------- */
     section('Checkbox');
     const cb = await c.js(`(()=>{
-      const cs=(e)=>getComputedStyle(e);
+      const cs=(e)=>getComputedStyle(e, null);
+      const csBefore=(e)=>getComputedStyle(e, '::before');
       const un=${sel('#cb-unchecked')};
       return {
-        w: cs(un).width, h: cs(un).height, r: cs(un).borderRadius,
+        hitW: cs(un).width, hitH: cs(un).height,
+        visualW: csBefore(un).width, visualH: csBefore(un).height, r: csBefore(un).borderRadius,
         indeterminate: ${sel('#cb-indeterminate')}.indeterminate,
         indeterminateChecked: ${sel('#cb-indeterminate')}.checked,
         checkedIsChecked: ${sel('#cb-checked')}.checked,
         disabledAttr: ${sel('#cb-disabled')}.disabled
       };
     })()`);
-    check('checkbox is 32x32px', cb.w === '32px' && cb.h === '32px', [cb.w, cb.h]);
-    check('checkbox radius is 8px', cb.r === '8px', cb.r);
+    // PR #29 review (2026-07-30): the spec's own accessibility requirement ("32px 視覺控制置於
+    // 至少 48×48px 命中區") was missed in the first pass — the native <input> itself was only
+    // 32x32px. The input is now 48x48px (the real, clickable hit area) with the 32x32px visual
+    // drawn by ::before, centred inside it.
+    check('checkbox native hit area is 48x48px', cb.hitW === '48px' && cb.hitH === '48px', [cb.hitW, cb.hitH]);
+    check('checkbox visual box (::before) is still 32x32px', cb.visualW === '32px' && cb.visualH === '32px', [cb.visualW, cb.visualH]);
+    check('checkbox visual radius is 8px', cb.r === '8px', cb.r);
     check('indeterminate is a real DOM property (not merely the checked attribute)',
       cb.indeterminate === true && cb.indeterminateChecked === false, cb);
     check('checked checkbox is natively checked', cb.checkedIsChecked === true, cb.checkedIsChecked);
@@ -353,6 +689,22 @@ async function main() {
     // the same live page) see the state index.html actually declares, not whatever the previous
     // interaction check left behind.
     await c.clickEl(`document.querySelector('label[for="cb-unchecked"]')`);
+
+    // Real click test for the 48x48 hit area itself: click a point that is inside the 48x48
+    // native input box but OUTSIDE the centred 32x32 visual (the inset is (48-32)/2=8px on each
+    // side, so a point 3px from the input's own edge is squarely in that "hit area but not
+    // visual box" ring) and confirm it still toggles the control — proving the hit area is real,
+    // not just a CSS-computed number nobody can actually click.
+    const hitAreaCheck = await c.js(`(()=>{
+      const cbEl=${sel('#cb-checked')}; const b=cbEl.getBoundingClientRect();
+      return { before: cbEl.checked, x: Math.round(b.left+3), y: Math.round(b.top+3) };
+    })()`);
+    await c.click(hitAreaCheck.x, hitAreaCheck.y);
+    const hitAreaAfter = await c.js(`${sel('#cb-checked')}.checked`);
+    check('clicking inside the 48x48 hit area but outside the 32x32 visual box still toggles the checkbox',
+      hitAreaCheck.before !== hitAreaAfter, { before: hitAreaCheck.before, after: hitAreaAfter, point: [hitAreaCheck.x, hitAreaCheck.y] });
+    // Restore #cb-checked to its documented initial (checked) state for the same reason as above.
+    await c.click(hitAreaCheck.x, hitAreaCheck.y);
 
     /* ---------------- Text input / Textarea ---------------- */
     section('Text input / Textarea');
@@ -400,6 +752,10 @@ async function main() {
       (await c.js("[...document.querySelectorAll('.checkbox')].every(cb => !!document.querySelector(`label[for=\"${cb.id}\"]`))")) === true);
     check('every text field has an associated <label> (may be visually hidden)',
       (await c.js("[...document.querySelectorAll('.text-input, .textarea')].every(f => !!document.querySelector(`label[for=\"${f.id}\"]`))")) === true);
+    check('every switch has an associated <label for>',
+      (await c.js("[...document.querySelectorAll('.switch')].every(sw => !!document.querySelector(`label[for=\"${sw.id}\"]`))")) === true);
+    check('every radio has an associated <label for>',
+      (await c.js("[...document.querySelectorAll('.radio')].every(r => !!document.querySelector(`label[for=\"${r.id}\"]`))")) === true);
 
     /* ---------------- Rendered colour ---------------- */
     section('Rendered colour');
@@ -411,22 +767,62 @@ async function main() {
     const glyphs = await c.js(`(()=>{
       const read=(id)=>{const cs=getComputedStyle(document.getElementById(id),'::after');
         return {mask: cs.maskImage!=='none'?'set':'none', opacity: cs.opacity, bg: cs.backgroundColor};};
-      return {unchecked: read('cb-unchecked'), checked: read('cb-checked'), indeterminate: read('cb-indeterminate')};
+      return {unchecked: read('cb-unchecked'), checked: read('cb-checked'), indeterminate: read('cb-indeterminate'),
+        radioChecked: read('radio-medium'), radioUnchecked: read('radio-high')};
     })()`);
     check('unchecked checkbox glyph is invisible (opacity 0)', glyphs.unchecked.opacity === '0', glyphs.unchecked);
     check('checked checkbox glyph is visible, uses the checkmark mask, in action-primary blue',
       glyphs.checked.opacity === '1' && glyphs.checked.mask === 'set' && glyphs.checked.bg === 'rgb(89, 138, 232)', glyphs.checked);
     check('indeterminate checkbox glyph is visible and uses a mask (the horizontal-line path)',
       glyphs.indeterminate.opacity === '1' && glyphs.indeterminate.mask === 'set', glyphs.indeterminate);
+    check('unchecked radio dot is invisible (opacity 0)', glyphs.radioUnchecked.opacity === '0', glyphs.radioUnchecked);
+    check('checked radio dot is visible, in action-primary blue', glyphs.radioChecked.opacity === '1' && glyphs.radioChecked.bg === 'rgb(89, 138, 232)', glyphs.radioChecked);
 
+    // The interaction checks above scroll all over the page (radio group, split button), and the
+    // real headless viewport height turned out not to reliably match the --window-size launch
+    // flag. Rather than guess the effective viewport, scroll the actual element into view and
+    // read its rect only after that — robust regardless of viewport size or current scroll.
+    await c.js(`${sel('.button--primary')}.scrollIntoView({block:'center'})`);
+    await sleep(150);
     const pts = await c.js(`(()=>{
       const primary=${sel('.button--primary')}.getBoundingClientRect();
-      return { buttonFill: [Math.round(primary.left+8), Math.round(primary.top+primary.height/2)] };
+      const disabled=document.querySelectorAll('.button')[2].getBoundingClientRect();
+      return {
+        buttonFill: [Math.round(primary.left+8), Math.round(primary.top+primary.height/2)],
+        // Sample at the vertical MIDLINE (not near a top/bottom corner): this button's radius
+        // equals half its height (a pill/stadium shape), so only at the exact vertical centre
+        // does the fill reach all the way to the left edge — the same technique already used for
+        // the primary button sample above. A first attempt at (left+6, top+6) landed just outside
+        // the rounded corner's arc and sampled the page background instead of the button.
+        disabledButtonFill: [Math.round(disabled.left+8), Math.round(disabled.top+disabled.height/2)]
+      };
     })()`);
     const img = await c.shot();
     const BLUE = [89, 138, 232];
     check('primary button fill renders as action-primary blue (sampled from a real screenshot)',
       JSON.stringify(img.at(...pts.buttonFill)) === JSON.stringify(BLUE), img.at(...pts.buttonFill));
+    check('disabled button background renders as the solid #666666 token colour, not dimmed (real screenshot sample, PR #29 fix)',
+      JSON.stringify(img.at(...pts.disabledButtonFill)) === JSON.stringify([102, 102, 102]), img.at(...pts.disabledButtonFill));
+
+    // Same real-screenshot-sample technique for the two other new solid fills: Icon button's
+    // primary background and Switch's "on" track.
+    await c.js(`document.querySelectorAll('.icon-button')[0].scrollIntoView({block:'center'})`);
+    await sleep(150);
+    const iconPt = await c.js(`(()=>{const r=document.querySelectorAll('.icon-button')[0].getBoundingClientRect();return [Math.round(r.left+r.width/2), Math.round(r.top+r.height/2)];})()`);
+    const iconImg = await c.shot();
+    check('icon button primary fill renders as action-primary blue (sampled from a real screenshot)',
+      JSON.stringify(iconImg.at(...iconPt)) === JSON.stringify(BLUE), iconImg.at(...iconPt));
+
+    await c.js(`${sel('#sw-on')}.scrollIntoView({block:'center'})`);
+    await sleep(150);
+    // Sample near the LEFT edge, not the right: when "on", the thumb sits at the track's right
+    // end (left = width - thumb - inset = 52px of 96px), so only the left ~52px strip is bare
+    // blue track — the same "avoid the part covered by something else" reasoning already used
+    // for the disabled button sample above.
+    const swPt = await c.js(`(()=>{const r=${sel('#sw-on')}.getBoundingClientRect();return [Math.round(r.left+8), Math.round(r.top+r.height/2)];})()`);
+    const swImg = await c.shot();
+    check('switch "on" track renders as action-primary blue on its bare (non-thumb) side (sampled from a real screenshot)',
+      JSON.stringify(swImg.at(...swPt)) === JSON.stringify(BLUE), swImg.at(...swPt));
 
     /* ---------------- Responsive + motion ---------------- */
     section('Responsive and motion');
