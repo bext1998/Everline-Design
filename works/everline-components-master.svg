@@ -7,6 +7,7 @@
     status: candidate; created: 2026-07-19; do-not-treat-as-frozen;
     note: existing components are faithful reconstructions from verified measurements, not byte-identical copies (original text in everline_p1.svg is outlined and not reusable);
     font-family confirmed by user as Noto Sans TC on 2026-07-19 (no longer a candidate value).
+    group-level superseded-by (2026-07-30, issue #17 G1 passed): the c-button, c-checkbox, c-text-input and c-textarea groups below are historical snapshots — works/html/batch1/index.html is now their candidate specification source. This is a per-group note only; this file's own top-level status above is unchanged. This file has 17 c-* groups total; c-color-swatch is a reference swatch, not a product component (see docs/design-system-v0.1-draft.md's own Color swatch note), leaving 16 product-component groups — 4 superseded here, 12 remain active candidate specification sources in this file.
   </metadata>
   <defs>
     <style>
@@ -37,6 +38,7 @@
 
   <!-- ===================== EXISTING COMPONENTS (rebuilt for consistency) ===================== -->
 
+  <!-- superseded-by: works/html/batch1/index.html (2026-07-30, issue #17 G1 passed) — historical snapshot, no longer the candidate specification source for Button. -->
   <g id="c-button" class="ui" transform="translate(48 170)">
     <text class="section" x="0" y="0">Button</text>
     <text class="note" x="0" y="28">48 px height · pill radius 24 px · padding-inline 24 px</text>
@@ -128,6 +130,7 @@
     </g>
   </g>
 
+  <!-- superseded-by: works/html/batch1/index.html (2026-07-30, issue #17 G1 passed) — historical snapshot, no longer the candidate specification source for Checkbox. -->
   <g id="c-checkbox" class="ui" transform="translate(48 818)">
     <text class="section" x="0" y="0">Checkbox</text>
     <text class="note" x="0" y="28">32 × 32 px · radius 8 px · 20 px indicator</text>
@@ -199,6 +202,7 @@
     </g>
   </g>
 
+  <!-- superseded-by: works/html/batch1/index.html (2026-07-30, issue #17 G1 passed) — historical snapshot, no longer the candidate specification source for Text input. -->
   <g id="c-text-input" class="ui" transform="translate(48 1682)">
     <text class="section" x="0" y="0">Text input</text>
     <text class="note" x="0" y="28">48 px height · radius 24 px · padding-inline 24 px</text>
@@ -216,6 +220,7 @@
     </g>
   </g>
 
+  <!-- superseded-by: works/html/batch1/index.html (2026-07-30, issue #17 G1 passed) — historical snapshot, no longer the candidate specification source for Textarea. -->
   <g id="c-textarea" class="ui" transform="translate(48 1898)">
     <text class="section" x="0" y="0">Textarea</text>
     <text class="note" x="0" y="28">256 × 128 / 256 × 256 px · radius 24 px · padding 16 px</text>

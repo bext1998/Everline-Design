@@ -132,7 +132,12 @@
       "background-primary": { "$type": "color", "$value": "{color.semantic.action-primary}" },
       "background-neutral": { "$type": "color", "$value": "{color.semantic.background-surface}" },
       "background-disabled": { "$type": "color", "$value": "{color.semantic.background-subdued}" },
-      "background-danger": { "$type": "color", "$value": "{color.semantic.action-danger}" }
+      "background-danger": { "$type": "color", "$value": "{color.semantic.action-danger}" },
+      "foreground": { "$type": "color", "$value": "{color.semantic.foreground-inverse}", "$description": "Batch 1 (issues #30) gap found during P0 token audit, 2026-07-31. White. Only the primary and danger variants use this — verified against works/everline-components-master.svg c-icon-button, where those two are the only variants with an explicit fill=\"#fff\" text override, same split already found and fixed on component.button." },
+      "foreground-neutral": { "$type": "color", "$value": "{color.semantic.foreground-primary}", "$description": "Batch 1 (issue #30) gap, same pattern as component.button.foreground-neutral: the neutral and outline variants' placeholder text in c-icon-button has no fill override, so it inherits the sheet's default .label fill (#f2f2f2, off-white / foreground-primary), not white." },
+      "foreground-disabled": { "$type": "color", "$value": "{color.semantic.foreground-disabled}", "$description": "Batch 1 (issue #30) gap. Verified against c-icon-button's disabled variant: fill=\"#f2f2f2\" fill-opacity=\"0.55\", the same off-white + opacity.disabled formula as component.button.foreground-disabled." },
+      "border-width": { "$type": "dimension", "$value": "{border.width-focus}", "$description": "Batch 1 (issue #30) gap. 2px, matching the outline variant's stroke-width=\"2\" in c-icon-button (rect x=1 y=1 width=46 height=46 stroke=\"#598ae8\" stroke-width=\"2\")." },
+      "border-focus": { "$type": "color", "$value": "{color.semantic.border-focus}", "$description": "Batch 1 (issue #30) gap. Matches the outline variant's stroke=\"#598ae8\" in the same SVG group." }
     },
     "switch": {
       "width": { "$type": "dimension", "$value": { "value": 96, "unit": "px" } },
@@ -162,7 +167,9 @@
       "indicator-size": { "$type": "dimension", "$value": { "value": 20, "unit": "px" } },
       "background": { "$type": "color", "$value": "{color.semantic.background-surface}" },
       "indicator": { "$type": "color", "$value": "{color.semantic.action-primary}" },
-      "disabled": { "$type": "color", "$value": "{color.semantic.background-subdued}" }
+      "disabled": { "$type": "color", "$value": "{color.semantic.background-subdued}" },
+      "border": { "$type": "color", "$value": "{color.semantic.border-default}", "$description": "Batch 1 (issue #32) gap found during P0 token audit, 2026-07-31, same pattern as component.checkbox.border: works/everline-components-master.svg c-radio draws the unchecked state with stroke=\"#444\" (gray-800 / border-default), never aliased under component.radio. Checked/disabled states have no stroke, so this only applies to unchecked." },
+      "border-width": { "$type": "dimension", "$value": "{border.width-default}", "$description": "1px, matching the unchecked state's stroke-width=\"1\" in the same SVG group." }
     },
     "split-button": {
       "width-reference": { "$type": "dimension", "$value": { "value": 180, "unit": "px" }, "$description": "Observed source width; scaling changes this baseline in 8 px steps." },
@@ -173,7 +180,11 @@
       "menu-row-height": { "$type": "dimension", "$value": "{size.control-md}" },
       "menu-radius": { "$type": "dimension", "$value": "{radius.control}" },
       "background": { "$type": "color", "$value": "{color.semantic.action-primary}" },
-      "menu-background": { "$type": "color", "$value": "{color.semantic.background-overlay}" }
+      "menu-background": { "$type": "color", "$value": "{color.semantic.background-overlay}" },
+      "foreground": { "$type": "color", "$value": "{color.semantic.foreground-inverse}", "$description": "Batch 1 (issue #33) gap found during P0 token audit, 2026-07-31. White. Matches c-split-button's main label and chevron icon, both fill=\"#fff\"." },
+      "menu-foreground": { "$type": "color", "$value": "{color.semantic.foreground-primary}", "$description": "Batch 1 (issue #33) gap. Off-white. The two drawn menu item labels in c-split-button's open group have no fill override, so they inherit the sheet's default .label fill — the same generic default-text role Popover already declared its own explicit alias for (component.popover.foreground), added here for the same CSS-authoring clarity rather than leaving it an unstated inherited value." },
+      "divider-color": { "$type": "color", "$value": "#4A76C9", "$description": "Batch 1 (issue #33) gap. Backfilled from the approved SVG's own divider line (stroke=\"#4a76c9\" between the main action and disclosure regions in both closed and open c-split-button groups) — a distinct value from action-primary (#598ae8), needed because a plain border-default (#444) or action-primary line would not read against the same action-primary fill it sits on. Same backfill-an-already-drawn-value treatment as color.base.gray-850 for Kanban column; not a new design decision, just previously untokenized." },
+      "layer": { "$type": "number", "$value": "{layer.overlay}", "$description": "Batch 1 (issue #33) gap. Same candidate-recorded-not-validated caveat already noted on component.popover.layer: layer.overlay's coexistence order with Tooltip/Modal/Toast remains unverified, and this pilot does not render more than one overlay type at once either." }
     },
     "text-input": {
       "height": { "$type": "dimension", "$value": "{size.control-md}" },
@@ -195,7 +206,7 @@
       "scrollbar-width": { "$type": "dimension", "$value": { "value": 10, "unit": "px" }, "$description": "Observed optical width; verify before implementation." },
       "background": { "$type": "color", "$value": "{color.semantic.background-subdued}" },
       "scrollbar": { "$type": "color", "$value": "{color.base.gray-700}" },
-      "foreground": { "$type": "color", "$value": "{color.semantic.foreground-primary}", "$description": "Batch 1 (issue #17) gap found during P0 token audit, 2026-07-30. component.textarea had no typed-text foreground token at all despite c-textarea rendering text; same value as component.text-input.foreground since both fields share the same generic default-text role, verified by the shared .body class default fill (#f2f2f2) in works/everline-components-master.svg." },
+      "foreground": { "$type": "color", "$value": "{color.semantic.foreground-primary}", "$description": "Batch 1 (issue #17) gap found during P0 token audit, 2026-07-30. component.textarea had no typed-text foreground token at all. NOT verified against c-textarea directly — corrected 2026-07-30 during PR #29 review: both drawn c-textarea examples only render placeholder-style text (fill=\"#4d4d4d\", the same value as placeholder below), never a filled/typed example, so there is no SVG-drawn value for typed text to check against. This is a G1-accepted extension decision, not an SVG measurement: same value as component.text-input.foreground since both fields share the same generic default-text role, reused rather than invented." },
       "placeholder": { "$type": "color", "$value": "{color.base.gray-700}", "$description": "Batch 1 gap. Verified directly against c-textarea's placeholder text fill=\"#4d4d4d\" (gray-700) in the master SVG — same value component.text-input.placeholder already uses, but textarea never had its own alias." },
       "foreground-disabled": { "$type": "color", "$value": "{color.semantic.foreground-disabled}", "$description": "Batch 1 gap, same reuse rationale as component.text-input.foreground-disabled above: no disabled state was drawn for Textarea either, so this reuses the already-reviewed Number-input-field disabled treatment rather than inventing one." },
       "border-width-focus": { "$type": "dimension", "$value": "{border.width-focus}", "$description": "Batch 1 gap. Textarea's own SVG group (resizable/scrollable) does not draw a focused example, but the design draft's text explicitly calls for the same 2px blue focus border as Text input, and every sibling text-entry component in this system (Text input, Search field, Number input's field) already uses this exact technique. Reused, not a new decision." },
