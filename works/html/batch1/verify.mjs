@@ -161,6 +161,7 @@ function verifyTokens() {
   check('component.tag.border-focus resolves to border-focus #598AE8', px(resolved.get('component.tag.border-focus')) === '#598AE8', resolved.get('component.tag.border-focus'));
   check('component.tag.hit-area-size resolves to control-md 48px (extension pending G1, not SVG-drawn)', px(resolved.get('component.tag.hit-area-size')) === '48px', resolved.get('component.tag.hit-area-size'));
   check('component.tag.remove-control-size resolves to 32px (extension pending G1, not SVG-drawn)', px(resolved.get('component.tag.remove-control-size')) === '32px', resolved.get('component.tag.remove-control-size'));
+  check('component.tag.remove-icon-offset resolves to 23px (SVG-measured: 144 - 121)', px(resolved.get('component.tag.remove-icon-offset')) === '23px', resolved.get('component.tag.remove-icon-offset'));
   check('component.switch.width is 96px (unchanged)', px(resolved.get('component.switch.width')) === '96px');
   check('component.switch.thumb-size is 40px (unchanged)', px(resolved.get('component.switch.thumb-size')) === '40px');
   check('component.switch.track-on resolves to action-primary #598AE8 (unchanged)',
@@ -679,7 +680,7 @@ async function main() {
         outlineShadow: cs(outline).boxShadow !== 'none',
         outlineWrapperH: cs(outlineWrapper).height,
         outlinePressedBefore: outlineWrapper.getAttribute('aria-pressed'),
-        disabledAttr: disabled.disabled, disabledBg: cs(disabled).backgroundColor, disabledFg: cs(disabled).color,
+        disabledAttr: disabled.getAttribute('aria-disabled'), disabledTag: disabled.tagName, disabledBg: cs(disabled).backgroundColor, disabledFg: cs(disabled).color,
         dotSize: cs(dot).width, dotBg: cs(dot).backgroundColor,
         iconSize: cs(icon).width,
         removeLabel: removeBtn.getAttribute('aria-label'), removeSize: cs(removeBtn).width
@@ -698,7 +699,15 @@ async function main() {
     check('outline variant draws a border via box-shadow', tag.outlineShadow);
     check('outline hit-area wrapper is 48px tall (spec a11y requirement, grown from the 40px visual)', tag.outlineWrapperH === '48px', tag.outlineWrapperH);
     check('outline toggle starts at aria-pressed="false"', tag.outlinePressedBefore === 'false', tag.outlinePressedBefore);
-    check('disabled tag uses the native disabled attribute', tag.disabledAttr === true, tag.disabledAttr);
+    // PR #46 review (opus): disabled was originally a <button disabled>, the only variant among
+    // six that isn't a <span> — the SVG's tag-disabled example doesn't indicate which kind of tag
+    // (status/filter/removable) it represents, and none of the other 5 variants imply any
+    // interactive affordance a "disabled" state could belong to (the spec is explicit: "純狀態
+    // tag 不可點擊"). Decided (2026-08-03, human call): disabled is a <span aria-disabled="true">,
+    // matching its 5 sibling status tags rather than masquerading as a disabled interactive
+    // control that was never drawn as one.
+    check('disabled tag is a non-interactive <span> with aria-disabled="true" (matching its 5 sibling status tags)',
+      tag.disabledTag === 'SPAN' && tag.disabledAttr === 'true', { tag: tag.disabledTag, ariaDisabled: tag.disabledAttr });
     check('disabled tag background is the solid token colour rgb(102, 102, 102), not dimmed', tag.disabledBg === 'rgb(102, 102, 102)', tag.disabledBg);
     const tagDisabledFgRgb = parseAnyColor(tag.disabledFg);
     check('disabled tag foreground is the color-mix composite of foreground-disabled over the solid background (≈rgb(179, 179, 179), same technique as Button/Text input)',
@@ -708,6 +717,18 @@ async function main() {
     check('danger icon is 16px', tag.iconSize === '16px', tag.iconSize);
     check('remove control has an accessible name identifying which tag it removes', tag.removeLabel === '移除：高優先', tag.removeLabel);
     check('remove control hit area is 32px', tag.removeSize === '32px', tag.removeSize);
+
+    // PR #46 review (opus) found the remove icon rendered 9px further from the pill's right edge
+    // than the approved SVG (32px measured vs. 23px drawn) — real geometry, not computed-style.
+    // Confirm the fix restores the exact SVG-measured 23px via the same getBoundingClientRect
+    // measurement technique the review used, not just that the CSS declares the intended value.
+    const removeGeometry = await c.js(`(()=>{
+      const pill=${sel('.tag--removable')}, remove=${sel('.tag--removable .tag__remove')}, svg=remove.querySelector('svg');
+      const pillRect=pill.getBoundingClientRect(), svgRect=svg.getBoundingClientRect();
+      return { offset: Math.round(pillRect.right - (svgRect.left + svgRect.width / 2)) };
+    })()`);
+    check('remove icon centre sits 23px from the pill\'s right edge, matching the SVG measurement (was 32px before this fix)',
+      removeGeometry.offset === 23, removeGeometry);
 
     // Real click test: outline toggles its real aria-pressed without changing its own rendered
     // appearance — no selected/pressed visual was ever drawn for this variant (see index.html

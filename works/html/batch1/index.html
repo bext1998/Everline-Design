@@ -70,11 +70,11 @@
           <li><code>focused</code>——outline 變體（唯一互動的整個 tag）與 removable 的移除鈕皆沿用既有全域 <code>:focus-visible</code> 技法，非新視覺決定；<code>hover</code>（outline 整體與 removable 移除鈕）沿用既有跨元件 6% 白色疊加技法，同樣不是本批新增的視覺決定。</li>
           <li>文字過長時的最大寬度與截斷策略——依規格文字「文字超長時由產品層設定」，不屬於這份框架中立候選稿的範圍，本批不實作。</li>
         </ul>
-        <p><strong>PR #46 審查（opus）核實無誤但決定不自行變更、留給 G1 判斷的三項已知落差</strong>（依審查意見：這些是設計決策層級的問題，不是可以由 agent 片面認定「合理就好」而略過告知的細節）：</p>
+        <p><strong>PR #46 審查（opus）找出三項設計層級問題，2026-08-03 由使用者本人當場拍板解決（不再留到之後的 G1 才決定）</strong>：</p>
         <ul>
-          <li>outline 的靜態邊框沿用 <code>border.width-focus</code>（2px）＋<code>color.semantic.border-focus</code>，與全域 <code>:focus-visible</code> 焦點環同色同寬；outline 本身包在 48px 命中區 wrapper 裡，鍵盤 focus 時會呈現「48px 外環＋40px 內環」兩層同色藍框。這與 <code>docs/STATUS.md</code>／<code>docs/design-system-v0.1-draft.md</code> 已記錄的 Button outline／focus ring 共用同一視覺的既有未決問題完全相同，本批原樣沿用同一手法，先前未在本文件單獨列出。另外 <code>component.tag.border-focus</code> 這個 token 命名用來表示「一律存在的靜態邊框顏色」，與 Text input／Textarea 既有的 <code>border-width-focus</code>／<code>border-focus</code>（僅在真正 focus 當下才出現的邊框）命名慣例不一致，是否需要改名或維持現狀，留給 G1 判斷。</li>
-          <li>disabled 變體實作為 <code>&lt;button disabled&gt;</code>，其餘五個變體皆為 <code>&lt;span&gt;</code>；SVG 的 <code>tag-disabled</code> 範例本身沒有指明這是哪一種 tag（純狀態／篩選／可移除）的停用態，選用真實 <code>&lt;button&gt;</code> 只是為了沿用本檔案一致的原生 <code>disabled</code> 驗證慣例，不是從 SVG 或規格文字推得的結論，是否應該維持這個元素類型留給 G1 判斷。</li>
-          <li>removable 移除鈕圖示中心與 pill 右緣的實測距離為 32px（<code>component.tag.padding-inline</code> 16px＋<code>component.tag.remove-control-size</code> 一半 16px），而 <code>c-badge-tag</code> SVG 原始量測值為 23px（144－121）——因為 32px 命中區疊加在完整的 16px <code>padding-inline</code> 之外而非取代它，兩者相加把圖示往內推了約 9px。決定本身有 a11y 理由（命中區大小），但等於改動了已核准 SVG 的圖示位置，先前的 PR 說明與本文件皆未告知，留給 G1 判斷是否接受這個位移。</li>
+          <li><strong>outline 靜態邊框與 focus-visible 焦點環共用同一視覺</strong>：實際以真實鍵盤 <code>Tab</code> 導覽並截圖核對（非臆測）後，外層 48px 命中區 wrapper 的焦點框（瀏覽器預設矩形／略帶圓角）與內層 40px pill 自己的邊框在視覺上是兩個可分辨的獨立形狀（矩形外框＋膠囊內框，並非同一圈重疊到分不出來），予以維持、不修改。<code>component.tag.border-focus</code> 的命名與數值皆維持現狀，理由：其色值 <code>#598ae8</code> 就是 SVG 本身畫的 outline 描邊顏色，不可為了改名而連帶質疑數值；命名雖與 Text input／Textarea 的「僅 focus 時出現」語意不同，但與 <code>component.button.border-focus</code>／<code>component.icon-button.border-focus</code>（同樣是「恆常顯示的 outline 靜態邊框」，且 Button 這組命名已通過實際 G1 審查）完全一致，只改 Tag 一個反而製造新的不一致，故維持整個 batch1 家族現有命名慣例。</li>
+          <li><strong>disabled 元素類型</strong>：改為 <code>&lt;span class="tag tag--disabled" aria-disabled="true"&gt;</code>，不再用 <code>&lt;button disabled&gt;</code>，與其餘五個純狀態變體（皆為 <code>&lt;span&gt;</code>）一致——disabled 沒有從 SVG 或規格文字得出的獨立互動語意，規格明文「純狀態 tag 不可點擊」，用 <code>&lt;button&gt;</code> 只是誤套用了本檔案既有的原生 disabled 驗證慣例，並非這個變體本身需要的語意。<code>verify.mjs</code> 已改用 <code>aria-disabled</code> 屬性驗證。</li>
+          <li><strong>removable 移除鈕圖示位置</strong>：新增 <code>component.tag.remove-icon-offset</code>（23px，逐一核對 <code>c-badge-tag</code> SVG 的 <code>tag-removable</code> X 圖示中心與 rect 右緣量測值 144－121＝23px），並讓 removable 變體自己的 <code>padding-inline-end</code> 改用 <code>calc(remove-icon-offset − remove-control-size ÷ 2)</code>（23－16＝7px）取代共用的 16px，讓圖示中心恢復到與 SVG 一致的 23px，同時完整保留 32px 命中區，不犧牲無障礙需求。<code>verify.mjs</code> 已新增真實 <code>getBoundingClientRect</code> 量測斷言（23px），不只信任 CSS 宣告值。</li>
         </ul>
       </aside>
 
@@ -313,7 +313,7 @@
           <button class="tag-button" type="button" aria-pressed="false" data-tag-toggle>
             <span class="tag tag--outline">已篩選</span>
           </button>
-          <button class="tag tag--disabled" type="button" disabled>停用</button>
+          <span class="tag tag--disabled" aria-disabled="true">停用</span>
           <span class="tag tag--removable">
             高優先
             <button class="tag__remove" type="button" aria-label="移除：高優先" data-tag-remove>
@@ -321,7 +321,7 @@
             </button>
           </span>
         </div>
-        <p class="example-label">依序：neutral、accent（前導 8px 選取圓點）、danger（前導驚嘆號圖示）、outline（真實 <code>&lt;button aria-pressed&gt;</code>，48px 命中區包住 40px 視覺，可鍵盤操作切換 <code>aria-pressed</code>，但選中後外觀不變——SVG 未畫出選中視覺，見上方 scope note）、disabled（原生 <code>disabled</code>）、removable（獨立的移除按鈕，32px 命中區，<code>aria-label="移除：高優先"</code>，點擊會從畫面移除該 tag）。文字色 accent／danger 為 white（<code>component.tag.foreground</code>），neutral／outline／removable 為 off-white（<code>component.tag.foreground-neutral</code>）；圖示與圓點皆繼承同一個 <code>currentColor</code>，未另立顏色 token。</p>
+        <p class="example-label">依序：neutral、accent（前導 8px 選取圓點）、danger（前導驚嘆號圖示）、outline（真實 <code>&lt;button aria-pressed&gt;</code>，48px 命中區包住 40px 視覺，可鍵盤操作切換 <code>aria-pressed</code>，但選中後外觀不變——SVG 未畫出選中視覺，見上方 scope note）、disabled（非互動 <code>&lt;span aria-disabled="true"&gt;</code>，與其餘狀態變體一致，見上方 scope note 決策說明）、removable（獨立的移除按鈕，32px 命中區，<code>aria-label="移除：高優先"</code>，點擊會從畫面移除該 tag，移除鈕內圖示中心距 pill 右緣 23px，與 SVG 一致）。文字色 accent／danger 為 white（<code>component.tag.foreground</code>），neutral／outline／removable 為 off-white（<code>component.tag.foreground-neutral</code>）；圖示與圓點皆繼承同一個 <code>currentColor</code>，未另立顏色 token。</p>
       </section>
     </main>
     <script src="prototype.js"></script>
