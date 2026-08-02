@@ -6,3 +6,7 @@ docs/lucide-font/
 
 # Illustrator lock/autosave log files.
 works/**/*.log
+
+# Throwaway UI prototype (mattpocock-skills /prototype) for a Taylor Kanban product screen,
+# not an Everline candidate component — kept locally as design reference, not versioned here.
+works/html/taylor-agent-handoff-prototype/
