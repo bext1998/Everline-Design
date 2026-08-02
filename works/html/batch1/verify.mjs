@@ -681,6 +681,8 @@ async function main() {
         outlineWrapperH: cs(outlineWrapper).height,
         outlinePressedBefore: outlineWrapper.getAttribute('aria-pressed'),
         disabledAttr: disabled.getAttribute('aria-disabled'), disabledTag: disabled.tagName, disabledBg: cs(disabled).backgroundColor, disabledFg: cs(disabled).color,
+        disabledHiddenText: disabled.querySelector('.visually-hidden')?.textContent ?? null,
+        disabledHiddenWidth: (()=>{const h=disabled.querySelector('.visually-hidden'); return h ? cs(h).width : null;})(),
         dotSize: cs(dot).width, dotBg: cs(dot).backgroundColor,
         iconSize: cs(icon).width,
         removeLabel: removeBtn.getAttribute('aria-label'), removeSize: cs(removeBtn).width
@@ -708,6 +710,19 @@ async function main() {
     // control that was never drawn as one.
     check('disabled tag is a non-interactive <span> with aria-disabled="true" (matching its 5 sibling status tags)',
       tag.disabledTag === 'SPAN' && tag.disabledAttr === 'true', { tag: tag.disabledTag, ariaDisabled: tag.disabledAttr });
+    // PR #46 review round 3 (opus): switching to a non-focusable <span> means the disabled state
+    // is no longer announced the way a real <button disabled> would be, and the only remaining
+    // difference from the neutral variant is colour (background + text opacity) — violating this
+    // component's own spec text ("不得只依顏色傳達停用" / "不以顏色單獨表達語意，需要文字、圖示或
+    // 上下文共同說明"). Not a visual regression (colour-only was already true before this PR),
+    // but a real accessibility gap this PR's own <span> change introduced. Fixed with a
+    // screen-reader-only "（已停用）" span reusing the existing .visually-hidden utility already
+    // used elsewhere in this file for labels — text, not a new pixel, so this doesn't fall under
+    // "don't invent an undrawn visual".
+    check('disabled tag conveys its state with more than colour: a visually-hidden "（已停用）" text is present for assistive tech',
+      tag.disabledHiddenText === '（已停用）', tag.disabledHiddenText);
+    check('the disabled-state text is actually visually hidden (1px, not a visible pixel change)',
+      tag.disabledHiddenWidth === '1px', tag.disabledHiddenWidth);
     check('disabled tag background is the solid token colour rgb(102, 102, 102), not dimmed', tag.disabledBg === 'rgb(102, 102, 102)', tag.disabledBg);
     const tagDisabledFgRgb = parseAnyColor(tag.disabledFg);
     check('disabled tag foreground is the color-mix composite of foreground-disabled over the solid background (≈rgb(179, 179, 179), same technique as Button/Text input)',
