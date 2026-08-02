@@ -79,3 +79,37 @@ document.querySelectorAll('[data-split-button]').forEach((root) => {
     if (isOpen() && !root.contains(e.target)) closeMenu({ returnFocus: false });
   });
 });
+
+// Badge / Tag (issue #34): the outline variant's aria-pressed is a real toggle, satisfying the
+// spec's "可點擊篩選器應使用...選取狀態" interaction requirement — its appearance does not change
+// on toggle because the SVG never drew a distinct selected/pressed outline look (see styles.css's
+// own note; same "undrawn state, not invented" treatment already applied to Button's pressed/
+// loading). The removable variant's remove control deletes its own tag from the DOM — a real,
+// observably-different result, not a visual-only fade (no removal animation exists in the SVG to
+// justify one).
+document.querySelectorAll('[data-tag-toggle]').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    btn.setAttribute('aria-pressed', btn.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
+  });
+});
+// PR #46 review (opus): removing a tag while its own remove button has keyboard focus must not
+// let focus fall back to <body> — the same "focus must land somewhere deliberate, not wherever
+// the browser defaults to" requirement batch 4's Popover already established for its own
+// close/light-dismiss paths (works/html/batch4/prototype.js: "focus always returns to whichever
+// control opened it"). There is no single invoker to return to here (the control that had focus
+// is the one being removed), so focus instead moves to the next remaining remove control in the
+// same group, then the previous one, then the group container itself as a last resort — the
+// group container carries tabindex="-1" in index.html precisely so it can receive focus
+// programmatically without ever entering the Tab order on its own.
+document.querySelectorAll('[data-tag-remove]').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    const tag = btn.closest('.tag');
+    const group = tag?.parentElement;
+    const removesInGroup = group ? [...group.querySelectorAll('[data-tag-remove]')] : [];
+    const myIndex = removesInGroup.indexOf(btn);
+    tag?.remove();
+    const next = removesInGroup[myIndex + 1] || removesInGroup[myIndex - 1];
+    if (next && next.isConnected) next.focus();
+    else group?.focus();
+  });
+});

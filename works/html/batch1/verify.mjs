@@ -4,6 +4,7 @@
  * Button / Checkbox / Text input / Textarea graduated (G1 passed 2026-07-30).
  * Icon button (#30) / Switch (#31) / Radio (#32) / Split button/Dropdown (#33) added
  * 2026-07-31 — candidate ready for G1, awaiting human visual review.
+ * Badge / Tag (#34) added 2026-08-03 — candidate ready for G1, awaiting human visual review.
  *
  *   node works/html/batch1/verify.mjs
  *   CHROME="/path/to/chrome" node works/html/batch1/verify.mjs     # if auto-detection fails
@@ -146,6 +147,21 @@ function verifyTokens() {
   check('component.split-button.layer resolves to layer.overlay = 100',
     resolved.get('component.split-button.layer') === 100, resolved.get('component.split-button.layer'));
   // Switch: P0 audit found no gaps at all — confirm every drawn value is exactly what was already there.
+  // Badge / Tag (issue #34): every component.tag.* value is a first-time addition (this
+  // component had zero prior token coverage), each verified against the c-badge-tag SVG audit.
+  check('component.tag.height resolves to size.tag-md 40px', px(resolved.get('component.tag.height')) === '40px', resolved.get('component.tag.height'));
+  check('component.tag.radius resolves to 20px (half of 40px, matches every tag-* rx="20")', px(resolved.get('component.tag.radius')) === '20px', resolved.get('component.tag.radius'));
+  check('component.tag.dot-size resolves to 8px', px(resolved.get('component.tag.dot-size')) === '8px', resolved.get('component.tag.dot-size'));
+  check('component.tag.foreground resolves to white #FFFFFF', px(resolved.get('component.tag.foreground')) === '#FFFFFF', resolved.get('component.tag.foreground'));
+  check('component.tag.foreground-neutral resolves to off-white #F2F2F2', px(resolved.get('component.tag.foreground-neutral')) === '#F2F2F2', resolved.get('component.tag.foreground-neutral'));
+  check('component.tag.background-neutral resolves to background-surface #333333', px(resolved.get('component.tag.background-neutral')) === '#333333', resolved.get('component.tag.background-neutral'));
+  check('component.tag.background-accent resolves to action-primary #598AE8', px(resolved.get('component.tag.background-accent')) === '#598AE8', resolved.get('component.tag.background-accent'));
+  check('component.tag.background-danger resolves to action-danger #C1272D', px(resolved.get('component.tag.background-danger')) === '#C1272D', resolved.get('component.tag.background-danger'));
+  check('component.tag.background-disabled resolves to background-subdued #666666', px(resolved.get('component.tag.background-disabled')) === '#666666', resolved.get('component.tag.background-disabled'));
+  check('component.tag.border-focus resolves to border-focus #598AE8', px(resolved.get('component.tag.border-focus')) === '#598AE8', resolved.get('component.tag.border-focus'));
+  check('component.tag.hit-area-size resolves to control-md 48px (extension pending G1, not SVG-drawn)', px(resolved.get('component.tag.hit-area-size')) === '48px', resolved.get('component.tag.hit-area-size'));
+  check('component.tag.remove-control-size resolves to 32px (extension pending G1, not SVG-drawn)', px(resolved.get('component.tag.remove-control-size')) === '32px', resolved.get('component.tag.remove-control-size'));
+  check('component.tag.remove-icon-offset resolves to 23px (SVG-measured: 144 - 121)', px(resolved.get('component.tag.remove-icon-offset')) === '23px', resolved.get('component.tag.remove-icon-offset'));
   check('component.switch.width is 96px (unchanged)', px(resolved.get('component.switch.width')) === '96px');
   check('component.switch.thumb-size is 40px (unchanged)', px(resolved.get('component.switch.thumb-size')) === '40px');
   check('component.switch.track-on resolves to action-primary #598AE8 (unchanged)',
@@ -199,7 +215,7 @@ function valuesMatch(tokenResolved, cssLiteral) {
 function verifyCssContract(resolvedTokens) {
   section('works/html/batch1/styles.css — no raw dimensions in component rules');
   const css = readFileSync(CSS, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
-  const COMPONENT = /^[^@]*?(\.button|\.checkbox|\.text-input|\.textarea|\.icon-button|\.switch|\.radio|\.split-button|fieldset\.radio-group|:where)/;
+  const COMPONENT = /^[^@]*?(\.button|\.checkbox|\.text-input|\.textarea|\.icon-button|\.switch|\.radio|\.split-button|\.tag|fieldset\.radio-group|:where)/;
   const offenders = [];
   for (const m of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
     const selector = m[1].trim();
@@ -647,6 +663,151 @@ async function main() {
     const afterOutsideClick = await c.js(`${sel('[data-split-menu]')}.hidden`);
     check('clicking outside the open menu closes it (light dismiss)', afterOutsideClick === true, afterOutsideClick);
 
+    /* ---------------- Badge / Tag ---------------- */
+    section('Badge / Tag');
+    const tag = await c.js(`(()=>{
+      const cs=(e)=>getComputedStyle(e);
+      const direct=[...document.querySelectorAll('.tag-examples > .tag')];
+      const neutral=direct[0], accent=direct[1], danger=direct[2], disabled=direct[3], removable=direct[4];
+      const outlineWrapper=${sel('[data-tag-toggle]')}, outline=${sel('.tag--outline')};
+      const dot=accent.querySelector('.tag__dot'), icon=danger.querySelector('.tag__icon');
+      const removeBtn=removable.querySelector('.tag__remove');
+      return {
+        h: cs(neutral).height, r: cs(neutral).borderRadius, padInline: cs(neutral).paddingLeft, gap: cs(neutral).columnGap,
+        neutralBg: cs(neutral).backgroundColor, neutralFg: cs(neutral).color,
+        accentBg: cs(accent).backgroundColor, accentFg: cs(accent).color,
+        dangerBg: cs(danger).backgroundColor, dangerFg: cs(danger).color,
+        outlineShadow: cs(outline).boxShadow !== 'none',
+        outlineWrapperH: cs(outlineWrapper).height,
+        outlinePressedBefore: outlineWrapper.getAttribute('aria-pressed'),
+        disabledAttr: disabled.getAttribute('aria-disabled'), disabledTag: disabled.tagName, disabledBg: cs(disabled).backgroundColor, disabledFg: cs(disabled).color,
+        disabledHiddenText: disabled.querySelector('.visually-hidden')?.textContent ?? null,
+        disabledHiddenWidth: (()=>{const h=disabled.querySelector('.visually-hidden'); return h ? cs(h).width : null;})(),
+        dotSize: cs(dot).width, dotBg: cs(dot).backgroundColor,
+        iconSize: cs(icon).width,
+        removeLabel: removeBtn.getAttribute('aria-label'), removeSize: cs(removeBtn).width
+      };
+    })()`);
+    check('tag height is 40px', tag.h === '40px', tag.h);
+    check('tag radius is 20px (pill for this height)', tag.r === '20px', tag.r);
+    check('tag padding-inline is 16px', tag.padInline === '16px', tag.padInline);
+    check('tag gap (icon/dot to text) is 8px', tag.gap === '8px', tag.gap);
+    check('neutral background is background-surface rgb(51, 51, 51)', tag.neutralBg === 'rgb(51, 51, 51)', tag.neutralBg);
+    check('neutral foreground is off-white rgb(242, 242, 242)', tag.neutralFg === 'rgb(242, 242, 242)', tag.neutralFg);
+    check('accent background is action-primary rgb(89, 138, 232)', tag.accentBg === 'rgb(89, 138, 232)', tag.accentBg);
+    check('accent foreground is white rgb(255, 255, 255)', tag.accentFg === 'rgb(255, 255, 255)', tag.accentFg);
+    check('danger background is action-danger rgb(193, 39, 45)', tag.dangerBg === 'rgb(193, 39, 45)', tag.dangerBg);
+    check('danger foreground is white rgb(255, 255, 255)', tag.dangerFg === 'rgb(255, 255, 255)', tag.dangerFg);
+    check('outline variant draws a border via box-shadow', tag.outlineShadow);
+    check('outline hit-area wrapper is 48px tall (spec a11y requirement, grown from the 40px visual)', tag.outlineWrapperH === '48px', tag.outlineWrapperH);
+    check('outline toggle starts at aria-pressed="false"', tag.outlinePressedBefore === 'false', tag.outlinePressedBefore);
+    // PR #46 review (opus): disabled was originally a <button disabled>, the only variant among
+    // six that isn't a <span> — the SVG's tag-disabled example doesn't indicate which kind of tag
+    // (status/filter/removable) it represents, and none of the other 5 variants imply any
+    // interactive affordance a "disabled" state could belong to (the spec is explicit: "純狀態
+    // tag 不可點擊"). Decided (2026-08-03, human call): disabled is a <span aria-disabled="true">,
+    // matching its 5 sibling status tags rather than masquerading as a disabled interactive
+    // control that was never drawn as one.
+    check('disabled tag is a non-interactive <span> with aria-disabled="true" (matching its 5 sibling status tags)',
+      tag.disabledTag === 'SPAN' && tag.disabledAttr === 'true', { tag: tag.disabledTag, ariaDisabled: tag.disabledAttr });
+    // PR #46 review round 3 (opus): switching to a non-focusable <span> means the disabled state
+    // is no longer announced the way a real <button disabled> would be, and the only remaining
+    // difference from the neutral variant is colour (background + text opacity) — violating this
+    // component's own spec text ("不得只依顏色傳達停用" / "不以顏色單獨表達語意，需要文字、圖示或
+    // 上下文共同說明"). Not a visual regression (colour-only was already true before this PR),
+    // but a real accessibility gap this PR's own <span> change introduced. Fixed with a
+    // screen-reader-only "（已停用）" span reusing the existing .visually-hidden utility already
+    // used elsewhere in this file for labels — text, not a new pixel, so this doesn't fall under
+    // "don't invent an undrawn visual".
+    check('disabled tag conveys its state with more than colour: a visually-hidden "（已停用）" text is present for assistive tech',
+      tag.disabledHiddenText === '（已停用）', tag.disabledHiddenText);
+    check('the disabled-state text is actually visually hidden (1px, not a visible pixel change)',
+      tag.disabledHiddenWidth === '1px', tag.disabledHiddenWidth);
+    check('disabled tag background is the solid token colour rgb(102, 102, 102), not dimmed', tag.disabledBg === 'rgb(102, 102, 102)', tag.disabledBg);
+    const tagDisabledFgRgb = parseAnyColor(tag.disabledFg);
+    check('disabled tag foreground is the color-mix composite of foreground-disabled over the solid background (≈rgb(179, 179, 179), same technique as Button/Text input)',
+      !!tagDisabledFgRgb && tagDisabledFgRgb.every((v) => Math.abs(v - 179) <= 1), { raw: tag.disabledFg, parsed: tagDisabledFgRgb });
+    check('accent dot is 8px diameter', tag.dotSize === '8px', tag.dotSize);
+    check('accent dot uses currentColor, rendering white to match its own label text', tag.dotBg === 'rgb(255, 255, 255)', tag.dotBg);
+    check('danger icon is 16px', tag.iconSize === '16px', tag.iconSize);
+    check('remove control has an accessible name identifying which tag it removes', tag.removeLabel === '移除：高優先', tag.removeLabel);
+    check('remove control hit area is 32px', tag.removeSize === '32px', tag.removeSize);
+
+    // PR #46 review (opus) found the remove icon rendered 9px further from the pill's right edge
+    // than the approved SVG (32px measured vs. 23px drawn) — real geometry, not computed-style.
+    // Confirm the fix restores the exact SVG-measured 23px via the same getBoundingClientRect
+    // measurement technique the review used, not just that the CSS declares the intended value.
+    const removeGeometry = await c.js(`(()=>{
+      const pill=${sel('.tag--removable')}, remove=${sel('.tag--removable .tag__remove')}, svg=remove.querySelector('svg');
+      const pillRect=pill.getBoundingClientRect(), svgRect=svg.getBoundingClientRect();
+      return { offset: Math.round(pillRect.right - (svgRect.left + svgRect.width / 2)) };
+    })()`);
+    check('remove icon centre sits 23px from the pill\'s right edge, matching the SVG measurement (was 32px before this fix)',
+      removeGeometry.offset === 23, removeGeometry);
+
+    // Real click test: outline toggles its real aria-pressed without changing its own rendered
+    // appearance — no selected/pressed visual was ever drawn for this variant (see index.html
+    // scope note), so a real click must leave background/box-shadow untouched.
+    const outlineStyleBefore = await c.js(`(()=>{const e=${sel('.tag--outline')};const cs=getComputedStyle(e);return {bg:cs.backgroundColor,shadow:cs.boxShadow};})()`);
+    await c.clickEl(sel('[data-tag-toggle]'));
+    const afterToggleClick = await c.js(`${sel('[data-tag-toggle]')}.getAttribute('aria-pressed')`);
+    const outlineStyleAfter = await c.js(`(()=>{const e=${sel('.tag--outline')};const cs=getComputedStyle(e);return {bg:cs.backgroundColor,shadow:cs.boxShadow};})()`);
+    check('clicking the outline tag toggles its real aria-pressed', afterToggleClick === 'true', afterToggleClick);
+    check("toggling does not change the outline tag's rendered appearance (no selected visual was ever drawn)",
+      outlineStyleBefore.bg === outlineStyleAfter.bg && outlineStyleBefore.shadow === outlineStyleAfter.shadow, { outlineStyleBefore, outlineStyleAfter });
+    await c.clickEl(sel('[data-tag-toggle]')); // restore to aria-pressed="false"
+
+    // Real keyboard test: a native <button> activates on both Enter and Space with no custom JS.
+    await c.js(`${sel('[data-tag-toggle]')}.focus()`);
+    await c.key('Enter');
+    const afterEnterToggle = await c.js(`${sel('[data-tag-toggle]')}.getAttribute('aria-pressed')`);
+    check('Enter activates the outline toggle (native <button> behaviour)', afterEnterToggle === 'true', afterEnterToggle);
+    await c.send('Input.dispatchKeyEvent', { type: 'keyDown', key: ' ', code: 'Space' });
+    await c.send('Input.dispatchKeyEvent', { type: 'keyUp', key: ' ', code: 'Space' });
+    await sleep(70);
+    const afterSpaceToggle = await c.js(`${sel('[data-tag-toggle]')}.getAttribute('aria-pressed')`);
+    check('Space activates the outline toggle (native <button> behaviour), restoring aria-pressed="false"', afterSpaceToggle === 'false', afterSpaceToggle);
+
+    // Real click test: the remove control deletes its own tag from the DOM — a real mutation, not
+    // merely a visual fade (no removal animation exists in the SVG to justify one). Restored
+    // afterward (re-inserted with a fresh listener mirroring prototype.js's own registration) so
+    // the example survives for the G1 review screenshot captured later in this script — the same
+    // restore-to-documented-state convention already used for Switch/Checkbox/Radio above.
+    const countBeforeRemove = await c.js(`document.querySelectorAll('.tag-examples > .tag').length`);
+    const removableHtml = await c.js(`${sel('.tag--removable')}.outerHTML`);
+    await c.clickEl(sel('[data-tag-remove]'));
+    const afterRemove = await c.js(`(()=>{
+      const group=${sel('.tag-examples')};
+      return {
+        count: document.querySelectorAll('.tag-examples > .tag').length, gone: !document.querySelector('.tag--removable'),
+        activeIsGroup: document.activeElement === group, activeIsBody: document.activeElement === document.body
+      };
+    })()`);
+    check('clicking the remove control deletes exactly its own tag from the DOM',
+      afterRemove.count === countBeforeRemove - 1 && afterRemove.gone, { before: countBeforeRemove, after: afterRemove });
+    // PR #46 review (opus): a natively-focused control disappearing must not silently drop
+    // keyboard focus to <body> — this demo has exactly one removable tag, so with no sibling
+    // remove control left to move to, focus must land on the group container (tabindex="-1" in
+    // index.html), the documented last-resort fallback, not wherever the browser defaults to.
+    check('removing the only removable tag moves focus to the group container, not <body>',
+      afterRemove.activeIsGroup === true && afterRemove.activeIsBody === false, afterRemove);
+    await c.js(`(()=>{
+      ${sel('.tag--disabled')}.insertAdjacentHTML('afterend', ${JSON.stringify(removableHtml)});
+      const restoredBtn = document.querySelector('.tag--removable .tag__remove');
+      restoredBtn.addEventListener('click', () => {
+        const tag = restoredBtn.closest('.tag');
+        const group = tag?.parentElement;
+        const removesInGroup = group ? [...group.querySelectorAll('[data-tag-remove]')] : [];
+        const myIndex = removesInGroup.indexOf(restoredBtn);
+        tag?.remove();
+        const next = removesInGroup[myIndex + 1] || removesInGroup[myIndex - 1];
+        if (next && next.isConnected) next.focus();
+        else group?.focus();
+      });
+    })()`);
+    const restoredCount = await c.js(`document.querySelectorAll('.tag-examples > .tag').length`);
+    check('the removable example is restored for the G1 review screenshot below', restoredCount === countBeforeRemove, { restoredCount, countBeforeRemove });
+
     /* ---------------- Checkbox ---------------- */
     section('Checkbox');
     const cb = await c.js(`(()=>{
@@ -823,6 +984,31 @@ async function main() {
     const swImg = await c.shot();
     check('switch "on" track renders as action-primary blue on its bare (non-thumb) side (sampled from a real screenshot)',
       JSON.stringify(swImg.at(...swPt)) === JSON.stringify(BLUE), swImg.at(...swPt));
+
+    // PR #46 review (opus): the 4 new solid Badge/Tag fills (neutral/accent/danger/disabled) had
+    // only getComputedStyle checks above, no real screenshot sample — every other new solid fill
+    // in this file (Button/Icon button/Switch) got one, and it is exactly this technique that
+    // caught disabled Button's real opacity bug during PR #29 review. Sample at (left+8,
+    // verticalMid): tag's radius equals half its height (a pill), so at the exact vertical
+    // centre the fill reaches all the way to the box's left edge regardless of any leading
+    // icon/dot further inside — the same reasoning already used for Button/Switch above.
+    await c.js(`document.querySelectorAll('.tag-examples > .tag')[0].scrollIntoView({block:'center'})`);
+    await sleep(150);
+    const tagPts = await c.js(`(()=>{
+      const direct=[...document.querySelectorAll('.tag-examples > .tag')];
+      const pt=(e)=>{const r=e.getBoundingClientRect();return [Math.round(r.left+8), Math.round(r.top+r.height/2)];};
+      return { neutral: pt(direct[0]), accent: pt(direct[1]), danger: pt(direct[2]), disabled: pt(direct[3]) };
+    })()`);
+    const tagImg = await c.shot();
+    const GRAY_333 = [51, 51, 51], RED = [193, 39, 45], GRAY_666 = [102, 102, 102];
+    check('neutral tag background renders as background-surface rgb(51, 51, 51) (sampled from a real screenshot)',
+      JSON.stringify(tagImg.at(...tagPts.neutral)) === JSON.stringify(GRAY_333), tagImg.at(...tagPts.neutral));
+    check('accent tag background renders as action-primary blue (sampled from a real screenshot)',
+      JSON.stringify(tagImg.at(...tagPts.accent)) === JSON.stringify(BLUE), tagImg.at(...tagPts.accent));
+    check('danger tag background renders as action-danger rgb(193, 39, 45) (sampled from a real screenshot)',
+      JSON.stringify(tagImg.at(...tagPts.danger)) === JSON.stringify(RED), tagImg.at(...tagPts.danger));
+    check('disabled tag background renders as the solid #666666 token colour, not dimmed (sampled from a real screenshot)',
+      JSON.stringify(tagImg.at(...tagPts.disabled)) === JSON.stringify(GRAY_666), tagImg.at(...tagPts.disabled));
 
     /* ---------------- Responsive + motion ---------------- */
     section('Responsive and motion');

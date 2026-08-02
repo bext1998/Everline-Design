@@ -3,17 +3,17 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Everline v0.1 — 第一批 HTML/CSS 候選元件（issue #17，Button/Checkbox/Text input/Textarea 已畢業，Icon button/Switch/Radio/Split button 等待 G1）</title>
+    <title>Everline v0.1 — 第一批 HTML/CSS 候選元件（issue #17，Button/Checkbox/Text input/Textarea 已畢業，Icon button/Switch/Radio/Split button/Badge/Tag 等待 G1）</title>
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <main class="catalog" aria-labelledby="page-title">
       <header class="catalog-header">
         <div>
-          <p class="eyebrow">Everline v0.1 · 第一批（issue #17）· 3／15 群已畢業，issues #30–#33 共 4 群等待 G1</p>
+          <p class="eyebrow">Everline v0.1 · 第一批（issue #17）· 3／15 群已畢業，issues #30–#33、#34 共 5 群等待 G1</p>
           <h1 id="page-title">Everline Design Language — Components Batch 1 HTML/CSS Candidate</h1>
-          <p class="lede">Button · Icon button · Switch · Checkbox · Radio · Split button / Dropdown · Text input / Textarea</p>
-          <p class="trace">驗證：<code>node works/html/batch1/verify.mjs</code>（零相依，只需 Node 22+ 與 Chrome）· Button／Checkbox／Text input／Textarea（c-button／c-checkbox／c-text-input／c-textarea 共 4 個 SVG 群組）2026-07-30 人類 G1 審查通過後已標記群組級 <code>superseded-by</code>，是這 4 個 SVG 群組目前的候選規格來源。Icon button（issue #30）／Switch（issue #31）／Radio（issue #32）／Split button（issue #33）此輪新增為 <strong>candidate ready for G1，尚未通過人類審查，master.svg 對應的 c-icon-button／c-switch／c-radio／c-split-button 群組尚未標記 <code>superseded-by</code></strong>，master SVG 仍是這 4 群目前的權威來源。master.svg 除 c-color-swatch 外共 16 個產品元件群組，此輪畢業＋等待 G1 合計 8 個，其餘 8 個 SVG 群組不受影響；issue #17 15 群清單中，已畢業 3 群＋等待 G1 的 4 群共 7 群，仍有 8 群未動工。整份仍是 candidate，未宣告 stable。</p>
+          <p class="lede">Button · Icon button · Switch · Checkbox · Radio · Split button / Dropdown · Text input / Textarea · Badge / Tag</p>
+          <p class="trace">驗證：<code>node works/html/batch1/verify.mjs</code>（零相依，只需 Node 22+ 與 Chrome）· Button／Checkbox／Text input／Textarea（c-button／c-checkbox／c-text-input／c-textarea 共 4 個 SVG 群組）2026-07-30 人類 G1 審查通過後已標記群組級 <code>superseded-by</code>，是這 4 個 SVG 群組目前的候選規格來源。Icon button（issue #30）／Switch（issue #31）／Radio（issue #32）／Split button（issue #33）／Badge Tag（issue #34）此輪新增為 <strong>candidate ready for G1，尚未通過人類審查，master.svg 對應的 c-icon-button／c-switch／c-radio／c-split-button／c-badge-tag 群組尚未標記 <code>superseded-by</code></strong>，master SVG 仍是這 5 群目前的權威來源。master.svg 除 c-color-swatch 外共 16 個產品元件群組，此輪畢業＋等待 G1 合計 9 個，其餘 7 個 SVG 群組不受影響；issue #17 15 群清單中，已畢業 3 群＋等待 G1 的 5 群共 8 群，仍有 7 群未動工。整份仍是 candidate，未宣告 stable。</p>
         </div>
         <p class="candidate-badge"><span aria-hidden="true"></span> CANDIDATE · MIXED G1 STATUS, SEE TRACE</p>
       </header>
@@ -56,6 +56,25 @@
           <li><strong>Split button 選單本身的 <code>hover</code>／<code>selected item</code>／<code>disabled item</code>／<code>loading</code> 皆未實作</strong>：SVG 的 open 範例只畫出兩個純文字選項，未畫出任何互動狀態組合，不得假設沿用 hover-overlay 等其他元件的既有技法涵蓋這裡——這點與 Button／Checkbox／Icon button 的 hover 處理刻意不同，因為母票要求明確排除。主動作與 disclosure 兩顆按鈕本身的 hover／focus／disabled 不在此限（那是 Button-like 觸發元件，不是選單項目）。<strong>鍵盤 focus 說明修正（找 codex 復審後修正）</strong>：選單項目本身是真實 <code>&lt;button&gt;</code>，全域 <code>:focus-visible</code> 規則本來就會套用在它們身上，鍵盤移動到某一項時並非完全沒有視覺回饋；本批只是沒有替 menu item 另外定義一套專屬的 focus 視覺（例如 Menu 元件既有規格描述的「keyboard focus item」那種 2px 藍色 focus ring 專屬處理），目前僅沿用跨元件共用的全域 focus ring 作為最低限度的可見鍵盤焦點，兩者不是同一件事，先前文字誤寫成「不附加任何視覺回饋」，予以更正。</li>
           <li>Split button 的動畫——SVG 註記「needs transition animation」，但 <code>motion.duration-base</code>／<code>easing-standard</code> 仍是未驗證 candidate，比照 batch 4 Accordion／Popover 的既有決定不加動畫，開合皆為瞬時（<code>hidden</code> 屬性切換）。</li>
           <li>Split button 選單與 Tooltip／Modal／Toast 等其他浮層同時存在時的疊放順序——<code>layer.overlay</code> 本身仍是未驗證 candidate（與 Popover 已記錄的相同保留事項），本批僅記錄不驗證。</li>
+        </ul>
+      </aside>
+
+      <aside class="scope-note" aria-labelledby="scope-title-3">
+        <h2 id="scope-title-3">本輪新增（issue #34）：Badge / Tag token 缺口與 G1 決策清單 — candidate ready for G1，尚未通過人類審查</h2>
+        <p>本輪新增 Badge / Tag（issue #34，issue #17 15 群清單第 8 項），對應 <code>works/everline-components-master.svg</code> 的 <code>c-badge-tag</code> 群組（<code>tag-neutral</code>／<code>tag-accent</code>／<code>tag-danger</code>／<code>tag-outline</code>／<code>tag-disabled</code>／<code>tag-removable</code> 六個範例）。<strong>本群完成 P0–P2，尚未通過 G1 人類視覺審查</strong>，master.svg 對應區塊未標記 <code>superseded-by</code>，<code>docs/STATUS.md</code>／<code>docs/design-system-v0.1-draft.md</code> 只記錄「等待 G1」事實，未宣稱已畢業或 stable，issue #34 亦未打勾關閉，且不使用 <code>Closes #17</code>。</p>
+        <p><strong>P0 token 完整性核對</strong>：Badge / Tag 先前完全沒有任何 token 涵蓋，本輪新增的 <code>component.tag.*</code>（18 個欄位，其中 <code>remove-icon-offset</code> 是 PR #46 複審過程中追加）皆屬首次建立、非既有缺口修正，每個數值皆逐一對照 <code>c-badge-tag</code> SVG 核實（詳見 <code>tokens/everline-draft.tokens.json</code> 各欄位 <code>$description</code>）。其中 <code>radius</code>（20px，SVG 逐一量測 <code>rx="20"</code>）、<code>dot-size</code>（8px，選取圓點直徑）為新宣告的字面值；<code>hit-area-size</code>（48px）與 <code>remove-control-size</code>（32px）是 SVG 未直接畫出、依規格文字與既有 Popover／Breadcrumb 命中區慣例做的延伸決定，非 SVG 量測值。</p>
+        <p><strong>刻意未實作、留給 G1 決定的項目</strong>（依 <code>AGENTS.md</code>：SVG 未畫出的視覺不得自行發明）：</p>
+        <ul>
+          <li>outline 變體的 <code>aria-pressed</code> 已真實可切換（鍵盤與滑鼠皆可操作），但 SVG 只畫出一種 outline 外觀，從未畫出選中／按下後的獨立視覺，本批切換狀態時外觀不變——與 Button 未畫出的 <code>pressed</code>／<code>loading</code> 狀態同一處理原則，不在本輪自行發明。</li>
+          <li><code>removable</code> 只示範與 neutral 背景的組合（SVG 僅畫出這一種）；<code>removable</code> 搭配 <code>accent</code>／<code>danger</code>／<code>disabled</code> 背景，或 <code>danger</code> 圖示與 <code>accent</code> 圓點同時出現在同一個 tag 上，SVG 皆未畫出，本批不實作也不假設視覺。</li>
+          <li><code>focused</code>——outline 變體（唯一互動的整個 tag）與 removable 的移除鈕皆沿用既有全域 <code>:focus-visible</code> 技法，非新視覺決定；<code>hover</code>（outline 整體與 removable 移除鈕）沿用既有跨元件 6% 白色疊加技法，同樣不是本批新增的視覺決定。</li>
+          <li>文字過長時的最大寬度與截斷策略——依規格文字「文字超長時由產品層設定」，不屬於這份框架中立候選稿的範圍，本批不實作。</li>
+        </ul>
+        <p><strong>PR #46 審查（opus）找出三項設計層級問題，2026-08-03 由使用者本人當場拍板解決（不再留到之後的 G1 才決定）</strong>：</p>
+        <ul>
+          <li><strong>outline 靜態邊框與 focus-visible 焦點環共用同一視覺</strong>：實際以真實鍵盤 <code>Tab</code> 導覽並截圖核對（非臆測）後，外層 48px 命中區 wrapper 的焦點框（瀏覽器預設矩形／略帶圓角）與內層 40px pill 自己的邊框在視覺上是兩個可分辨的獨立形狀（矩形外框＋膠囊內框，並非同一圈重疊到分不出來），予以維持、不修改。<code>component.tag.border-focus</code> 的命名與數值皆維持現狀，理由：其色值 <code>#598ae8</code> 就是 SVG 本身畫的 outline 描邊顏色，不可為了改名而連帶質疑數值；命名雖與 Text input／Textarea 的「僅 focus 時出現」語意不同，但與 <code>component.button.border-focus</code>／<code>component.icon-button.border-focus</code>（同樣是「恆常顯示的 outline 靜態邊框」，且 Button 這組命名已通過實際 G1 審查）完全一致，只改 Tag 一個反而製造新的不一致，故維持整個 batch1 家族現有命名慣例。</li>
+          <li><strong>disabled 元素類型</strong>：改為 <code>&lt;span class="tag tag--disabled" aria-disabled="true"&gt;</code>，不再用 <code>&lt;button disabled&gt;</code>，與其餘五個純狀態變體（皆為 <code>&lt;span&gt;</code>）一致——disabled 沒有從 SVG 或規格文字得出的獨立互動語意，規格明文「純狀態 tag 不可點擊」，用 <code>&lt;button&gt;</code> 只是誤套用了本檔案既有的原生 disabled 驗證慣例，並非這個變體本身需要的語意。<code>verify.mjs</code> 已改用 <code>aria-disabled</code> 屬性驗證。PR #46 第三輪複審（opus）另外指出：改成 <code>&lt;span&gt;</code> 後雖然滿足規格「不可互動、移除焦點與點擊」的要求，但停用態與 neutral 的視覺差異只有背景色與文字透明度，兩者都是顏色，違反規格「不得只依顏色傳達停用」「不以顏色單獨表達語意，需要文字、圖示或上下文共同說明」的既有條文（此問題原本就存在，並非本次改動造成的視覺退步；但 <code>&lt;button disabled&gt;</code> 至少會被輔助科技播報，改成不可聚焦的 <code>&lt;span&gt;</code> 後這條路徑實質消失，是本輪造成的程式化傳達退步）。已補上 <code>&lt;span class="visually-hidden"&gt;（已停用）&lt;/span&gt;</code>，用文字滿足規格要求，不影響任何像素——這不是發明 SVG 未畫出的視覺，純粹是螢幕閱讀器可讀、肉眼不可見的文字。</li>
+          <li><strong>removable 移除鈕圖示位置</strong>：新增 <code>component.tag.remove-icon-offset</code>（23px，逐一核對 <code>c-badge-tag</code> SVG 的 <code>tag-removable</code> X 圖示中心與 rect 右緣量測值 144－121＝23px），並讓 removable 變體自己的 <code>padding-inline-end</code> 改用 <code>calc(remove-icon-offset − remove-control-size ÷ 2)</code>（23－16＝7px）取代共用的 16px，讓圖示中心恢復到與 SVG 一致的 23px，同時完整保留 32px 命中區，不犧牲無障礙需求。<code>verify.mjs</code> 已新增真實 <code>getBoundingClientRect</code> 量測斷言（23px），不只信任 CSS 宣告值。</li>
         </ul>
       </aside>
 
@@ -275,6 +294,34 @@
             <p class="example-label">disabled</p>
           </div>
         </div>
+      </section>
+
+      <!-- ===================== Badge / Tag ===================== -->
+      <section class="component-section" aria-labelledby="tag-title">
+        <div class="section-heading">
+          <p class="eyebrow">Display</p>
+          <h2 id="tag-title">Badge / Tag</h2>
+          <p>40px 高 · pill radius 20px · padding-inline 16px · neutral／accent／danger／outline／disabled／removable</p>
+        </div>
+        <div class="tag-examples" tabindex="-1">
+          <span class="tag">一般</span>
+          <span class="tag tag--accent"><span class="tag__dot" aria-hidden="true"></span>選取</span>
+          <span class="tag tag--danger">
+            <svg class="tag__icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 4v6"/><path d="M8 12h.01"/></svg>
+            阻擋
+          </span>
+          <button class="tag-button" type="button" aria-pressed="false" data-tag-toggle>
+            <span class="tag tag--outline">已篩選</span>
+          </button>
+          <span class="tag tag--disabled" aria-disabled="true">停用<span class="visually-hidden">（已停用）</span></span>
+          <span class="tag tag--removable">
+            高優先
+            <button class="tag__remove" type="button" aria-label="移除：高優先" data-tag-remove>
+              <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8"/><path d="M12 4l-8 8"/></svg>
+            </button>
+          </span>
+        </div>
+        <p class="example-label">依序：neutral、accent（前導 8px 選取圓點）、danger（前導驚嘆號圖示）、outline（真實 <code>&lt;button aria-pressed&gt;</code>，48px 命中區包住 40px 視覺，可鍵盤操作切換 <code>aria-pressed</code>，但選中後外觀不變——SVG 未畫出選中視覺，見上方 scope note）、disabled（非互動 <code>&lt;span aria-disabled="true"&gt;</code>，與其餘狀態變體一致，內含螢幕閱讀器可讀但肉眼不可見的「（已停用）」文字以滿足規格「不得只依顏色傳達停用」的要求，見上方 scope note 決策說明）、removable（獨立的移除按鈕，32px 命中區，<code>aria-label="移除：高優先"</code>，點擊會從畫面移除該 tag，移除鈕內圖示中心距 pill 右緣 23px，與 SVG 一致）。文字色 accent／danger 為 white（<code>component.tag.foreground</code>），neutral／outline／removable 為 off-white（<code>component.tag.foreground-neutral</code>）；圖示與圓點皆繼承同一個 <code>currentColor</code>，未另立顏色 token。</p>
       </section>
     </main>
     <script src="prototype.js"></script>
