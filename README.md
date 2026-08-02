@@ -8,7 +8,7 @@ Everline 是一套為 Taylor Kanban 與未來延伸產品整理的圖形介面�
 
 ## 目前進度
 
-截至 2026-07-20，倉庫已具備：
+截至 2026-08-03，倉庫已具備：
 
 - Everline 的定位、責任邊界、資料夾規則與工程防護條件。
 - 第一批深色工作型介面語彙草圖。
@@ -19,16 +19,20 @@ Everline 是一套為 Taylor Kanban 與未來延伸產品整理的圖形介面�
 - UI 字型已確認為 Noto Sans TC。
 - Lucide 1.24.0 圖示與字型素材封存，供後續圖示研究與設計工作參考。
 - Everline v0.1 第二批（Sidebar／Navigation rail、Toolbar、Card／Tile、List、Data table、Task card、Kanban column，共 7 類）已畢業為框架中立 HTML/CSS 候選規格，位於 `works/html/batch2/`；對應 SVG `works/everline-components-batch2.svg` 與 PNG 預覽保留為歷史視覺快照，規格見 `docs/design-system-v0.1-batch2-draft.md`。
-- 已確立「Illustrator 構思 → SVG 候選＋人類審查 → 確認後轉 HTML/CSS（畢業）」的完整候選元件流程，新增 `works/html/` 作為 HTML/CSS 候選元件原型資料夾（尚未有內容）。
+- Everline v0.1 第三批（Progress／Spinner／Loading、Search field、Breadcrumb、Number input，共 4 類，issue #5-#8）已畢業為 HTML/CSS 候選規格，位於 `works/html/batch3/`；規格見 `docs/design-system-v0.1-batch3-draft.md`。
+- Everline v0.1 第四批（Slider、Accordion、Popover、Date／Time picker，共 4 類，issue #9-#12）已畢業為 HTML/CSS 候選規格，位於 `works/html/batch4/`；規格見 `docs/design-system-v0.1-batch4-draft.md`。第三、四批合稱原規劃的「第三批 8 類」，因規模拆為兩批獨立畢業。
+- 已確立「Illustrator 構思 → SVG 候選＋人類審查 → 確認後轉 HTML/CSS（畢業）」的完整候選元件流程，`works/html/` 下第二、三、四批皆已依此流程完成畢業。
 
 目前尚未完成：
 
-- 正式 design token schema。
-- 正式元件規格與前端元件庫。
+- 正式 design token schema（目前仍是候選草稿）。
+- 正式元件規格與前端元件庫；以上四批（共 32 類）皆仍是 candidate／草稿狀態，尚未逐項確認完整規格條件（見 `AGENTS.md` 12 項完成檢查），非正式定稿。
+- 第一批（`works/everline-components-master.svg`，15 群元件）尚未全部畢業為 HTML/CSS（issue #17）：Button、Checkbox、Text input／Textarea 三群已通過 G1 人類審查並畢業至 `works/html/batch1/`；Icon button、Switch、Radio、Split button／Dropdown 四群為 candidate、尚未通過 G1；其餘八群（issue #34-#41）尚未開始。
 - 資產索引與穩定版本號規則。
-- `works/illustrator/everline_p1.ai` 的圖層、元件命名及重用結構文件；第一批、第二批候選稿皆尚未回填至 Illustrator 主來源。
-- 第二批跨元件擱置模式：拖放、共用 loading／empty、Data table 密度／pagination、Sidebar resizing、Kanban collapsed。
-- Everline v0.1 第三批（Number input／Slider／Accordion／Popover／Breadcrumb／Search field／Date-time picker／Progress-Loading，共 8 類）元件。
+- `works/illustrator/everline_p1.ai` 的圖層、元件命名及重用結構文件；各批候選稿皆尚未回填至 Illustrator 主來源。
+- 第二批跨元件擱置模式：拖放、Data table 密度／pagination、Sidebar resizing（`loading` 狀態已由第三批回填，見 STATUS）。
+- 第二階段候選元件（非必做，backlog，共 19 類，issue #15）。
+- 建置完成後的 Everline 設計系統總審查（issue #22）。
 - Taylor Kanban 倉庫、技術棧與實作結構驗證。
 
 因此，倉庫內提到 Taylor Kanban 的內容只代表預期使用情境，不代表已確認其現有實作。
@@ -42,6 +46,8 @@ Everline Design/
 │  ├─ STATUS.md               # 已確認的現況與限制
 │  ├─ design-system-v0.1-draft.md # 候選 token 與元件規格（第一批）
 │  ├─ design-system-v0.1-batch2-draft.md # 候選元件規格（第二批）
+│  ├─ design-system-v0.1-batch3-draft.md # 候選元件規格（第三批）
+│  ├─ design-system-v0.1-batch4-draft.md # 候選元件規格（第四批）
 │  ├─ lucide-icons/           # Lucide 圖示研究素材（本機參考快取，見下方說明）
 │  ├─ lucide-icons.zip
 │  └─ lucide-font.zip
@@ -51,10 +57,15 @@ Everline Design/
 ├─ works/
 │  ├─ illustrator/            # Illustrator 原始專案檔（.ai）
 │  │  └─ everline_p1.ai       # 目前的向量設計來源
+│  ├─ html/batch1/            # 第一批畢業中的 HTML/CSS 候選規格（issue #17，逐群進行）
 │  ├─ html/batch2/            # 第二批 HTML/CSS 候選規格（目前權威來源）
+│  ├─ html/batch3/            # 第三批 HTML/CSS 候選規格（目前權威來源）
+│  ├─ html/batch4/            # 第四批 HTML/CSS 候選規格（目前權威來源）
 │  ├─ everline_p1.svg／.pdf   # everline_p1.ai 的交換格式匯出
 │  ├─ everline-components-master.svg # 元件候選總表（既有＋第一批新元件，共 17 類）
 │  ├─ everline-components-batch2.svg # 第二批歷史 SVG 視覺快照（共 7 類）
+│  ├─ everline-components-batch3.svg # 第三批歷史 SVG 視覺快照（共 4 類）
+│  ├─ everline-components-batch4.svg # 第四批歷史 SVG 視覺快照（共 4 類）
 │  └─ everline-agent-components-v0.1.svg # 歷史候選稿，已由總表取代
 ├─ exports/
 │  ├─ everline-components-master.png # 總表校準預覽
@@ -98,17 +109,13 @@ Everline Design/
 
 ## 下一階段
 
-目前建議先把初版草圖整理為 Everline v0.1 的元件清單與命名規則，優先處理：
+待辦、規劃與跨元件擱置決策一律追蹤在 GitHub Issues，不在此文件重複列細節。目前開放中的項目：
 
-- button
-- icon button
-- switch
-- split button
-- dropdown
-- text input
-- color swatch
+- [#17](https://github.com/bext1998/Everline-Design/issues/17) 將第一批（`works/everline-components-master.svg`，15 群元件）畢業為 HTML/CSS（進行中，子項 issue #30-#41）。
+- [#22](https://github.com/bext1998/Everline-Design/issues/22) 建置完成後進行 Everline 設計系統總審查。
+- [#15](https://github.com/bext1998/Everline-Design/issues/15) 第二階段候選元件（非必做，backlog，共 19 類）。
 
-元件狀態候選包含 `default`、`disabled`、`danger`、`outline`、`focused`、`on` 與 `off`。正式定義前，仍需盤點 Illustrator 原始檔，並決定先建立元件規格或 design token 文件。
+元件狀態候選包含 `default`、`disabled`、`danger`、`outline`、`focused`、`on` 與 `off`。正式定義前，仍需盤點 Illustrator 原始檔，並決定 design token 的正式 schema。
 
 ## 貢獻原則
 
