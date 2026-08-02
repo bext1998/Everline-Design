@@ -4,6 +4,7 @@
  * Button / Checkbox / Text input / Textarea graduated (G1 passed 2026-07-30).
  * Icon button (#30) / Switch (#31) / Radio (#32) / Split button/Dropdown (#33) added
  * 2026-07-31 — candidate ready for G1, awaiting human visual review.
+ * Badge / Tag (#34) added 2026-08-03 — candidate ready for G1, awaiting human visual review.
  *
  *   node works/html/batch1/verify.mjs
  *   CHROME="/path/to/chrome" node works/html/batch1/verify.mjs     # if auto-detection fails
@@ -146,6 +147,20 @@ function verifyTokens() {
   check('component.split-button.layer resolves to layer.overlay = 100',
     resolved.get('component.split-button.layer') === 100, resolved.get('component.split-button.layer'));
   // Switch: P0 audit found no gaps at all — confirm every drawn value is exactly what was already there.
+  // Badge / Tag (issue #34): every component.tag.* value is a first-time addition (this
+  // component had zero prior token coverage), each verified against the c-badge-tag SVG audit.
+  check('component.tag.height resolves to size.tag-md 40px', px(resolved.get('component.tag.height')) === '40px', resolved.get('component.tag.height'));
+  check('component.tag.radius resolves to 20px (half of 40px, matches every tag-* rx="20")', px(resolved.get('component.tag.radius')) === '20px', resolved.get('component.tag.radius'));
+  check('component.tag.dot-size resolves to 8px', px(resolved.get('component.tag.dot-size')) === '8px', resolved.get('component.tag.dot-size'));
+  check('component.tag.foreground resolves to white #FFFFFF', px(resolved.get('component.tag.foreground')) === '#FFFFFF', resolved.get('component.tag.foreground'));
+  check('component.tag.foreground-neutral resolves to off-white #F2F2F2', px(resolved.get('component.tag.foreground-neutral')) === '#F2F2F2', resolved.get('component.tag.foreground-neutral'));
+  check('component.tag.background-neutral resolves to background-surface #333333', px(resolved.get('component.tag.background-neutral')) === '#333333', resolved.get('component.tag.background-neutral'));
+  check('component.tag.background-accent resolves to action-primary #598AE8', px(resolved.get('component.tag.background-accent')) === '#598AE8', resolved.get('component.tag.background-accent'));
+  check('component.tag.background-danger resolves to action-danger #C1272D', px(resolved.get('component.tag.background-danger')) === '#C1272D', resolved.get('component.tag.background-danger'));
+  check('component.tag.background-disabled resolves to background-subdued #666666', px(resolved.get('component.tag.background-disabled')) === '#666666', resolved.get('component.tag.background-disabled'));
+  check('component.tag.border-focus resolves to border-focus #598AE8', px(resolved.get('component.tag.border-focus')) === '#598AE8', resolved.get('component.tag.border-focus'));
+  check('component.tag.hit-area-size resolves to control-md 48px (G1-accepted extension, not SVG-drawn)', px(resolved.get('component.tag.hit-area-size')) === '48px', resolved.get('component.tag.hit-area-size'));
+  check('component.tag.remove-control-size resolves to 32px (G1-accepted extension, not SVG-drawn)', px(resolved.get('component.tag.remove-control-size')) === '32px', resolved.get('component.tag.remove-control-size'));
   check('component.switch.width is 96px (unchanged)', px(resolved.get('component.switch.width')) === '96px');
   check('component.switch.thumb-size is 40px (unchanged)', px(resolved.get('component.switch.thumb-size')) === '40px');
   check('component.switch.track-on resolves to action-primary #598AE8 (unchanged)',
@@ -199,7 +214,7 @@ function valuesMatch(tokenResolved, cssLiteral) {
 function verifyCssContract(resolvedTokens) {
   section('works/html/batch1/styles.css — no raw dimensions in component rules');
   const css = readFileSync(CSS, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
-  const COMPONENT = /^[^@]*?(\.button|\.checkbox|\.text-input|\.textarea|\.icon-button|\.switch|\.radio|\.split-button|fieldset\.radio-group|:where)/;
+  const COMPONENT = /^[^@]*?(\.button|\.checkbox|\.text-input|\.textarea|\.icon-button|\.switch|\.radio|\.split-button|\.tag|fieldset\.radio-group|:where)/;
   const offenders = [];
   for (const m of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
     const selector = m[1].trim();
@@ -646,6 +661,94 @@ async function main() {
     await c.click(20, 20);
     const afterOutsideClick = await c.js(`${sel('[data-split-menu]')}.hidden`);
     check('clicking outside the open menu closes it (light dismiss)', afterOutsideClick === true, afterOutsideClick);
+
+    /* ---------------- Badge / Tag ---------------- */
+    section('Badge / Tag');
+    const tag = await c.js(`(()=>{
+      const cs=(e)=>getComputedStyle(e);
+      const direct=[...document.querySelectorAll('.tag-examples > .tag')];
+      const neutral=direct[0], accent=direct[1], danger=direct[2], disabled=direct[3], removable=direct[4];
+      const outlineWrapper=${sel('[data-tag-toggle]')}, outline=${sel('.tag--outline')};
+      const dot=accent.querySelector('.tag__dot'), icon=danger.querySelector('.tag__icon');
+      const removeBtn=removable.querySelector('.tag__remove');
+      return {
+        h: cs(neutral).height, r: cs(neutral).borderRadius, padInline: cs(neutral).paddingLeft, gap: cs(neutral).columnGap,
+        neutralBg: cs(neutral).backgroundColor, neutralFg: cs(neutral).color,
+        accentBg: cs(accent).backgroundColor, accentFg: cs(accent).color,
+        dangerBg: cs(danger).backgroundColor, dangerFg: cs(danger).color,
+        outlineShadow: cs(outline).boxShadow !== 'none',
+        outlineWrapperH: cs(outlineWrapper).height,
+        outlinePressedBefore: outlineWrapper.getAttribute('aria-pressed'),
+        disabledAttr: disabled.disabled, disabledBg: cs(disabled).backgroundColor, disabledFg: cs(disabled).color,
+        dotSize: cs(dot).width, dotBg: cs(dot).backgroundColor,
+        iconSize: cs(icon).width,
+        removeLabel: removeBtn.getAttribute('aria-label'), removeSize: cs(removeBtn).width
+      };
+    })()`);
+    check('tag height is 40px', tag.h === '40px', tag.h);
+    check('tag radius is 20px (pill for this height)', tag.r === '20px', tag.r);
+    check('tag padding-inline is 16px', tag.padInline === '16px', tag.padInline);
+    check('tag gap (icon/dot to text) is 8px', tag.gap === '8px', tag.gap);
+    check('neutral background is background-surface rgb(51, 51, 51)', tag.neutralBg === 'rgb(51, 51, 51)', tag.neutralBg);
+    check('neutral foreground is off-white rgb(242, 242, 242)', tag.neutralFg === 'rgb(242, 242, 242)', tag.neutralFg);
+    check('accent background is action-primary rgb(89, 138, 232)', tag.accentBg === 'rgb(89, 138, 232)', tag.accentBg);
+    check('accent foreground is white rgb(255, 255, 255)', tag.accentFg === 'rgb(255, 255, 255)', tag.accentFg);
+    check('danger background is action-danger rgb(193, 39, 45)', tag.dangerBg === 'rgb(193, 39, 45)', tag.dangerBg);
+    check('danger foreground is white rgb(255, 255, 255)', tag.dangerFg === 'rgb(255, 255, 255)', tag.dangerFg);
+    check('outline variant draws a border via box-shadow', tag.outlineShadow);
+    check('outline hit-area wrapper is 48px tall (spec a11y requirement, grown from the 40px visual)', tag.outlineWrapperH === '48px', tag.outlineWrapperH);
+    check('outline toggle starts at aria-pressed="false"', tag.outlinePressedBefore === 'false', tag.outlinePressedBefore);
+    check('disabled tag uses the native disabled attribute', tag.disabledAttr === true, tag.disabledAttr);
+    check('disabled tag background is the solid token colour rgb(102, 102, 102), not dimmed', tag.disabledBg === 'rgb(102, 102, 102)', tag.disabledBg);
+    const tagDisabledFgRgb = parseAnyColor(tag.disabledFg);
+    check('disabled tag foreground is the color-mix composite of foreground-disabled over the solid background (≈rgb(179, 179, 179), same technique as Button/Text input)',
+      !!tagDisabledFgRgb && tagDisabledFgRgb.every((v) => Math.abs(v - 179) <= 1), { raw: tag.disabledFg, parsed: tagDisabledFgRgb });
+    check('accent dot is 8px diameter', tag.dotSize === '8px', tag.dotSize);
+    check('accent dot uses currentColor, rendering white to match its own label text', tag.dotBg === 'rgb(255, 255, 255)', tag.dotBg);
+    check('danger icon is 16px', tag.iconSize === '16px', tag.iconSize);
+    check('remove control has an accessible name identifying which tag it removes', tag.removeLabel === '移除：高優先', tag.removeLabel);
+    check('remove control hit area is 32px', tag.removeSize === '32px', tag.removeSize);
+
+    // Real click test: outline toggles its real aria-pressed without changing its own rendered
+    // appearance — no selected/pressed visual was ever drawn for this variant (see index.html
+    // scope note), so a real click must leave background/box-shadow untouched.
+    const outlineStyleBefore = await c.js(`(()=>{const e=${sel('.tag--outline')};const cs=getComputedStyle(e);return {bg:cs.backgroundColor,shadow:cs.boxShadow};})()`);
+    await c.clickEl(sel('[data-tag-toggle]'));
+    const afterToggleClick = await c.js(`${sel('[data-tag-toggle]')}.getAttribute('aria-pressed')`);
+    const outlineStyleAfter = await c.js(`(()=>{const e=${sel('.tag--outline')};const cs=getComputedStyle(e);return {bg:cs.backgroundColor,shadow:cs.boxShadow};})()`);
+    check('clicking the outline tag toggles its real aria-pressed', afterToggleClick === 'true', afterToggleClick);
+    check("toggling does not change the outline tag's rendered appearance (no selected visual was ever drawn)",
+      outlineStyleBefore.bg === outlineStyleAfter.bg && outlineStyleBefore.shadow === outlineStyleAfter.shadow, { outlineStyleBefore, outlineStyleAfter });
+    await c.clickEl(sel('[data-tag-toggle]')); // restore to aria-pressed="false"
+
+    // Real keyboard test: a native <button> activates on both Enter and Space with no custom JS.
+    await c.js(`${sel('[data-tag-toggle]')}.focus()`);
+    await c.key('Enter');
+    const afterEnterToggle = await c.js(`${sel('[data-tag-toggle]')}.getAttribute('aria-pressed')`);
+    check('Enter activates the outline toggle (native <button> behaviour)', afterEnterToggle === 'true', afterEnterToggle);
+    await c.send('Input.dispatchKeyEvent', { type: 'keyDown', key: ' ', code: 'Space' });
+    await c.send('Input.dispatchKeyEvent', { type: 'keyUp', key: ' ', code: 'Space' });
+    await sleep(70);
+    const afterSpaceToggle = await c.js(`${sel('[data-tag-toggle]')}.getAttribute('aria-pressed')`);
+    check('Space activates the outline toggle (native <button> behaviour), restoring aria-pressed="false"', afterSpaceToggle === 'false', afterSpaceToggle);
+
+    // Real click test: the remove control deletes its own tag from the DOM — a real mutation, not
+    // merely a visual fade (no removal animation exists in the SVG to justify one). Restored
+    // afterward (re-inserted with a fresh listener mirroring prototype.js's own registration) so
+    // the example survives for the G1 review screenshot captured later in this script — the same
+    // restore-to-documented-state convention already used for Switch/Checkbox/Radio above.
+    const countBeforeRemove = await c.js(`document.querySelectorAll('.tag-examples > .tag').length`);
+    const removableHtml = await c.js(`${sel('.tag--removable')}.outerHTML`);
+    await c.clickEl(sel('[data-tag-remove]'));
+    const afterRemove = await c.js(`({count: document.querySelectorAll('.tag-examples > .tag').length, gone: !document.querySelector('.tag--removable')})`);
+    check('clicking the remove control deletes exactly its own tag from the DOM',
+      afterRemove.count === countBeforeRemove - 1 && afterRemove.gone, { before: countBeforeRemove, after: afterRemove });
+    await c.js(`(()=>{
+      ${sel('.tag--disabled')}.insertAdjacentHTML('afterend', ${JSON.stringify(removableHtml)});
+      document.querySelector('.tag--removable .tag__remove').addEventListener('click', function () { this.closest('.tag')?.remove(); });
+    })()`);
+    const restoredCount = await c.js(`document.querySelectorAll('.tag-examples > .tag').length`);
+    check('the removable example is restored for the G1 review screenshot below', restoredCount === countBeforeRemove, { restoredCount, countBeforeRemove });
 
     /* ---------------- Checkbox ---------------- */
     section('Checkbox');

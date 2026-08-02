@@ -79,3 +79,21 @@ document.querySelectorAll('[data-split-button]').forEach((root) => {
     if (isOpen() && !root.contains(e.target)) closeMenu({ returnFocus: false });
   });
 });
+
+// Badge / Tag (issue #34): the outline variant's aria-pressed is a real toggle, satisfying the
+// spec's "可點擊篩選器應使用...選取狀態" interaction requirement — its appearance does not change
+// on toggle because the SVG never drew a distinct selected/pressed outline look (see styles.css's
+// own note; same "undrawn state, not invented" treatment already applied to Button's pressed/
+// loading). The removable variant's remove control deletes its own tag from the DOM — a real,
+// observably-different result, not a visual-only fade (no removal animation exists in the SVG to
+// justify one).
+document.querySelectorAll('[data-tag-toggle]').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    btn.setAttribute('aria-pressed', btn.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
+  });
+});
+document.querySelectorAll('[data-tag-remove]').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    btn.closest('.tag')?.remove();
+  });
+});

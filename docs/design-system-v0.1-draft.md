@@ -7,7 +7,8 @@
 歷史候選稿：`works/everline-agent-components-v0.1.svg`（已由總表取代，僅保留為歷史快照，不再更新）  
 第二批：`works/everline-components-batch2.svg` 與 `docs/design-system-v0.1-batch2-draft.md`（2026-07-20 起，Sidebar／Toolbar／Card／List／Data table／Task card／Kanban column，獨立於本檔案與 master.svg 的同層檔案，不是取代關係）
 第一批畢業（issue #17，1/4，2026-07-30）：`works/html/batch1/`（issue #17 15 群清單中的 Button、Checkbox、Text input／Textarea 三群，**2026-07-30 人類 G1 審查通過，已畢業，仍是 candidate 未宣告 stable**）；`works/everline-components-master.svg` 對應的 c-button／c-checkbox／c-text-input／c-textarea 四個 SVG 群組已標記群組級 `superseded-by: works/html/batch1/index.html`（master.svg 整份檔案狀態不變；除 c-color-swatch 外共 16 個產品元件群組，扣除這 4 個，其餘 12 個 SVG 群組不受影響）。issue #17 其餘 12 群（15 群中未畢業的部分）仍以本檔案與 `works/everline-components-master.svg` 為權威來源。
-Icon button（issue #30）／Switch（issue #31）／Radio（issue #32）／Split button／Dropdown（issue #33）（2026-07-31）：`works/html/batch1/` 已擴充這 4 群的 HTML/CSS candidate，**candidate ready for G1，尚未通過人類視覺審查，未畢業**；master.svg 對應的 c-icon-button／c-switch／c-radio／c-split-button 群組尚未標記 `superseded-by`，仍是這 4 群目前的權威來源。issue #17 15 群清單中，已畢業 3 群＋等待 G1 的 4 群共 7 群，仍有 8 群未動工。
+Icon button（issue #30）／Switch（issue #31）／Radio（issue #32）／Split button／Dropdown（issue #33）（2026-07-31）：`works/html/batch1/` 已擴充這 4 群的 HTML/CSS candidate，**candidate ready for G1，尚未通過人類視覺審查，未畢業**；master.svg 對應的 c-icon-button／c-switch／c-radio／c-split-button 群組尚未標記 `superseded-by`，仍是這 4 群目前的權威來源。
+Badge / Tag（issue #34，issue #17 15 群清單第 8 項，2026-08-03）：`works/html/batch1/` 已擴充 Badge / Tag 的 HTML/CSS candidate，**candidate ready for G1，尚未通過人類視覺審查，未畢業**；master.svg 對應的 `c-badge-tag` 群組尚未標記 `superseded-by`，仍是這一群目前的權威來源。issue #17 15 群清單中，已畢業 3 群＋等待 G1 的 5 群共 8 群，仍有 7 群未動工。
 
 本文件是受控延伸用的校準稿，不是穩定版規格。已觀察到的值與本次推導值分開記錄；使用者確認前，不應將候選內容視為 Everline 的凍結決策。
 
@@ -319,7 +320,7 @@ Text input 用於單行短文字；Textarea 用於描述、備註與多行內容
 
 ## Badge / Tag
 
-狀態：`candidate`
+狀態：`candidate`（2026-08-03，issue #34：HTML/CSS candidate ready for G1，見 `works/html/batch1/`，尚未通過人類視覺審查，未畢業）
 
 ### 用途
 
