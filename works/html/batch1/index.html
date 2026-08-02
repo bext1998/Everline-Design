@@ -70,6 +70,12 @@
           <li><code>focused</code>——outline 變體（唯一互動的整個 tag）與 removable 的移除鈕皆沿用既有全域 <code>:focus-visible</code> 技法，非新視覺決定；<code>hover</code>（outline 整體與 removable 移除鈕）沿用既有跨元件 6% 白色疊加技法，同樣不是本批新增的視覺決定。</li>
           <li>文字過長時的最大寬度與截斷策略——依規格文字「文字超長時由產品層設定」，不屬於這份框架中立候選稿的範圍，本批不實作。</li>
         </ul>
+        <p><strong>PR #46 審查（opus）核實無誤但決定不自行變更、留給 G1 判斷的三項已知落差</strong>（依審查意見：這些是設計決策層級的問題，不是可以由 agent 片面認定「合理就好」而略過告知的細節）：</p>
+        <ul>
+          <li>outline 的靜態邊框沿用 <code>border.width-focus</code>（2px）＋<code>color.semantic.border-focus</code>，與全域 <code>:focus-visible</code> 焦點環同色同寬；outline 本身包在 48px 命中區 wrapper 裡，鍵盤 focus 時會呈現「48px 外環＋40px 內環」兩層同色藍框。這與 <code>docs/STATUS.md</code>／<code>docs/design-system-v0.1-draft.md</code> 已記錄的 Button outline／focus ring 共用同一視覺的既有未決問題完全相同，本批原樣沿用同一手法，先前未在本文件單獨列出。另外 <code>component.tag.border-focus</code> 這個 token 命名用來表示「一律存在的靜態邊框顏色」，與 Text input／Textarea 既有的 <code>border-width-focus</code>／<code>border-focus</code>（僅在真正 focus 當下才出現的邊框）命名慣例不一致，是否需要改名或維持現狀，留給 G1 判斷。</li>
+          <li>disabled 變體實作為 <code>&lt;button disabled&gt;</code>，其餘五個變體皆為 <code>&lt;span&gt;</code>；SVG 的 <code>tag-disabled</code> 範例本身沒有指明這是哪一種 tag（純狀態／篩選／可移除）的停用態，選用真實 <code>&lt;button&gt;</code> 只是為了沿用本檔案一致的原生 <code>disabled</code> 驗證慣例，不是從 SVG 或規格文字推得的結論，是否應該維持這個元素類型留給 G1 判斷。</li>
+          <li>removable 移除鈕圖示中心與 pill 右緣的實測距離為 32px（<code>component.tag.padding-inline</code> 16px＋<code>component.tag.remove-control-size</code> 一半 16px），而 <code>c-badge-tag</code> SVG 原始量測值為 23px（144－121）——因為 32px 命中區疊加在完整的 16px <code>padding-inline</code> 之外而非取代它，兩者相加把圖示往內推了約 9px。決定本身有 a11y 理由（命中區大小），但等於改動了已核准 SVG 的圖示位置，先前的 PR 說明與本文件皆未告知，留給 G1 判斷是否接受這個位移。</li>
+        </ul>
       </aside>
 
       <!-- ===================== Button ===================== -->
@@ -297,7 +303,7 @@
           <h2 id="tag-title">Badge / Tag</h2>
           <p>40px 高 · pill radius 20px · padding-inline 16px · neutral／accent／danger／outline／disabled／removable</p>
         </div>
-        <div class="tag-examples">
+        <div class="tag-examples" tabindex="-1">
           <span class="tag">一般</span>
           <span class="tag tag--accent"><span class="tag__dot" aria-hidden="true"></span>選取</span>
           <span class="tag tag--danger">

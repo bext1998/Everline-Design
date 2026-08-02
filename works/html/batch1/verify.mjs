@@ -159,8 +159,8 @@ function verifyTokens() {
   check('component.tag.background-danger resolves to action-danger #C1272D', px(resolved.get('component.tag.background-danger')) === '#C1272D', resolved.get('component.tag.background-danger'));
   check('component.tag.background-disabled resolves to background-subdued #666666', px(resolved.get('component.tag.background-disabled')) === '#666666', resolved.get('component.tag.background-disabled'));
   check('component.tag.border-focus resolves to border-focus #598AE8', px(resolved.get('component.tag.border-focus')) === '#598AE8', resolved.get('component.tag.border-focus'));
-  check('component.tag.hit-area-size resolves to control-md 48px (G1-accepted extension, not SVG-drawn)', px(resolved.get('component.tag.hit-area-size')) === '48px', resolved.get('component.tag.hit-area-size'));
-  check('component.tag.remove-control-size resolves to 32px (G1-accepted extension, not SVG-drawn)', px(resolved.get('component.tag.remove-control-size')) === '32px', resolved.get('component.tag.remove-control-size'));
+  check('component.tag.hit-area-size resolves to control-md 48px (extension pending G1, not SVG-drawn)', px(resolved.get('component.tag.hit-area-size')) === '48px', resolved.get('component.tag.hit-area-size'));
+  check('component.tag.remove-control-size resolves to 32px (extension pending G1, not SVG-drawn)', px(resolved.get('component.tag.remove-control-size')) === '32px', resolved.get('component.tag.remove-control-size'));
   check('component.switch.width is 96px (unchanged)', px(resolved.get('component.switch.width')) === '96px');
   check('component.switch.thumb-size is 40px (unchanged)', px(resolved.get('component.switch.thumb-size')) === '40px');
   check('component.switch.track-on resolves to action-primary #598AE8 (unchanged)',
@@ -740,12 +740,34 @@ async function main() {
     const countBeforeRemove = await c.js(`document.querySelectorAll('.tag-examples > .tag').length`);
     const removableHtml = await c.js(`${sel('.tag--removable')}.outerHTML`);
     await c.clickEl(sel('[data-tag-remove]'));
-    const afterRemove = await c.js(`({count: document.querySelectorAll('.tag-examples > .tag').length, gone: !document.querySelector('.tag--removable')})`);
+    const afterRemove = await c.js(`(()=>{
+      const group=${sel('.tag-examples')};
+      return {
+        count: document.querySelectorAll('.tag-examples > .tag').length, gone: !document.querySelector('.tag--removable'),
+        activeIsGroup: document.activeElement === group, activeIsBody: document.activeElement === document.body
+      };
+    })()`);
     check('clicking the remove control deletes exactly its own tag from the DOM',
       afterRemove.count === countBeforeRemove - 1 && afterRemove.gone, { before: countBeforeRemove, after: afterRemove });
+    // PR #46 review (opus): a natively-focused control disappearing must not silently drop
+    // keyboard focus to <body> — this demo has exactly one removable tag, so with no sibling
+    // remove control left to move to, focus must land on the group container (tabindex="-1" in
+    // index.html), the documented last-resort fallback, not wherever the browser defaults to.
+    check('removing the only removable tag moves focus to the group container, not <body>',
+      afterRemove.activeIsGroup === true && afterRemove.activeIsBody === false, afterRemove);
     await c.js(`(()=>{
       ${sel('.tag--disabled')}.insertAdjacentHTML('afterend', ${JSON.stringify(removableHtml)});
-      document.querySelector('.tag--removable .tag__remove').addEventListener('click', function () { this.closest('.tag')?.remove(); });
+      const restoredBtn = document.querySelector('.tag--removable .tag__remove');
+      restoredBtn.addEventListener('click', () => {
+        const tag = restoredBtn.closest('.tag');
+        const group = tag?.parentElement;
+        const removesInGroup = group ? [...group.querySelectorAll('[data-tag-remove]')] : [];
+        const myIndex = removesInGroup.indexOf(restoredBtn);
+        tag?.remove();
+        const next = removesInGroup[myIndex + 1] || removesInGroup[myIndex - 1];
+        if (next && next.isConnected) next.focus();
+        else group?.focus();
+      });
     })()`);
     const restoredCount = await c.js(`document.querySelectorAll('.tag-examples > .tag').length`);
     check('the removable example is restored for the G1 review screenshot below', restoredCount === countBeforeRemove, { restoredCount, countBeforeRemove });
@@ -926,6 +948,31 @@ async function main() {
     const swImg = await c.shot();
     check('switch "on" track renders as action-primary blue on its bare (non-thumb) side (sampled from a real screenshot)',
       JSON.stringify(swImg.at(...swPt)) === JSON.stringify(BLUE), swImg.at(...swPt));
+
+    // PR #46 review (opus): the 4 new solid Badge/Tag fills (neutral/accent/danger/disabled) had
+    // only getComputedStyle checks above, no real screenshot sample — every other new solid fill
+    // in this file (Button/Icon button/Switch) got one, and it is exactly this technique that
+    // caught disabled Button's real opacity bug during PR #29 review. Sample at (left+8,
+    // verticalMid): tag's radius equals half its height (a pill), so at the exact vertical
+    // centre the fill reaches all the way to the box's left edge regardless of any leading
+    // icon/dot further inside — the same reasoning already used for Button/Switch above.
+    await c.js(`document.querySelectorAll('.tag-examples > .tag')[0].scrollIntoView({block:'center'})`);
+    await sleep(150);
+    const tagPts = await c.js(`(()=>{
+      const direct=[...document.querySelectorAll('.tag-examples > .tag')];
+      const pt=(e)=>{const r=e.getBoundingClientRect();return [Math.round(r.left+8), Math.round(r.top+r.height/2)];};
+      return { neutral: pt(direct[0]), accent: pt(direct[1]), danger: pt(direct[2]), disabled: pt(direct[3]) };
+    })()`);
+    const tagImg = await c.shot();
+    const GRAY_333 = [51, 51, 51], RED = [193, 39, 45], GRAY_666 = [102, 102, 102];
+    check('neutral tag background renders as background-surface rgb(51, 51, 51) (sampled from a real screenshot)',
+      JSON.stringify(tagImg.at(...tagPts.neutral)) === JSON.stringify(GRAY_333), tagImg.at(...tagPts.neutral));
+    check('accent tag background renders as action-primary blue (sampled from a real screenshot)',
+      JSON.stringify(tagImg.at(...tagPts.accent)) === JSON.stringify(BLUE), tagImg.at(...tagPts.accent));
+    check('danger tag background renders as action-danger rgb(193, 39, 45) (sampled from a real screenshot)',
+      JSON.stringify(tagImg.at(...tagPts.danger)) === JSON.stringify(RED), tagImg.at(...tagPts.danger));
+    check('disabled tag background renders as the solid #666666 token colour, not dimmed (sampled from a real screenshot)',
+      JSON.stringify(tagImg.at(...tagPts.disabled)) === JSON.stringify(GRAY_666), tagImg.at(...tagPts.disabled));
 
     /* ---------------- Responsive + motion ---------------- */
     section('Responsive and motion');
