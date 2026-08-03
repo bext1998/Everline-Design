@@ -5,7 +5,7 @@
  * Icon button (#30) / Switch (#31) / Radio (#32) / Split button/Dropdown (#33) added
  * 2026-07-31 — candidate ready for G1, awaiting human visual review.
  * Badge / Tag (#34) added 2026-08-03 — candidate ready for G1, awaiting human visual review.
- * Inline alert (#35) added 2026-08-04 — candidate ready for G1, awaiting human visual review.
+ * Inline alert (#35) added 2026-08-04 — G1 passed 2026-08-04.
  *
  *   node works/html/batch1/verify.mjs
  *   CHROME="/path/to/chrome" node works/html/batch1/verify.mjs     # if auto-detection fails
@@ -189,8 +189,7 @@ function verifyTokens() {
   check('component.inline-alert.icon-color-danger resolves to action-danger #C1272D', px(resolved.get('component.inline-alert.icon-color-danger')) === '#C1272D', resolved.get('component.inline-alert.icon-color-danger'));
   check('component.inline-alert.icon-color-neutral resolves to off-white #F2F2F2 (NOT the same as rail-color-neutral)', px(resolved.get('component.inline-alert.icon-color-neutral')) === '#F2F2F2', resolved.get('component.inline-alert.icon-color-neutral'));
   check('component.inline-alert.dismiss-control-size resolves to 48px (extension pending G1, not SVG-drawn)', px(resolved.get('component.inline-alert.dismiss-control-size')) === '48px', resolved.get('component.inline-alert.dismiss-control-size'));
-  check('component.inline-alert.border-width resolves to 2px', px(resolved.get('component.inline-alert.border-width')) === '2px', resolved.get('component.inline-alert.border-width'));
-  check('component.inline-alert.border-focus resolves to border-focus #598AE8', px(resolved.get('component.inline-alert.border-focus')) === '#598AE8', resolved.get('component.inline-alert.border-focus'));
+  check('component.inline-alert.icon-render-margin resolves to 2px (PR #47 fix: keeps the 32-unit viewBox at 1:1 scale so the drawn circle renders at the full 28px, not 24.5px)', px(resolved.get('component.inline-alert.icon-render-margin')) === '2px', resolved.get('component.inline-alert.icon-render-margin'));
   check('component.switch.width is 96px (unchanged)', px(resolved.get('component.switch.width')) === '96px');
   check('component.switch.thumb-size is 40px (unchanged)', px(resolved.get('component.switch.thumb-size')) === '40px');
   check('component.switch.track-on resolves to action-primary #598AE8 (unchanged)',
@@ -863,7 +862,18 @@ async function main() {
     check('inline alert min-height is 96px', alert.minH === '96px', alert.minH);
     check('inline alert radius is 16px', alert.r === '16px', alert.r);
     check('rail is 4px wide, 64px tall (96px card minus 16px top/bottom inset)', alert.railW === 4 && alert.railH === 64, { w: alert.railW, h: alert.railH });
-    check("status icon is 28px (circle r=\"14\", diameter = 2 x r; corrects the design draft's unmeasured 24px)", alert.iconW === 28 && alert.iconH === 28, { w: alert.iconW, h: alert.iconH });
+    check('icon SVG render box is 32px (icon-size 28px + icon-render-margin 2px on each side, so the 32-unit viewBox maps 1:1 to pixels)', alert.iconW === 32 && alert.iconH === 32, { w: alert.iconW, h: alert.iconH });
+    // PR #47 review (codex) found the SVG box's own bounding-rect size (checked above) does not
+    // prove the CIRCLE inside actually renders at 28px — a mismatched viewBox-to-box ratio can
+    // pass a box-size check while still shrinking everything drawn inside it, which is exactly
+    // what happened (24.5px instead of 28px) before this fix. Measure the <circle> element's own
+    // real geometry directly, not the SVG element that contains it.
+    const iconCircle = await c.js(`(()=>{
+      const r=${sel('.inline-alert--info .inline-alert__icon circle')}.getBoundingClientRect();
+      return { w: Math.round(r.width), h: Math.round(r.height) };
+    })()`);
+    check('status icon circle actually renders at 28px diameter (circle r="14", diameter = 2 x r; corrects the design draft\'s unmeasured 24px, and the 24.5px shrink PR #47 review caught)',
+      iconCircle.w === 28 && iconCircle.h === 28, iconCircle);
     check('title font-size is 17px (matches no existing font.size-* step)', alert.titleSize === '17px', alert.titleSize);
     check('title colour is off-white rgb(242, 242, 242)', alert.titleColor === 'rgb(242, 242, 242)', alert.titleColor);
     check('body font-size is 14px (font.size-label)', alert.bodySize === '14px', alert.bodySize);
@@ -876,6 +886,25 @@ async function main() {
     check('dismiss control has an accessible name identifying which alert it closes', alert.dismissLabel === '關閉：同步已暫停', alert.dismissLabel);
     check('only the info variant has a dismiss button — the SVG never drew one on danger/neutral',
       alert.dangerHasDismiss === false && alert.neutralHasDismiss === false, { danger: alert.dangerHasDismiss, neutral: alert.neutralHasDismiss });
+
+    // PR #47 review (codex) found two real geometry bugs here: the X glyph was drawn only 8px
+    // wide (vs. the SVG-measured 12px, translate(712 24) local box 18,18 to 30,30) and rendered
+    // 48px from the card's right edge instead of the SVG's 24px, because the container's general
+    // padding-inline-end (24px) was stacking on top of the button's own 48px-wide centring instead
+    // of being replaced by it — the same shape of bug PR #46 found in Badge/Tag's remove icon
+    // offset. Measure the real rendered path geometry directly (not just the CSS declared hit-area
+    // size checked above), the same getBoundingClientRect technique that check used.
+    const dismissGeom = await c.js(`(()=>{
+      const card=${sel('.inline-alert--info')}, svg=card.querySelector('.inline-alert__dismiss svg');
+      const rects=[...svg.querySelectorAll('path')].map(p=>p.getBoundingClientRect());
+      const left=Math.min(...rects.map(r=>r.left)), right=Math.max(...rects.map(r=>r.right));
+      const cardRect=card.getBoundingClientRect();
+      return { glyphWidth: Math.round(right-left), offsetFromRightEdge: Math.round(cardRect.right - (left+right)/2) };
+    })()`);
+    check('dismiss X glyph is 12px wide (matches the SVG-measured local box 18,18 to 30,30)',
+      dismissGeom.glyphWidth === 12, dismissGeom);
+    check("dismiss X glyph centre sits 24px from the card's right edge, matching the SVG measurement (translate(712 24), X centre at local 24,24; was 48px before this fix)",
+      dismissGeom.offsetFromRightEdge === 24, dismissGeom);
 
     // Real click test: the dismiss control removes its own alert from the DOM — a real mutation,
     // not merely a visual fade (no removal animation exists in the SVG to justify one), same

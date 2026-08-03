@@ -172,6 +172,7 @@
   --everline-component-inline-alert-rail-radius: 2px;
   --everline-component-inline-alert-content-start: 80px;
   --everline-component-inline-alert-icon-size: 28px;
+  --everline-component-inline-alert-icon-render-margin: 2px;
   --everline-component-inline-alert-title-body-gap: var(--everline-space-1);
   --everline-component-inline-alert-title-size: 17px;
   --everline-component-inline-alert-body-size: var(--everline-font-size-label);
@@ -185,8 +186,6 @@
   --everline-component-inline-alert-icon-color-danger: var(--everline-color-semantic-action-danger);
   --everline-component-inline-alert-icon-color-neutral: var(--everline-color-semantic-foreground-primary);
   --everline-component-inline-alert-dismiss-control-size: 48px;
-  --everline-component-inline-alert-border-width: var(--everline-border-width-focus);
-  --everline-component-inline-alert-border-focus: var(--everline-color-semantic-border-focus);
 }
 
 /* Hover overlay, derived from the two tokens that define it rather than restating #fff:
@@ -653,6 +652,14 @@ fieldset.radio-group legend { font-size: var(--everline-font-size-label); font-w
    halved. The rail's vertical inset reuses space.2 (16px) directly rather than a dedicated
    component token, since it exactly matches the SVG's own 16px top/bottom margin within the
    96px-tall card and no other value in this component needs that same number.
+   PR #47 review (codex) found the drawn circle was actually rendering at 24.5px, not the intended
+   28px: the icon SVG's viewBox (0 0 32 32 — sized to also fit the wider danger triangle, not just
+   the 28px circle) got scaled down to fit a CSS box sized to icon-size (28px) alone, shrinking
+   every unit in the viewBox including the circle. Fixed by rendering the icon SVG at icon-size
+   PLUS 2 x icon-render-margin (32px total) so the viewBox's 32 units map 1:1 to rendered pixels —
+   the circle's own 28 units then render as a true 28px — and subtracting icon-render-margin from
+   the horizontal offset so the icon's visual centre (not its enlarged box) stays at the same
+   midpoint as before.
    Base .inline-alert (no modifier) is the neutral variant, matching every other component in this
    file where the unmodified class is the neutral case (component.tag, component.button).
    The SVG's own stylesheet gives title and body two different text colours, not one
@@ -669,6 +676,17 @@ fieldset.radio-group legend { font-size: var(--everline-font-size-label); font-w
   padding-inline-end: var(--everline-space-3);
   gap: var(--everline-space-2);
 }
+/* PR #47 review (codex) found the dismiss button rendering 24px further from the card's right
+   edge than the SVG (48px measured vs. the source's 24px, translate(712 24) with the X glyph
+   centred in its local box): the container's general padding-inline-end (24px, for variants with
+   no trailing control) was being added on top of the button's own 48px-wide centring instead of
+   being replaced by it — the same shape of bug PR #46 found and fixed for Badge/Tag's remove
+   icon offset. Since the desired 24px offset already equals exactly half of the button's own 48px
+   width, the fix is to zero out the padding for this variant rather than compute a new one: with
+   no trailing padding, the button's right edge sits flush with the card's own right edge, so its
+   centred icon lands exactly 24px in — matching the SVG exactly, not a coincidence of round
+   numbers. */
+.inline-alert:has(.inline-alert__dismiss) { padding-inline-end: 0; }
 .inline-alert__rail {
   position: absolute;
   left: var(--everline-component-inline-alert-rail-inset);
@@ -681,9 +699,10 @@ fieldset.radio-group legend { font-size: var(--everline-font-size-label); font-w
 .inline-alert--danger .inline-alert__rail { background: var(--everline-component-inline-alert-rail-color-danger); }
 .inline-alert__icon {
   position: absolute;
-  left: calc((var(--everline-component-inline-alert-rail-inset) + var(--everline-component-inline-alert-rail-width) + var(--everline-component-inline-alert-content-start)) / 2 - var(--everline-component-inline-alert-icon-size) / 2);
+  left: calc((var(--everline-component-inline-alert-rail-inset) + var(--everline-component-inline-alert-rail-width) + var(--everline-component-inline-alert-content-start)) / 2 - var(--everline-component-inline-alert-icon-size) / 2 - var(--everline-component-inline-alert-icon-render-margin));
   top: 50%; transform: translateY(-50%);
-  width: var(--everline-component-inline-alert-icon-size); height: var(--everline-component-inline-alert-icon-size);
+  width: calc(var(--everline-component-inline-alert-icon-size) + var(--everline-component-inline-alert-icon-render-margin) * 2);
+  height: calc(var(--everline-component-inline-alert-icon-size) + var(--everline-component-inline-alert-icon-render-margin) * 2);
   fill: none; stroke: var(--everline-component-inline-alert-icon-color-neutral);
   stroke-width: var(--everline-icon-stroke-width); stroke-linecap: round; stroke-linejoin: round;
 }

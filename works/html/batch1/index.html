@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Everline v0.1 — 第一批 HTML/CSS 候選元件（issue #17，Button/Checkbox/Text input/Textarea 已畢業，Icon button/Switch/Radio/Split button/Badge/Tag/Inline alert 等待 G1）</title>
+    <title>Everline v0.1 — 第一批 HTML/CSS 候選元件（issue #17，Button/Checkbox/Text input/Textarea/Inline alert 已畢業，Icon button/Switch/Radio/Split button/Badge/Tag 等待 G1）</title>
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
@@ -94,6 +94,12 @@
           <li>沒有任何操作按鈕——規格文字提到「若需要操作，最多提供一個主要文字操作」，但 SVG 三個範例都沒有畫出操作按鈕，本輪不新增，比照 Badge/Tag「文字超長截斷策略由產品層決定」的既有處理方式。</li>
           <li>關閉鈕只在 <code>info</code> 範例示範——SVG 只有 <code>alert-info</code> 畫出關閉鈕，<code>danger</code>／<code>neutral</code> 皆未畫出，本輪不假設兩者也需要關閉鈕。</li>
           <li><code>focused</code>（關閉鈕鍵盤焦點）沿用既有全域 <code>:focus-visible</code> 技法，非新視覺決定；容器與 rail 皆無 <code>hover</code> 效果，因為整個 alert 不是可點擊的整體控制項，只有內部的關閉鈕本身可互動。</li>
+        </ul>
+        <p><strong>PR #47 審查（codex）找出並已修正的問題</strong>：</p>
+        <ul>
+          <li><strong>狀態圖示實際只有 24.5px，非宣稱的 28px</strong>：圖示 SVG 的 <code>viewBox="0 0 32 32"</code>（32 個單位是為了同時容納較寬的 danger 三角形）被壓縮進一個依 <code>icon-size</code>（28px）決定寬高的 CSS 容器，導致 viewBox 內每個單位、包含 circle 的 28 個單位，全部一起被等比縮小成 24.5px。已新增 <code>component.inline-alert.icon-render-margin</code>（2px，純實作用的縮放安全邊界，非 SVG 量測值）：圖示 SVG 容器改為 <code>icon-size + icon-render-margin × 2</code>（32px），讓 viewBox 的 32 個單位與渲染像素維持 1:1，圖示水平位置的 calc() 也一併扣掉這個邊界，確保視覺中心不變。<code>verify.mjs</code> 新增對 <code>&lt;circle&gt;</code> 元素本身（而非外層 SVG 容器）的真實 <code>getBoundingClientRect</code> 量測斷言，不再只信任容器尺寸。</li>
+          <li><strong>關閉鈕位置偏移 24px、X 圖示只有 8px 寬（來源是 12px）</strong>：容器原本無條件套用 <code>padding-inline-end: 24px</code>（給沒有關閉鈕的變體留白），疊加在關閉鈕自己 48px 寬置中的效果之上，導致圖示中心距卡片右緣變成 48px，而非來源 SVG 實測的 24px（<code>translate(712 24)</code>，X 圖示本地座標 18,18 至 30,30 換算後的中心距）——與 PR #46 當初 Badge/Tag 移除鈕圖示位移是同一種錯誤形狀（命中區疊加在既有內距之上，而非取代它）。已新增 <code>.inline-alert:has(.inline-alert__dismiss)</code> 規則將該變體的 <code>padding-inline-end</code> 歸零（24px 期望位移剛好等於 48px 按鈕寬度的一半，歸零後按鈕貼齊卡片右緣即可自然置中對到 24px），並將 X 圖示路徑從 8 個單位改畫成 12 個單位，與來源尺寸一致。<code>verify.mjs</code> 新增對兩個 <code>&lt;path&gt;</code> 的真實 <code>getBoundingClientRect</code> 量測斷言（圖示寬度、距右緣距離），不再只信任 CSS 宣告值。</li>
+          <li><strong>兩個未被消費的 focus token</strong>：<code>component.inline-alert.border-width</code>／<code>border-focus</code> 先前只在 <code>:root</code> 宣告，沒有任何 <code>.inline-alert*</code> CSS 規則實際引用——關閉鈕的 focus ring 其實完全由既有跨元件的全域 <code>:focus-visible</code> 規則滿足規格文字「2 px blue focus ring」的要求，這兩個 token 是重複而非缺口，已直接移除（tokens／CSS／<code>verify.mjs</code> 三處同步），不做成沒有消費者的裝飾性宣告。</li>
         </ul>
       </aside>
 
@@ -362,7 +368,7 @@
               <p class="inline-alert__body">重新連線後會繼續處理尚未上傳的變更。</p>
             </div>
             <button class="inline-alert__dismiss" type="button" aria-label="關閉：同步已暫停" data-alert-dismiss>
-              <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8"/><path d="M12 4l-8 8"/></svg>
+              <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2l12 12"/><path d="M14 2l-12 12"/></svg>
             </button>
           </div>
           <div class="inline-alert inline-alert--danger" role="alert">
