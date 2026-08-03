@@ -10,6 +10,7 @@
   /* color.base.* */
   --everline-color-base-white: #fff;
   --everline-color-base-off-white: #f2f2f2;
+  --everline-color-base-gray-500: #b8b8b8;
   --everline-color-base-gray-600: #666;
   --everline-color-base-gray-700: #4d4d4d;
   --everline-color-base-gray-800: #444;
@@ -27,7 +28,7 @@
   --everline-color-semantic-border-focus: #598ae8;
   /* space.* / radius.* / border.* / focus.* */
   --everline-space-1: 8px; --everline-space-2: 16px; --everline-space-3: 24px; --everline-space-4: 32px;
-  --everline-radius-sm: 8px; --everline-radius-control: 24px; --everline-radius-pill: 999px;
+  --everline-radius-sm: 8px; --everline-radius-lg: 16px; --everline-radius-control: 24px; --everline-radius-pill: 999px;
   --everline-border-width-default: 1px; --everline-border-width-focus: 2px;
   --everline-focus-ring-offset: 2px;
   /* opacity.* */
@@ -162,6 +163,29 @@
   --everline-component-tag-hit-area-size: var(--everline-size-control-md);
   --everline-component-tag-remove-control-size: 32px;
   --everline-component-tag-remove-icon-offset: 23px;
+
+  /* component.inline-alert.* */
+  --everline-component-inline-alert-min-height: 96px;
+  --everline-component-inline-alert-radius: var(--everline-radius-lg);
+  --everline-component-inline-alert-rail-width: 4px;
+  --everline-component-inline-alert-rail-inset: 12px;
+  --everline-component-inline-alert-rail-radius: 2px;
+  --everline-component-inline-alert-content-start: 80px;
+  --everline-component-inline-alert-icon-size: 28px;
+  --everline-component-inline-alert-icon-render-margin: 2px;
+  --everline-component-inline-alert-title-body-gap: var(--everline-space-1);
+  --everline-component-inline-alert-title-size: 17px;
+  --everline-component-inline-alert-body-size: var(--everline-font-size-label);
+  --everline-component-inline-alert-background: var(--everline-color-semantic-background-surface);
+  --everline-component-inline-alert-foreground-title: var(--everline-color-semantic-foreground-primary);
+  --everline-component-inline-alert-foreground-body: var(--everline-color-base-gray-500);
+  --everline-component-inline-alert-rail-color-info: var(--everline-color-semantic-action-primary);
+  --everline-component-inline-alert-rail-color-danger: var(--everline-color-semantic-action-danger);
+  --everline-component-inline-alert-rail-color-neutral: var(--everline-color-semantic-background-subdued);
+  --everline-component-inline-alert-icon-color-info: var(--everline-color-semantic-action-primary);
+  --everline-component-inline-alert-icon-color-danger: var(--everline-color-semantic-action-danger);
+  --everline-component-inline-alert-icon-color-neutral: var(--everline-color-semantic-foreground-primary);
+  --everline-component-inline-alert-dismiss-control-size: 48px;
 }
 
 /* Hover overlay, derived from the two tokens that define it rather than restating #fff:
@@ -611,6 +635,96 @@ fieldset.radio-group legend { font-size: var(--everline-font-size-label); font-w
 .tag__remove:hover { background-image: linear-gradient(var(--everline-hover-overlay), var(--everline-hover-overlay)); }
 .tag__remove svg { width: var(--everline-component-tag-icon-size); height: var(--everline-component-tag-icon-size); fill: none; stroke: currentColor; stroke-width: var(--everline-icon-stroke-width); stroke-linecap: round; stroke-linejoin: round; }
 
+/* ---------- Inline alert ----------
+   Three SVG-drawn variants (info/danger/neutral); no success/warning exists (see index.html scope
+   note). radius.lg (16px) is aliased here for the first time in this file — no earlier batch 1
+   component needed it. The container declares min-height rather than a fixed height so real,
+   potentially-wrapping title/body text can grow the card instead of overflowing or clipping — a
+   structural robustness allowance, not a new visual (align-items: center on the flex row keeps
+   the icon/rail vertically centred either way).
+   The rail and status icon are both absolutely positioned against the card's own padding box,
+   the same coordinate frame the approved SVG uses (card top-left = 0,0) — this lets both be
+   derived purely via calc() from the rail-inset/rail-width/content-start/icon-size custom
+   properties above, with no second raw px value duplicating what those already declare. The
+   icon's horizontal centre works out to the midpoint between the rail's right edge and the text
+   column's own start (component.inline-alert.content-start), matching the SVG's own icon centre
+   (cx="48") exactly once rail-inset (12) + rail-width (4) + content-start (80) are averaged and
+   halved. The rail's vertical inset reuses space.2 (16px) directly rather than a dedicated
+   component token, since it exactly matches the SVG's own 16px top/bottom margin within the
+   96px-tall card and no other value in this component needs that same number.
+   PR #47 review (codex) found the drawn circle was actually rendering at 24.5px, not the intended
+   28px: the icon SVG's viewBox (0 0 32 32 — sized to also fit the wider danger triangle, not just
+   the 28px circle) got scaled down to fit a CSS box sized to icon-size (28px) alone, shrinking
+   every unit in the viewBox including the circle. Fixed by rendering the icon SVG at icon-size
+   PLUS 2 x icon-render-margin (32px total) so the viewBox's 32 units map 1:1 to rendered pixels —
+   the circle's own 28 units then render as a true 28px — and subtracting icon-render-margin from
+   the horizontal offset so the icon's visual centre (not its enlarged box) stays at the same
+   midpoint as before.
+   Base .inline-alert (no modifier) is the neutral variant, matching every other component in this
+   file where the unmodified class is the neutral case (component.tag, component.button).
+   The SVG's own stylesheet gives title and body two different text colours, not one
+   (.alert-title #f2f2f2 vs .alert-body #b8b8b8) and only info/neutral draw a circular status icon
+   at all (danger's is a plain triangle path, no circle) — both are reproduced as-is, not unified. */
+.inline-alert-examples { display: flex; flex-direction: column; gap: var(--everline-space-3); }
+.inline-alert {
+  position: relative;
+  display: flex; align-items: center;
+  min-height: var(--everline-component-inline-alert-min-height);
+  border-radius: var(--everline-component-inline-alert-radius);
+  background: var(--everline-component-inline-alert-background);
+  padding-inline-start: var(--everline-component-inline-alert-content-start);
+  padding-inline-end: var(--everline-space-3);
+  gap: var(--everline-space-2);
+}
+/* PR #47 review (codex) found the dismiss button rendering 24px further from the card's right
+   edge than the SVG (48px measured vs. the source's 24px, translate(712 24) with the X glyph
+   centred in its local box): the container's general padding-inline-end (24px, for variants with
+   no trailing control) was being added on top of the button's own 48px-wide centring instead of
+   being replaced by it — the same shape of bug PR #46 found and fixed for Badge/Tag's remove
+   icon offset. Since the desired 24px offset already equals exactly half of the button's own 48px
+   width, the fix is to zero out the padding for this variant rather than compute a new one: with
+   no trailing padding, the button's right edge sits flush with the card's own right edge, so its
+   centred icon lands exactly 24px in — matching the SVG exactly, not a coincidence of round
+   numbers. */
+.inline-alert:has(.inline-alert__dismiss) { padding-inline-end: 0; }
+.inline-alert__rail {
+  position: absolute;
+  left: var(--everline-component-inline-alert-rail-inset);
+  top: var(--everline-space-2); bottom: var(--everline-space-2);
+  width: var(--everline-component-inline-alert-rail-width);
+  border-radius: var(--everline-component-inline-alert-rail-radius);
+  background: var(--everline-component-inline-alert-rail-color-neutral);
+}
+.inline-alert--info .inline-alert__rail { background: var(--everline-component-inline-alert-rail-color-info); }
+.inline-alert--danger .inline-alert__rail { background: var(--everline-component-inline-alert-rail-color-danger); }
+.inline-alert__icon {
+  position: absolute;
+  left: calc((var(--everline-component-inline-alert-rail-inset) + var(--everline-component-inline-alert-rail-width) + var(--everline-component-inline-alert-content-start)) / 2 - var(--everline-component-inline-alert-icon-size) / 2 - var(--everline-component-inline-alert-icon-render-margin));
+  top: 50%; transform: translateY(-50%);
+  width: calc(var(--everline-component-inline-alert-icon-size) + var(--everline-component-inline-alert-icon-render-margin) * 2);
+  height: calc(var(--everline-component-inline-alert-icon-size) + var(--everline-component-inline-alert-icon-render-margin) * 2);
+  fill: none; stroke: var(--everline-component-inline-alert-icon-color-neutral);
+  stroke-width: var(--everline-icon-stroke-width); stroke-linecap: round; stroke-linejoin: round;
+}
+.inline-alert--info .inline-alert__icon { stroke: var(--everline-component-inline-alert-icon-color-info); }
+.inline-alert--danger .inline-alert__icon { stroke: var(--everline-component-inline-alert-icon-color-danger); }
+.inline-alert__content { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: var(--everline-component-inline-alert-title-body-gap); }
+.inline-alert__title { font-size: var(--everline-component-inline-alert-title-size); font-weight: var(--everline-font-weight-semibold); color: var(--everline-component-inline-alert-foreground-title); }
+.inline-alert__body { font-size: var(--everline-component-inline-alert-body-size); font-weight: var(--everline-font-weight-regular); color: var(--everline-component-inline-alert-foreground-body); }
+/* Dismiss control (info variant only — the SVG never drew one on danger/neutral). Sized to
+   component.inline-alert.dismiss-control-size (48px), an extension decision restoring the 48x48
+   transparent hit-area rect the older source SVG had at this exact position before master.svg's
+   redraw dropped it (see index.html scope note) — pending G1 review, same as Badge/Tag's
+   remove-control-size before it. */
+.inline-alert__dismiss {
+  flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center;
+  width: var(--everline-component-inline-alert-dismiss-control-size); height: var(--everline-component-inline-alert-dismiss-control-size);
+  border: 0; border-radius: 50%; background: transparent; color: var(--everline-component-inline-alert-foreground-title);
+  padding: 0; cursor: pointer;
+}
+.inline-alert__dismiss:hover { background-image: linear-gradient(var(--everline-hover-overlay), var(--everline-hover-overlay)); }
+.inline-alert__dismiss svg { width: var(--everline-size-icon-sm); height: var(--everline-size-icon-sm); fill: none; stroke: currentColor; stroke-width: var(--everline-icon-stroke-width); stroke-linecap: round; stroke-linejoin: round; }
+
 @media (max-width: 760px) {
   .catalog { padding: var(--everline-space-2); }
   .catalog-header { flex-direction: column; }
@@ -620,7 +734,7 @@ fieldset.radio-group legend { font-size: var(--everline-font-size-label); font-w
 }
 
 /* No transition, animation or keyframe is declared anywhere in this batch — Button/Checkbox/
-   Text input/Textarea/Icon button/Switch/Radio/Split button/Badge/Tag have no drawn hover/pressed/
-   loading motion, and Split button's own "needs transition animation" SVG note can't be honoured
-   without a validated motion token (see index.html scope note), so there is nothing for
-   prefers-reduced-motion to switch off and no override is needed. */
+   Text input/Textarea/Icon button/Switch/Radio/Split button/Badge/Tag/Inline alert have no drawn
+   hover/pressed/loading motion, and Split button's own "needs transition animation" SVG note can't
+   be honoured without a validated motion token (see index.html scope note), so there is nothing
+   for prefers-reduced-motion to switch off and no override is needed. */

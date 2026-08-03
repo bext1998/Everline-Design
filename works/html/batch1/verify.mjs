@@ -5,6 +5,7 @@
  * Icon button (#30) / Switch (#31) / Radio (#32) / Split button/Dropdown (#33) added
  * 2026-07-31 — candidate ready for G1, awaiting human visual review.
  * Badge / Tag (#34) added 2026-08-03 — candidate ready for G1, awaiting human visual review.
+ * Inline alert (#35) added 2026-08-04 — G1 passed 2026-08-04.
  *
  *   node works/html/batch1/verify.mjs
  *   CHROME="/path/to/chrome" node works/html/batch1/verify.mjs     # if auto-detection fails
@@ -21,9 +22,13 @@
  * checked — not class simulation), real click/keyboard tests for the 48x48 hit areas (Checkbox,
  * Radio) and for Switch (click/Space/Enter) and Split button's full menu-button keyboard model
  * (ArrowDown/Enter/Space to open, arrow keys + roving tabindex inside the menu, Enter to activate,
- * Escape and light-dismiss to close, focus always returns to the disclosure), RGB samples decoded
- * from real screenshots (including the disabled Button's background, added 2026-07-30 after a
- * plain `opacity` was found dimming it), responsive overflow, and a no-motion scan.
+ * Escape and light-dismiss to close, focus always returns to the disclosure), real click tests for
+ * Badge/Tag's removable control and Inline alert's dismiss control (each deletes its own element
+ * from the DOM and moves focus to a documented fallback container, never <body>, restoring the
+ * example afterward for the G1 screenshot), role="status"/role="alert" assertions for Inline
+ * alert's three variants, RGB samples decoded from real screenshots (including the disabled
+ * Button's background, added 2026-07-30 after a plain `opacity` was found dimming it), responsive
+ * overflow, and a no-motion scan.
  *
  * Exit code 0 means every check passed; 1 means at least one failed.
  */
@@ -162,6 +167,29 @@ function verifyTokens() {
   check('component.tag.hit-area-size resolves to control-md 48px (extension pending G1, not SVG-drawn)', px(resolved.get('component.tag.hit-area-size')) === '48px', resolved.get('component.tag.hit-area-size'));
   check('component.tag.remove-control-size resolves to 32px (extension pending G1, not SVG-drawn)', px(resolved.get('component.tag.remove-control-size')) === '32px', resolved.get('component.tag.remove-control-size'));
   check('component.tag.remove-icon-offset resolves to 23px (SVG-measured: 144 - 121)', px(resolved.get('component.tag.remove-icon-offset')) === '23px', resolved.get('component.tag.remove-icon-offset'));
+  // Inline alert (issue #35): every component.inline-alert.* value is a first-time addition (this
+  // component had zero prior token coverage), each verified against the c-inline-alert SVG audit.
+  check('component.inline-alert.min-height resolves to 96px (card rect height)', px(resolved.get('component.inline-alert.min-height')) === '96px', resolved.get('component.inline-alert.min-height'));
+  check('component.inline-alert.radius resolves to radius.lg 16px (matches every alert-* rx="16")', px(resolved.get('component.inline-alert.radius')) === '16px', resolved.get('component.inline-alert.radius'));
+  check('component.inline-alert.rail-width resolves to 4px', px(resolved.get('component.inline-alert.rail-width')) === '4px', resolved.get('component.inline-alert.rail-width'));
+  check('component.inline-alert.rail-inset resolves to 12px (rail rect x="12")', px(resolved.get('component.inline-alert.rail-inset')) === '12px', resolved.get('component.inline-alert.rail-inset'));
+  check('component.inline-alert.rail-radius resolves to 2px (rail rect rx="2")', px(resolved.get('component.inline-alert.rail-radius')) === '2px', resolved.get('component.inline-alert.rail-radius'));
+  check('component.inline-alert.content-start resolves to 80px (title/body text x="80")', px(resolved.get('component.inline-alert.content-start')) === '80px', resolved.get('component.inline-alert.content-start'));
+  check('component.inline-alert.icon-size resolves to 28px (circle r="14", diameter = 2 x r; corrects the design draft\'s unmeasured 24px)', px(resolved.get('component.inline-alert.icon-size')) === '28px', resolved.get('component.inline-alert.icon-size'));
+  check('component.inline-alert.title-body-gap resolves to space.1 8px', px(resolved.get('component.inline-alert.title-body-gap')) === '8px', resolved.get('component.inline-alert.title-body-gap'));
+  check('component.inline-alert.title-size resolves to 17px (.alert-title font-size, matches no existing font.size-* step)', px(resolved.get('component.inline-alert.title-size')) === '17px', resolved.get('component.inline-alert.title-size'));
+  check('component.inline-alert.body-size resolves to font.size-label 14px (.alert-body font-size)', px(resolved.get('component.inline-alert.body-size')) === '14px', resolved.get('component.inline-alert.body-size'));
+  check('component.inline-alert.background resolves to background-surface #333333', px(resolved.get('component.inline-alert.background')) === '#333333', resolved.get('component.inline-alert.background'));
+  check('component.inline-alert.foreground-title resolves to off-white #F2F2F2 (.alert-title fill)', px(resolved.get('component.inline-alert.foreground-title')) === '#F2F2F2', resolved.get('component.inline-alert.foreground-title'));
+  check('component.inline-alert.foreground-body resolves to gray-500 #B8B8B8 (.alert-body fill, NOT the same as foreground-title)', px(resolved.get('component.inline-alert.foreground-body')) === '#B8B8B8', resolved.get('component.inline-alert.foreground-body'));
+  check('component.inline-alert.rail-color-info resolves to action-primary #598AE8', px(resolved.get('component.inline-alert.rail-color-info')) === '#598AE8', resolved.get('component.inline-alert.rail-color-info'));
+  check('component.inline-alert.rail-color-danger resolves to action-danger #C1272D', px(resolved.get('component.inline-alert.rail-color-danger')) === '#C1272D', resolved.get('component.inline-alert.rail-color-danger'));
+  check('component.inline-alert.rail-color-neutral resolves to background-subdued #666666', px(resolved.get('component.inline-alert.rail-color-neutral')) === '#666666', resolved.get('component.inline-alert.rail-color-neutral'));
+  check('component.inline-alert.icon-color-info resolves to action-primary #598AE8', px(resolved.get('component.inline-alert.icon-color-info')) === '#598AE8', resolved.get('component.inline-alert.icon-color-info'));
+  check('component.inline-alert.icon-color-danger resolves to action-danger #C1272D', px(resolved.get('component.inline-alert.icon-color-danger')) === '#C1272D', resolved.get('component.inline-alert.icon-color-danger'));
+  check('component.inline-alert.icon-color-neutral resolves to off-white #F2F2F2 (NOT the same as rail-color-neutral)', px(resolved.get('component.inline-alert.icon-color-neutral')) === '#F2F2F2', resolved.get('component.inline-alert.icon-color-neutral'));
+  check('component.inline-alert.dismiss-control-size resolves to 48px (extension pending G1, not SVG-drawn)', px(resolved.get('component.inline-alert.dismiss-control-size')) === '48px', resolved.get('component.inline-alert.dismiss-control-size'));
+  check('component.inline-alert.icon-render-margin resolves to 2px (PR #47 fix: keeps the 32-unit viewBox at 1:1 scale so the drawn circle renders at the full 28px, not 24.5px)', px(resolved.get('component.inline-alert.icon-render-margin')) === '2px', resolved.get('component.inline-alert.icon-render-margin'));
   check('component.switch.width is 96px (unchanged)', px(resolved.get('component.switch.width')) === '96px');
   check('component.switch.thumb-size is 40px (unchanged)', px(resolved.get('component.switch.thumb-size')) === '40px');
   check('component.switch.track-on resolves to action-primary #598AE8 (unchanged)',
@@ -215,7 +243,7 @@ function valuesMatch(tokenResolved, cssLiteral) {
 function verifyCssContract(resolvedTokens) {
   section('works/html/batch1/styles.css — no raw dimensions in component rules');
   const css = readFileSync(CSS, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
-  const COMPONENT = /^[^@]*?(\.button|\.checkbox|\.text-input|\.textarea|\.icon-button|\.switch|\.radio|\.split-button|\.tag|fieldset\.radio-group|:where)/;
+  const COMPONENT = /^[^@]*?(\.button|\.checkbox|\.text-input|\.textarea|\.icon-button|\.switch|\.radio|\.split-button|\.tag|\.inline-alert|fieldset\.radio-group|:where)/;
   const offenders = [];
   for (const m of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
     const selector = m[1].trim();
@@ -808,6 +836,111 @@ async function main() {
     const restoredCount = await c.js(`document.querySelectorAll('.tag-examples > .tag').length`);
     check('the removable example is restored for the G1 review screenshot below', restoredCount === countBeforeRemove, { restoredCount, countBeforeRemove });
 
+    /* ---------------- Inline alert ---------------- */
+    section('Inline alert');
+    const alert = await c.js(`(()=>{
+      const cs=(e)=>getComputedStyle(e);
+      const direct=[...document.querySelectorAll('.inline-alert-examples > .inline-alert')];
+      const info=direct[0], danger=direct[1], neutral=direct[2];
+      const infoRail=info.querySelector('.inline-alert__rail'), infoIcon=info.querySelector('.inline-alert__icon');
+      const infoTitle=info.querySelector('.inline-alert__title'), infoBody=info.querySelector('.inline-alert__body');
+      const dismiss=info.querySelector('.inline-alert__dismiss');
+      const railRect=infoRail.getBoundingClientRect(), iconRect=infoIcon.getBoundingClientRect();
+      return {
+        minH: cs(neutral).minHeight, r: cs(neutral).borderRadius,
+        railW: Math.round(railRect.width), railH: Math.round(railRect.height),
+        iconW: Math.round(iconRect.width), iconH: Math.round(iconRect.height),
+        titleSize: cs(infoTitle).fontSize, titleColor: cs(infoTitle).color,
+        bodySize: cs(infoBody).fontSize, bodyColor: cs(infoBody).color,
+        gap: cs(info.querySelector('.inline-alert__content')).rowGap,
+        infoRole: info.getAttribute('role'), dangerRole: danger.getAttribute('role'), neutralRole: neutral.getAttribute('role'),
+        dismissSize: cs(dismiss).width, dismissLabel: dismiss.getAttribute('aria-label'),
+        dangerHasDismiss: !!danger.querySelector('.inline-alert__dismiss'),
+        neutralHasDismiss: !!neutral.querySelector('.inline-alert__dismiss')
+      };
+    })()`);
+    check('inline alert min-height is 96px', alert.minH === '96px', alert.minH);
+    check('inline alert radius is 16px', alert.r === '16px', alert.r);
+    check('rail is 4px wide, 64px tall (96px card minus 16px top/bottom inset)', alert.railW === 4 && alert.railH === 64, { w: alert.railW, h: alert.railH });
+    check('icon SVG render box is 32px (icon-size 28px + icon-render-margin 2px on each side, so the 32-unit viewBox maps 1:1 to pixels)', alert.iconW === 32 && alert.iconH === 32, { w: alert.iconW, h: alert.iconH });
+    // PR #47 review (codex) found the SVG box's own bounding-rect size (checked above) does not
+    // prove the CIRCLE inside actually renders at 28px — a mismatched viewBox-to-box ratio can
+    // pass a box-size check while still shrinking everything drawn inside it, which is exactly
+    // what happened (24.5px instead of 28px) before this fix. Measure the <circle> element's own
+    // real geometry directly, not the SVG element that contains it.
+    const iconCircle = await c.js(`(()=>{
+      const r=${sel('.inline-alert--info .inline-alert__icon circle')}.getBoundingClientRect();
+      return { w: Math.round(r.width), h: Math.round(r.height) };
+    })()`);
+    check('status icon circle actually renders at 28px diameter (circle r="14", diameter = 2 x r; corrects the design draft\'s unmeasured 24px, and the 24.5px shrink PR #47 review caught)',
+      iconCircle.w === 28 && iconCircle.h === 28, iconCircle);
+    check('title font-size is 17px (matches no existing font.size-* step)', alert.titleSize === '17px', alert.titleSize);
+    check('title colour is off-white rgb(242, 242, 242)', alert.titleColor === 'rgb(242, 242, 242)', alert.titleColor);
+    check('body font-size is 14px (font.size-label)', alert.bodySize === '14px', alert.bodySize);
+    check('body colour is the SVG-measured gray-500 rgb(184, 184, 184), NOT the same as the title colour', alert.bodyColor === 'rgb(184, 184, 184)', alert.bodyColor);
+    check('title/body gap is 8px', alert.gap === '8px', alert.gap);
+    check('info uses role="status" (general information, not an urgent error)', alert.infoRole === 'status', alert.infoRole);
+    check('danger uses role="alert" (needs immediate attention, per docs/design-system-v0.1-draft.md)', alert.dangerRole === 'alert', alert.dangerRole);
+    check('neutral uses role="status"', alert.neutralRole === 'status', alert.neutralRole);
+    check('dismiss control hit area is 48px (extension pending G1, not SVG-drawn)', alert.dismissSize === '48px', alert.dismissSize);
+    check('dismiss control has an accessible name identifying which alert it closes', alert.dismissLabel === '關閉：同步已暫停', alert.dismissLabel);
+    check('only the info variant has a dismiss button — the SVG never drew one on danger/neutral',
+      alert.dangerHasDismiss === false && alert.neutralHasDismiss === false, { danger: alert.dangerHasDismiss, neutral: alert.neutralHasDismiss });
+
+    // PR #47 review (codex) found two real geometry bugs here: the X glyph was drawn only 8px
+    // wide (vs. the SVG-measured 12px, translate(712 24) local box 18,18 to 30,30) and rendered
+    // 48px from the card's right edge instead of the SVG's 24px, because the container's general
+    // padding-inline-end (24px) was stacking on top of the button's own 48px-wide centring instead
+    // of being replaced by it — the same shape of bug PR #46 found in Badge/Tag's remove icon
+    // offset. Measure the real rendered path geometry directly (not just the CSS declared hit-area
+    // size checked above), the same getBoundingClientRect technique that check used.
+    const dismissGeom = await c.js(`(()=>{
+      const card=${sel('.inline-alert--info')}, svg=card.querySelector('.inline-alert__dismiss svg');
+      const rects=[...svg.querySelectorAll('path')].map(p=>p.getBoundingClientRect());
+      const left=Math.min(...rects.map(r=>r.left)), right=Math.max(...rects.map(r=>r.right));
+      const cardRect=card.getBoundingClientRect();
+      return { glyphWidth: Math.round(right-left), offsetFromRightEdge: Math.round(cardRect.right - (left+right)/2) };
+    })()`);
+    check('dismiss X glyph is 12px wide (matches the SVG-measured local box 18,18 to 30,30)',
+      dismissGeom.glyphWidth === 12, dismissGeom);
+    check("dismiss X glyph centre sits 24px from the card's right edge, matching the SVG measurement (translate(712 24), X centre at local 24,24; was 48px before this fix)",
+      dismissGeom.offsetFromRightEdge === 24, dismissGeom);
+
+    // Real click test: the dismiss control removes its own alert from the DOM — a real mutation,
+    // not merely a visual fade (no removal animation exists in the SVG to justify one), same
+    // reasoning already applied to Badge/Tag's remove control above. This catalog only ever shows
+    // one dismissible alert, so with no sibling dismiss control left to move to, focus must land
+    // on the group container (tabindex="-1" in index.html), not wherever the browser defaults to.
+    // Restored afterward (re-inserted with a fresh listener mirroring prototype.js's own
+    // registration) so the example survives for the G1 review screenshot captured later.
+    const countBeforeDismiss = await c.js(`document.querySelectorAll('.inline-alert-examples > .inline-alert').length`);
+    const infoHtml = await c.js(`document.querySelector('.inline-alert--info').outerHTML`);
+    await c.clickEl(sel('[data-alert-dismiss]'));
+    const afterDismiss = await c.js(`(()=>{
+      const group=${sel('.inline-alert-examples')};
+      return {
+        count: document.querySelectorAll('.inline-alert-examples > .inline-alert').length,
+        gone: !document.querySelector('.inline-alert--info'),
+        activeIsGroup: document.activeElement === group, activeIsBody: document.activeElement === document.body
+      };
+    })()`);
+    check('clicking the dismiss control removes exactly the info alert from the DOM',
+      afterDismiss.count === countBeforeDismiss - 1 && afterDismiss.gone, { before: countBeforeDismiss, after: afterDismiss });
+    check('dismissing the only dismissible alert moves focus to the group container, not <body>',
+      afterDismiss.activeIsGroup === true && afterDismiss.activeIsBody === false, afterDismiss);
+    await c.js(`(()=>{
+      ${sel('.inline-alert-examples')}.insertAdjacentHTML('afterbegin', ${JSON.stringify(infoHtml)});
+      const restoredBtn = document.querySelector('.inline-alert--info .inline-alert__dismiss');
+      restoredBtn.addEventListener('click', () => {
+        const alertEl = restoredBtn.closest('.inline-alert');
+        const group = alertEl?.parentElement;
+        alertEl?.remove();
+        group?.focus();
+      });
+    })()`);
+    const restoredAlertCount = await c.js(`document.querySelectorAll('.inline-alert-examples > .inline-alert').length`);
+    check('the info example is restored for the G1 review screenshot below', restoredAlertCount === countBeforeDismiss, { restoredAlertCount, countBeforeDismiss });
+
     /* ---------------- Checkbox ---------------- */
     section('Checkbox');
     const cb = await c.js(`(()=>{
@@ -1009,6 +1142,30 @@ async function main() {
       JSON.stringify(tagImg.at(...tagPts.danger)) === JSON.stringify(RED), tagImg.at(...tagPts.danger));
     check('disabled tag background renders as the solid #666666 token colour, not dimmed (sampled from a real screenshot)',
       JSON.stringify(tagImg.at(...tagPts.disabled)) === JSON.stringify(GRAY_666), tagImg.at(...tagPts.disabled));
+
+    // Same real-screenshot-sample technique for Inline alert's three new rail colours and its
+    // shared container background — even though the hex values coincide with fills already
+    // sampled elsewhere in this file (action-primary/action-danger/background-subdued/
+    // background-surface), each is sampled again here specifically to confirm THIS component's own
+    // CSS wiring paints them correctly, the same reasoning Badge/Tag's own samples above already
+    // followed rather than assuming another component's passing sample covers this one too.
+    await c.js(`document.querySelectorAll('.inline-alert-examples > .inline-alert')[0].scrollIntoView({block:'center'})`);
+    await sleep(150);
+    const alertPts = await c.js(`(()=>{
+      const direct=[...document.querySelectorAll('.inline-alert-examples > .inline-alert')];
+      const railPt=(e)=>{const r=e.querySelector('.inline-alert__rail').getBoundingClientRect();return [Math.round(r.left+r.width/2), Math.round(r.top+r.height/2)];};
+      const bgPt=(e)=>{const r=e.getBoundingClientRect();return [Math.round(r.right-8), Math.round(r.top+8)];};
+      return { railInfo: railPt(direct[0]), railDanger: railPt(direct[1]), railNeutral: railPt(direct[2]), bg: bgPt(direct[2]) };
+    })()`);
+    const alertImg = await c.shot();
+    check('info rail renders as action-primary blue (sampled from a real screenshot)',
+      JSON.stringify(alertImg.at(...alertPts.railInfo)) === JSON.stringify(BLUE), alertImg.at(...alertPts.railInfo));
+    check('danger rail renders as action-danger rgb(193, 39, 45) (sampled from a real screenshot)',
+      JSON.stringify(alertImg.at(...alertPts.railDanger)) === JSON.stringify(RED), alertImg.at(...alertPts.railDanger));
+    check("neutral rail renders as background-subdued rgb(102, 102, 102), NOT the same off-white as its own icon (sampled from a real screenshot)",
+      JSON.stringify(alertImg.at(...alertPts.railNeutral)) === JSON.stringify(GRAY_666), alertImg.at(...alertPts.railNeutral));
+    check('inline alert container background renders as background-surface rgb(51, 51, 51) (sampled from a real screenshot)',
+      JSON.stringify(alertImg.at(...alertPts.bg)) === JSON.stringify(GRAY_333), alertImg.at(...alertPts.bg));
 
     /* ---------------- Responsive + motion ---------------- */
     section('Responsive and motion');

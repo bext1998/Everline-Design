@@ -113,3 +113,21 @@ document.querySelectorAll('[data-tag-remove]').forEach((btn) => {
     else group?.focus();
   });
 });
+
+// Inline alert (issue #35): the SVG only ever drew a dismiss button on the info variant, so only
+// that example gets one — clicking it removes the whole alert from the DOM (a real, observably
+// different result, same "no removal animation exists in the SVG to justify one" reasoning
+// already applied to Badge/Tag's remove button). Same focus-must-land-somewhere-deliberate
+// requirement as Badge/Tag's remove control and batch 4 Popover's close/light-dismiss paths: this
+// batch only ever demonstrates one dismissible alert at a time, so there is no "next dismiss
+// button" to fall back to — focus always moves straight to the group container, which carries
+// tabindex="-1" in index.html precisely so it can receive focus programmatically without ever
+// entering the Tab order on its own.
+document.querySelectorAll('[data-alert-dismiss]').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    const alert = btn.closest('.inline-alert');
+    const group = alert?.parentElement;
+    alert?.remove();
+    group?.focus();
+  });
+});

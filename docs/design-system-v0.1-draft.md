@@ -8,7 +8,8 @@
 第二批：`works/everline-components-batch2.svg` 與 `docs/design-system-v0.1-batch2-draft.md`（2026-07-20 起，Sidebar／Toolbar／Card／List／Data table／Task card／Kanban column，獨立於本檔案與 master.svg 的同層檔案，不是取代關係）
 第一批畢業（issue #17，1/4，2026-07-30）：`works/html/batch1/`（issue #17 15 群清單中的 Button、Checkbox、Text input／Textarea 三群，**2026-07-30 人類 G1 審查通過，已畢業，仍是 candidate 未宣告 stable**）；`works/everline-components-master.svg` 對應的 c-button／c-checkbox／c-text-input／c-textarea 四個 SVG 群組已標記群組級 `superseded-by: works/html/batch1/index.html`（master.svg 整份檔案狀態不變；除 c-color-swatch 外共 16 個產品元件群組，扣除這 4 個，其餘 12 個 SVG 群組不受影響）。issue #17 其餘 12 群（15 群中未畢業的部分）仍以本檔案與 `works/everline-components-master.svg` 為權威來源。
 Icon button（issue #30）／Switch（issue #31）／Radio（issue #32）／Split button／Dropdown（issue #33）（2026-07-31）：`works/html/batch1/` 已擴充這 4 群的 HTML/CSS candidate，**candidate ready for G1，尚未通過人類視覺審查，未畢業**；master.svg 對應的 c-icon-button／c-switch／c-radio／c-split-button 群組尚未標記 `superseded-by`，仍是這 4 群目前的權威來源。
-Badge / Tag（issue #34，issue #17 15 群清單第 8 項，2026-08-03）：`works/html/batch1/` 已擴充 Badge / Tag 的 HTML/CSS candidate，**candidate ready for G1，尚未通過人類視覺審查，未畢業**；master.svg 對應的 `c-badge-tag` 群組尚未標記 `superseded-by`，仍是這一群目前的權威來源。issue #17 15 群清單中，已畢業 3 群＋等待 G1 的 5 群共 8 群，仍有 7 群未動工。
+Badge / Tag（issue #34，issue #17 15 群清單第 8 項，2026-08-03）：`works/html/batch1/` 已擴充 Badge / Tag 的 HTML/CSS candidate，**candidate ready for G1，尚未通過人類視覺審查，未畢業**；master.svg 對應的 `c-badge-tag` 群組尚未標記 `superseded-by`，仍是這一群目前的權威來源。
+Inline alert（issue #35，issue #17 15 群清單第 9 項，2026-08-04）：`works/html/batch1/` 已擴充 Inline alert 的 HTML/CSS candidate，**2026-08-04 人類 G1 審查通過，已畢業，仍是 candidate，未宣告 stable**；`works/everline-components-master.svg` 對應的 `c-inline-alert` 群組已標記群組級 `superseded-by: works/html/batch1/index.html`，master.svg 檔案層級狀態不變。P0 核對發現本節下方「24 px 狀態圖示」與 SVG 實測值（`circle r="14"`，直徑 28px）不符，已一併修正；並發現 `alert-neutral` 指示條與圖示並非同一顏色、`.alert-body` 文字色（`#b8b8b8`）並非既有任何 token，詳見 `tokens/everline-draft.tokens.json` 與 `docs/STATUS.md`。issue #17 15 群清單中，已畢業 4 群＋等待 G1 的 5 群共 9 群，仍有 6 群未動工。
 
 本文件是受控延伸用的校準稿，不是穩定版規格。已觀察到的值與本次推導值分開記錄；使用者確認前，不應將候選內容視為 Everline 的凍結決策。
 
@@ -354,7 +355,7 @@ Text input 用於單行短文字；Textarea 用於描述、備註與多行內容
 
 ## Inline alert
 
-狀態：`candidate`
+狀態：`candidate`（2026-08-04，issue #35：**人類 G1 視覺審查通過，已畢業**，見 `works/html/batch1/`，仍是 candidate，未宣告 stable）
 
 ### 用途
 
@@ -362,9 +363,9 @@ Text input 用於單行短文字；Textarea 用於描述、備註與多行內容
 
 ### 結構
 
-- 4 px 語意色指示條、24 px 狀態圖示、標題、說明文字及可選關閉按鈕。
-- 最小高度 96 px，容器圓角 16 px，內容內距 16 px，標題與說明間距 8 px。
-- 背景維持 `background-surface`；語意色只用於指示條、圖示及必要焦點。
+- 4 px 語意色指示條、28 px 狀態圖示（2026-08-04 P0 核對修正：`c-inline-alert` SVG 實測為 `circle r="14"`，直徑 28px，非原文所寫的 24 px）、標題、說明文字及可選關閉按鈕。
+- 最小高度 96 px（容器可隨文字換行增高，非固定值），容器圓角 16 px，內容內距 16 px，標題與說明間距 8 px。
+- 背景維持 `background-surface`；語意色只用於指示條、圖示及必要焦點。標題文字為 off-white，說明文字為 SVG 實測的獨立灰階（`#B8B8B8`，新增 `color.base.gray-500`），兩者並非同一顏色。
 
 ### 變體與狀態
 
