@@ -3,17 +3,17 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Everline v0.1 — 第一批 HTML/CSS 候選元件（issue #17，Button/Checkbox/Text input/Textarea 已畢業，Icon button/Switch/Radio/Split button/Badge/Tag 等待 G1）</title>
+    <title>Everline v0.1 — 第一批 HTML/CSS 候選元件（issue #17，Button/Checkbox/Text input/Textarea 已畢業，Icon button/Switch/Radio/Split button/Badge/Tag/Inline alert 等待 G1）</title>
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <main class="catalog" aria-labelledby="page-title">
       <header class="catalog-header">
         <div>
-          <p class="eyebrow">Everline v0.1 · 第一批（issue #17）· 3／15 群已畢業，issues #30–#33、#34 共 5 群等待 G1</p>
+          <p class="eyebrow">Everline v0.1 · 第一批（issue #17）· 4／15 群已畢業，issues #30–#33、#34 共 5 群等待 G1</p>
           <h1 id="page-title">Everline Design Language — Components Batch 1 HTML/CSS Candidate</h1>
-          <p class="lede">Button · Icon button · Switch · Checkbox · Radio · Split button / Dropdown · Text input / Textarea · Badge / Tag</p>
-          <p class="trace">驗證：<code>node works/html/batch1/verify.mjs</code>（零相依，只需 Node 22+ 與 Chrome）· Button／Checkbox／Text input／Textarea（c-button／c-checkbox／c-text-input／c-textarea 共 4 個 SVG 群組）2026-07-30 人類 G1 審查通過後已標記群組級 <code>superseded-by</code>，是這 4 個 SVG 群組目前的候選規格來源。Icon button（issue #30）／Switch（issue #31）／Radio（issue #32）／Split button（issue #33）／Badge Tag（issue #34）此輪新增為 <strong>candidate ready for G1，尚未通過人類審查，master.svg 對應的 c-icon-button／c-switch／c-radio／c-split-button／c-badge-tag 群組尚未標記 <code>superseded-by</code></strong>，master SVG 仍是這 5 群目前的權威來源。master.svg 除 c-color-swatch 外共 16 個產品元件群組，此輪畢業＋等待 G1 合計 9 個，其餘 7 個 SVG 群組不受影響；issue #17 15 群清單中，已畢業 3 群＋等待 G1 的 5 群共 8 群，仍有 7 群未動工。整份仍是 candidate，未宣告 stable。</p>
+          <p class="lede">Button · Icon button · Switch · Checkbox · Radio · Split button / Dropdown · Text input / Textarea · Badge / Tag · Inline alert</p>
+          <p class="trace">驗證：<code>node works/html/batch1/verify.mjs</code>（零相依，只需 Node 22+ 與 Chrome）· Button／Checkbox／Text input／Textarea（c-button／c-checkbox／c-text-input／c-textarea 共 4 個 SVG 群組）2026-07-30 人類 G1 審查通過後已標記群組級 <code>superseded-by</code>；Inline alert（issue #35，<code>c-inline-alert</code>）2026-08-04 人類 G1 審查通過後同樣已標記 <code>superseded-by</code>——合計 5 個 SVG 群組目前皆以本檔案為候選規格來源。Icon button（issue #30）／Switch（issue #31）／Radio（issue #32）／Split button（issue #33）／Badge Tag（issue #34）此輪仍是 <strong>candidate ready for G1，尚未通過人類審查，master.svg 對應的 c-icon-button／c-switch／c-radio／c-split-button／c-badge-tag 群組尚未標記 <code>superseded-by</code></strong>，master SVG 仍是這 5 群目前的權威來源。master.svg 除 c-color-swatch 外共 16 個產品元件群組，此輪畢業＋等待 G1 合計 10 個，其餘 6 個 SVG 群組不受影響；issue #17 15 群清單中，已畢業 4 群＋等待 G1 的 5 群共 9 群，仍有 6 群未動工。整份仍是 candidate，未宣告 stable。</p>
         </div>
         <p class="candidate-badge"><span aria-hidden="true"></span> CANDIDATE · MIXED G1 STATUS, SEE TRACE</p>
       </header>
@@ -75,6 +75,25 @@
           <li><strong>outline 靜態邊框與 focus-visible 焦點環共用同一視覺</strong>：實際以真實鍵盤 <code>Tab</code> 導覽並截圖核對（非臆測）後，外層 48px 命中區 wrapper 的焦點框（瀏覽器預設矩形／略帶圓角）與內層 40px pill 自己的邊框在視覺上是兩個可分辨的獨立形狀（矩形外框＋膠囊內框，並非同一圈重疊到分不出來），予以維持、不修改。<code>component.tag.border-focus</code> 的命名與數值皆維持現狀，理由：其色值 <code>#598ae8</code> 就是 SVG 本身畫的 outline 描邊顏色，不可為了改名而連帶質疑數值；命名雖與 Text input／Textarea 的「僅 focus 時出現」語意不同，但與 <code>component.button.border-focus</code>／<code>component.icon-button.border-focus</code>（同樣是「恆常顯示的 outline 靜態邊框」，且 Button 這組命名已通過實際 G1 審查）完全一致，只改 Tag 一個反而製造新的不一致，故維持整個 batch1 家族現有命名慣例。</li>
           <li><strong>disabled 元素類型</strong>：改為 <code>&lt;span class="tag tag--disabled" aria-disabled="true"&gt;</code>，不再用 <code>&lt;button disabled&gt;</code>，與其餘五個純狀態變體（皆為 <code>&lt;span&gt;</code>）一致——disabled 沒有從 SVG 或規格文字得出的獨立互動語意，規格明文「純狀態 tag 不可點擊」，用 <code>&lt;button&gt;</code> 只是誤套用了本檔案既有的原生 disabled 驗證慣例，並非這個變體本身需要的語意。<code>verify.mjs</code> 已改用 <code>aria-disabled</code> 屬性驗證。PR #46 第三輪複審（opus）另外指出：改成 <code>&lt;span&gt;</code> 後雖然滿足規格「不可互動、移除焦點與點擊」的要求，但停用態與 neutral 的視覺差異只有背景色與文字透明度，兩者都是顏色，違反規格「不得只依顏色傳達停用」「不以顏色單獨表達語意，需要文字、圖示或上下文共同說明」的既有條文（此問題原本就存在，並非本次改動造成的視覺退步；但 <code>&lt;button disabled&gt;</code> 至少會被輔助科技播報，改成不可聚焦的 <code>&lt;span&gt;</code> 後這條路徑實質消失，是本輪造成的程式化傳達退步）。已補上 <code>&lt;span class="visually-hidden"&gt;（已停用）&lt;/span&gt;</code>，用文字滿足規格要求，不影響任何像素——這不是發明 SVG 未畫出的視覺，純粹是螢幕閱讀器可讀、肉眼不可見的文字。</li>
           <li><strong>removable 移除鈕圖示位置</strong>：新增 <code>component.tag.remove-icon-offset</code>（23px，逐一核對 <code>c-badge-tag</code> SVG 的 <code>tag-removable</code> X 圖示中心與 rect 右緣量測值 144－121＝23px），並讓 removable 變體自己的 <code>padding-inline-end</code> 改用 <code>calc(remove-icon-offset − remove-control-size ÷ 2)</code>（23－16＝7px）取代共用的 16px，讓圖示中心恢復到與 SVG 一致的 23px，同時完整保留 32px 命中區，不犧牲無障礙需求。<code>verify.mjs</code> 已新增真實 <code>getBoundingClientRect</code> 量測斷言（23px），不只信任 CSS 宣告值。</li>
+        </ul>
+      </aside>
+
+      <aside class="scope-note" aria-labelledby="scope-title-4">
+        <h2 id="scope-title-4">本輪新增（issue #35）：Inline alert token 缺口與 G1 決策清單 — 2026-08-04 人類 G1 審查通過，已畢業</h2>
+        <p>本輪新增 Inline alert（issue #35，issue #17 15 群清單第 9 項），對應 <code>works/everline-components-master.svg</code> 的 <code>c-inline-alert</code> 群組（<code>alert-info</code>／<code>alert-danger</code>／<code>alert-neutral</code> 三個範例）。<strong>本群已於 2026-08-04 通過 G1 人類視覺審查，已畢業</strong>，master.svg 對應區塊已標記群組級 <code>superseded-by: works/html/batch1/index.html</code>（master.svg 檔案層級狀態不變，仍是 candidate）。<code>docs/STATUS.md</code>／<code>docs/design-system-v0.1-draft.md</code> 已同步更新為已畢業，但整體仍是 candidate，未宣告 stable；issue #35 仍未打勾關閉（G1 通過與 GitHub issue 關閉是兩件事，本輪未對 GitHub 做任何開關動作），且不使用 <code>Closes #17</code>。</p>
+        <p><strong>P0 token 完整性核對發現的落差與新增</strong>（詳見 <code>tokens/everline-draft.tokens.json</code> 各欄位 <code>$description</code>，皆為首次建立，非既有缺口修正）：</p>
+        <ul>
+          <li><code>docs/design-system-v0.1-draft.md</code> 原文寫「24 px 狀態圖示」，但 SVG 實際畫的是 <code>circle r="14"</code>（直徑 28px，與 <code>component.tag.dot-size</code> 相同「直徑＝2×半徑」的量測方式），依 <code>AGENTS.md</code>「SVG 實測值優先於未驗證草稿文字」規則，本輪以 28px 為準並同步修正該份文件。</li>
+          <li><code>alert-neutral</code> 的指示條（<code>fill="#666"</code>，<code>background-subdued</code>）與圖示線條（<code>stroke="#f2f2f2"</code>，<code>foreground-primary</code>）<strong>不是同一個顏色</strong>——info／danger 兩者的指示條與圖示同色，唯獨 neutral 例外；已拆成 <code>rail-color-neutral</code>／<code>icon-color-neutral</code> 兩個獨立 token，不強行統一成同一色。</li>
+          <li>SVG 樣式表定義了兩種文字色，不是一種：<code>.alert-title{fill:#f2f2f2}</code>（既有 <code>foreground-primary</code>）與 <code>.alert-body{fill:#b8b8b8}</code>——後者是全新色值，既有 <code>tokens/everline-draft.tokens.json</code> 從未涵蓋，本輪新增 <code>color.base.gray-500</code>（沿用 <code>gray-850</code> 當初「直接照 SVG 加值，不硬套進既有角色」的既有先例），並拆成 <code>component.inline-alert.foreground-title</code>／<code>foreground-body</code> 兩個 token。</li>
+          <li><code>dismiss-control-size</code>（48px）——master.svg 的關閉鈕只剩一條裸的 X path（<code>translate(712 24)</code>），舊來源檔 <code>works/everline-agent-components-v0.1.svg</code> 原本在同一位置有一個 48×48 透明命中區 <code>rect</code>，重繪時被拿掉；本地座標換算後（712–760 × 24–72）剛好貼齊卡片右邊界，與既有 <code>size.control-md</code> 慣例一致，故以此還原，但屬於<strong>延伸決定，尚待 G1 確認</strong>，理由同 Badge/Tag 的 <code>remove-control-size</code>／Popover 的 <code>close-control-size</code>。</li>
+        </ul>
+        <p><strong>刻意未實作、留給 G1 決定的項目</strong>（依 <code>AGENTS.md</code>：SVG 未畫出的視覺不得自行發明）：</p>
+        <ul>
+          <li>沒有 success／warning 變體——<code>docs/design-system-v0.1-draft.md</code> 已明文「尚未建立 success 與 warning 色彩，使用者確認前不自行加入」，本輪不新增任何綠／黃色 token。</li>
+          <li>沒有任何操作按鈕——規格文字提到「若需要操作，最多提供一個主要文字操作」，但 SVG 三個範例都沒有畫出操作按鈕，本輪不新增，比照 Badge/Tag「文字超長截斷策略由產品層決定」的既有處理方式。</li>
+          <li>關閉鈕只在 <code>info</code> 範例示範——SVG 只有 <code>alert-info</code> 畫出關閉鈕，<code>danger</code>／<code>neutral</code> 皆未畫出，本輪不假設兩者也需要關閉鈕。</li>
+          <li><code>focused</code>（關閉鈕鍵盤焦點）沿用既有全域 <code>:focus-visible</code> 技法，非新視覺決定；容器與 rail 皆無 <code>hover</code> 效果，因為整個 alert 不是可點擊的整體控制項，只有內部的關閉鈕本身可互動。</li>
         </ul>
       </aside>
 
@@ -322,6 +341,53 @@
           </span>
         </div>
         <p class="example-label">依序：neutral、accent（前導 8px 選取圓點）、danger（前導驚嘆號圖示）、outline（真實 <code>&lt;button aria-pressed&gt;</code>，48px 命中區包住 40px 視覺，可鍵盤操作切換 <code>aria-pressed</code>，但選中後外觀不變——SVG 未畫出選中視覺，見上方 scope note）、disabled（非互動 <code>&lt;span aria-disabled="true"&gt;</code>，與其餘狀態變體一致，內含螢幕閱讀器可讀但肉眼不可見的「（已停用）」文字以滿足規格「不得只依顏色傳達停用」的要求，見上方 scope note 決策說明）、removable（獨立的移除按鈕，32px 命中區，<code>aria-label="移除：高優先"</code>，點擊會從畫面移除該 tag，移除鈕內圖示中心距 pill 右緣 23px，與 SVG 一致）。文字色 accent／danger 為 white（<code>component.tag.foreground</code>），neutral／outline／removable 為 off-white（<code>component.tag.foreground-neutral</code>）；圖示與圓點皆繼承同一個 <code>currentColor</code>，未另立顏色 token。</p>
+      </section>
+
+      <!-- ===================== Inline alert ===================== -->
+      <section class="component-section" aria-labelledby="inline-alert-title">
+        <div class="section-heading">
+          <p class="eyebrow">Feedback</p>
+          <h2 id="inline-alert-title">Inline alert</h2>
+          <p>最小高度 96px · 容器圓角 16px · 4px 語意色指示條 · 28px 狀態圖示 · info／danger／neutral</p>
+        </div>
+        <div class="inline-alert-examples" tabindex="-1">
+          <div class="inline-alert inline-alert--info" role="status">
+            <span class="inline-alert__rail" aria-hidden="true"></span>
+            <svg class="inline-alert__icon" viewBox="0 0 32 32" aria-hidden="true">
+              <circle cx="16" cy="16" r="14"/>
+              <path d="M16 11v12 M16 6h.01"/>
+            </svg>
+            <div class="inline-alert__content">
+              <p class="inline-alert__title">同步已暫停</p>
+              <p class="inline-alert__body">重新連線後會繼續處理尚未上傳的變更。</p>
+            </div>
+            <button class="inline-alert__dismiss" type="button" aria-label="關閉：同步已暫停" data-alert-dismiss>
+              <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8"/><path d="M12 4l-8 8"/></svg>
+            </button>
+          </div>
+          <div class="inline-alert inline-alert--danger" role="alert">
+            <span class="inline-alert__rail" aria-hidden="true"></span>
+            <svg class="inline-alert__icon" viewBox="0 0 32 32" aria-hidden="true">
+              <path d="M16 1l15 28H1l15-28z M16 11v8 M16 24h.01"/>
+            </svg>
+            <div class="inline-alert__content">
+              <p class="inline-alert__title">無法儲存變更</p>
+              <p class="inline-alert__body">請保留此頁並檢查連線，避免遺失尚未同步的內容。</p>
+            </div>
+          </div>
+          <div class="inline-alert" role="status">
+            <span class="inline-alert__rail" aria-hidden="true"></span>
+            <svg class="inline-alert__icon" viewBox="0 0 32 32" aria-hidden="true">
+              <circle cx="16" cy="16" r="14"/>
+              <path d="M11 16l4 4 8-9"/>
+            </svg>
+            <div class="inline-alert__content">
+              <p class="inline-alert__title">草稿已保留</p>
+              <p class="inline-alert__body">這項狀態不代表成功語意，僅確認本機草稿仍可使用。</p>
+            </div>
+          </div>
+        </div>
+        <p class="example-label">依序：info（唯一畫出關閉鈕的變體，<code>role="status"</code>，點擊關閉鈕會將整個 alert 從畫面移除）、danger（<code>role="alert"</code>，需立即處理的錯誤，沒有關閉鈕）、neutral（<code>role="status"</code>，css 不帶修飾詞的基底類別，沒有關閉鈕）。標題文字色 off-white（<code>component.inline-alert.foreground-title</code>），說明文字色是 SVG 實測的獨立灰階（<code>component.inline-alert.foreground-body</code>，本輪新增 <code>color.base.gray-500</code>，與標題色不同，見上方 scope note）。沒有 success／warning 變體，也沒有任何操作按鈕——SVG 未畫出，本批不發明。</p>
       </section>
     </main>
     <script src="prototype.js"></script>

@@ -291,6 +291,7 @@
     </g>
   </g>
 
+  <!-- superseded-by: works/html/batch1/index.html (2026-08-04, issue #35 G1 passed) — historical snapshot, no longer the candidate specification source for Inline alert. -->
   <g id="c-inline-alert" class="ui" transform="translate(48 2762)">
     <text class="section" x="0" y="0">Inline alert</text>
     <text class="note" x="0" y="28">96 px minimum height · 16 px radius · semantic accent rail · reproduced from works/everline-agent-components-v0.1.svg</text>
