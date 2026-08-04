@@ -124,7 +124,9 @@
       "foreground": { "$type": "color", "$value": "{color.semantic.foreground-inverse}", "$description": "White. Only the primary and danger variants use this — verified against works/everline-components-master.svg c-button, where those two are the only variants with an explicit fill=\"#fff\" text override." },
       "foreground-neutral": { "$type": "color", "$value": "{color.semantic.foreground-primary}", "$description": "Batch 1 (issue #17) gap found during P0 token audit, 2026-07-30. The neutral and outline variants' label text in c-button has no fill override, so it inherits the sheet's default .label fill (#f2f2f2, off-white / foreground-primary) — a different value from `foreground` (white / foreground-inverse) above, which only the primary/danger variants actually use. The token file previously declared a single `foreground` for the whole component, which would have painted neutral/outline text white instead of the SVG's actual off-white." },
       "foreground-disabled": { "$type": "color", "$value": "{color.semantic.foreground-disabled}" },
-      "border-focus": { "$type": "color", "$value": "{color.semantic.border-focus}" }
+      "border-focus": { "$type": "color", "$value": "{color.semantic.border-focus}" },
+      "height-compact": { "$type": "dimension", "$value": "{size.tag-md}", "$description": "Gap found 2026-08-05 (issue #40, Modal's action row). docs/design-system-v0.1-draft.md explicitly calls Modal's action buttons a 'compact 40 px 按鈕' variant of this same Button component, not a separate one — c-modal's action buttons (both variants, both dialogs) are 40px tall, matching size.tag-md exactly. Purely additive; component.button.height (48px) is unchanged." },
+      "radius-compact": { "$type": "dimension", "$value": { "value": 20, "unit": "px" }, "$description": "Gap found 2026-08-05. Half of height-compact (40/2=20) — the true pill radius at this height, matching c-modal's own rx=\"20\" on both action buttons. Not on the existing radius.* scale (which only has the 48px-height pill value, radius.control=24)." }
     },
     "icon-button": {
       "size": { "$type": "dimension", "$value": "{size.control-md}" },
@@ -277,15 +279,24 @@
       "foreground": { "$type": "color", "$value": "{color.semantic.foreground-primary}" }
     },
     "modal": {
-      "$description": "Batch 1 candidate (2026-07-19). Focus trapping is a behavioral requirement (see spec), not something a static vector token can express.",
+      "$description": "Batch 1 candidate (2026-07-19). Focus trapping is now implemented natively (see works/html/batch1/, issue #40 — the candidate uses <dialog>.showModal(), which the platform already focus-traps), not something a static vector token can express regardless. Gaps below found during P0 token audit (2026-08-05, issue #40), each verified against c-modal in works/everline-components-master.svg.",
       "radius": { "$type": "dimension", "$value": "{radius.lg}" },
       "padding": { "$type": "dimension", "$value": "{space.3}" },
       "action-height": { "$type": "dimension", "$value": "{size.tag-md}" },
       "background": { "$type": "color", "$value": "{color.semantic.background-overlay}", "$description": "Changed 2026-07-19 from an unaliased #222222 (the only token in this file that skipped the base -> semantic -> component pattern) to the shared background-overlay token." },
       "border": { "$type": "color", "$value": "{color.semantic.border-default}" },
+      "border-width": { "$type": "dimension", "$value": "{border.width-default}", "$description": "Gap found 2026-08-05. The container rect declares no explicit stroke-width, so it renders at SVG's implicit default of 1." },
       "action-primary": { "$type": "color", "$value": "{color.semantic.action-primary}" },
       "action-danger": { "$type": "color", "$value": "{color.semantic.action-danger}" },
-      "backdrop-color": { "$type": "color", "$value": "#000000", "$description": "Combine with opacity.backdrop via fill-opacity, not a baked alpha hex." }
+      "backdrop-color": { "$type": "color", "$value": "#000000", "$description": "Combine with opacity.backdrop via fill-opacity, not a baked alpha hex." },
+      "width-reference": { "$type": "dimension", "$value": { "value": 380, "unit": "px" }, "$description": "Gap found 2026-08-05. Observed reference width of all three examples; same 'reference, not enforced' role component.button.width-reference already plays." },
+      "title-size": { "$type": "dimension", "$value": { "value": 17, "unit": "px" }, "$description": "Gap found 2026-08-05. Reuses the .alert-title class's own font-size (17px), same value already backfilled as component.inline-alert.title-size — c-modal's title text uses the identical class." },
+      "body-size": { "$type": "dimension", "$value": "{font.size-label}", "$description": "Gap found 2026-08-05. c-modal's body text uses the .alert-body class (14px), which already matches font.size-label — same reuse component.inline-alert.body-size already established." },
+      "foreground-title": { "$type": "color", "$value": "{color.semantic.foreground-primary}", "$description": "Gap found 2026-08-05. c-modal's title text uses the .alert-title class, fill=\"#f2f2f2\" — same value and class component.inline-alert.foreground-title already established." },
+      "foreground-body": { "$type": "color", "$value": "{color.base.gray-500}", "$description": "Gap found 2026-08-05. c-modal's body text uses the .alert-body class, fill=\"#b8b8b8\" — the SAME gray-500 value and class component.inline-alert.foreground-body already established, NOT foreground-primary." },
+      "title-body-gap": { "$type": "dimension", "$value": "{space.1}", "$description": "Gap found 2026-08-05. Same title/body relationship and gap value component.inline-alert.title-body-gap already established (both reuse the .alert-title/.alert-body class pair)." },
+      "action-gap": { "$type": "dimension", "$value": { "value": 12, "unit": "px" }, "$description": "Gap found 2026-08-05. Gap between the two action buttons: secondary button right edge (x=240) to primary button left edge (x=252) = 12px. Not on the 8px scale.step grid." },
+      "spinner-size": { "$type": "dimension", "$value": { "value": 20, "unit": "px" }, "$description": "Gap found 2026-08-05. Loading example's spinner circle r=\"10\", diameter = 2 x r = 20px — same measurement convention as component.tag.dot-size/component.inline-alert.icon-size." }
     },
     "toast": {
       "$description": "Batch 1 candidate (2026-07-19). Auto-dismiss timing not yet defined.",

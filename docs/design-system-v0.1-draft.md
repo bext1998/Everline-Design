@@ -9,7 +9,8 @@
 第一批畢業（issue #17，1/4，2026-07-30）：`works/html/batch1/`（issue #17 15 群清單中的 Button、Checkbox、Text input／Textarea 三群，**2026-07-30 人類 G1 審查通過，已畢業，仍是 candidate 未宣告 stable**）；`works/everline-components-master.svg` 對應的 c-button／c-checkbox／c-text-input／c-textarea 四個 SVG 群組已標記群組級 `superseded-by: works/html/batch1/index.html`（master.svg 整份檔案狀態不變；除 c-color-swatch 外共 16 個產品元件群組，扣除這 4 個，其餘 12 個 SVG 群組不受影響）。issue #17 其餘 12 群（15 群中未畢業的部分）仍以本檔案與 `works/everline-components-master.svg` 為權威來源。
 Icon button（issue #30）／Switch（issue #31）／Radio（issue #32）／Split button／Dropdown（issue #33）（2026-07-31）：`works/html/batch1/` 已擴充這 4 群的 HTML/CSS candidate，**candidate ready for G1，尚未通過人類視覺審查，未畢業**；master.svg 對應的 c-icon-button／c-switch／c-radio／c-split-button 群組尚未標記 `superseded-by`，仍是這 4 群目前的權威來源。
 Badge / Tag（issue #34，issue #17 15 群清單第 8 項，2026-08-03）：`works/html/batch1/` 已擴充 Badge / Tag 的 HTML/CSS candidate，**candidate ready for G1，尚未通過人類視覺審查，未畢業**；master.svg 對應的 `c-badge-tag` 群組尚未標記 `superseded-by`，仍是這一群目前的權威來源。
-Inline alert（issue #35，issue #17 15 群清單第 9 項，2026-08-04）：`works/html/batch1/` 已擴充 Inline alert 的 HTML/CSS candidate，**2026-08-04 人類 G1 審查通過，已畢業，仍是 candidate，未宣告 stable**；`works/everline-components-master.svg` 對應的 `c-inline-alert` 群組已標記群組級 `superseded-by: works/html/batch1/index.html`，master.svg 檔案層級狀態不變。P0 核對發現本節下方「24 px 狀態圖示」與 SVG 實測值（`circle r="14"`，直徑 28px）不符，已一併修正；並發現 `alert-neutral` 指示條與圖示並非同一顏色、`.alert-body` 文字色（`#b8b8b8`）並非既有任何 token，詳見 `tokens/everline-draft.tokens.json` 與 `docs/STATUS.md`。issue #17 15 群清單中，已畢業 4 群＋等待 G1 的 5 群共 9 群，仍有 6 群未動工。
+Inline alert（issue #35，issue #17 15 群清單第 9 項，2026-08-04）：`works/html/batch1/` 已擴充 Inline alert 的 HTML/CSS candidate，**2026-08-04 人類 G1 審查通過，已畢業，仍是 candidate，未宣告 stable**；`works/everline-components-master.svg` 對應的 `c-inline-alert` 群組已標記群組級 `superseded-by: works/html/batch1/index.html`，master.svg 檔案層級狀態不變。P0 核對發現本節下方「24 px 狀態圖示」與 SVG 實測值（`circle r="14"`，直徑 28px）不符，已一併修正；並發現 `alert-neutral` 指示條與圖示並非同一顏色、`.alert-body` 文字色（`#b8b8b8`）並非既有任何 token，詳見 `tokens/everline-draft.tokens.json` 與 `docs/STATUS.md`。
+Modal / Dialog（issue #40，issue #17 15 群清單第 14 項，2026-08-05）：`works/html/batch1/` 已擴充 Modal / Dialog 的 HTML/CSS candidate，**candidate ready for G1，尚未通過人類視覺審查，未畢業**；master.svg 對應的 `c-modal` 群組尚未標記 `superseded-by`，仍是這一群目前的權威來源。實作改用原生 `&lt;dialog&gt;`／`.showModal()`，取代本文件下方「focus trap...無法由靜態向量表達，仍待前端實作時定義」的舊擱置狀態——瀏覽器原生即會鎖定焦點並以 top layer 呈現。P0 核對後補上 9 個缺口（多數重用 `component.inline-alert` 已核實的 title／body 樣式與數值），並依規格文字「動作使用 compact 40 px 按鈕」在既有已 G1 通過的 `component.button` 上新增 `height-compact`／`radius-compact` 兩個純新增欄位（未改動 Button 既有解析值），詳見 `tokens/everline-draft.tokens.json` 與 `docs/STATUS.md`。issue #17 15 群清單中，已畢業 4 群＋等待 G1 的 6 群共 10 群，仍有 5 群未動工。
 
 本文件是受控延伸用的校準稿，不是穩定版規格。已觀察到的值與本次推導值分開記錄；使用者確認前，不應將候選內容視為 Everline 的凍結決策。
 
@@ -484,7 +485,7 @@ Text input 用於單行短文字；Textarea 用於描述、備註與多行內容
 
 ## Modal / Dialog
 
-狀態：`candidate`（第一批新元件，2026-07-19）
+狀態：`candidate`（2026-08-05，issue #40：HTML/CSS candidate ready for G1，見 `works/html/batch1/`，尚未通過人類視覺審查，未畢業）
 
 ### 用途與邊界
 
@@ -493,13 +494,13 @@ Text input 用於單行短文字；Textarea 用於描述、備註與多行內容
 ### 結構與變體
 
 - 16 px 圓角容器：標題、說明文字、底部操作列（次要動作靠左、主要動作靠右，動作使用 compact 40 px 按鈕）。
-- 2026-07-19 已補畫遮罩（scrim）視覺樣式（見下方狀態說明）；實際 focus trap 行為仍需前端實作時另補。
+- 2026-07-19 已補畫遮罩（scrim）視覺樣式（見下方狀態說明）；2026-08-05（issue #40）改用原生 `<dialog>`／`.showModal()` 實作，focus trap 由瀏覽器原生提供，見下方狀態說明。
 
 ### 狀態、互動與內容
 
 - 已畫出 `default action`（主色確認按鈕）、`danger action`（紅色確認按鈕，用於不可逆操作）、`loading`（主要動作降低不透明度並附旋轉指示，次要動作同步停用）；`error`、多步驟變體尚未畫出。
-- 2026-07-19 補上 backdrop 視覺樣式（`#000000` 搭配 45% 不透明度，見 token `modal.backdrop-color` 與 `opacity.backdrop`），僅為靜態視覺示範；focus trap、開啟／關閉動畫等屬於行為規格，無法由靜態向量表達，仍待前端實作時定義。
-- 開啟時焦點需移入對話框並鎖定在框內（focus trap，本批未實作）；`Escape` 關閉非破壞性對話框。
+- 2026-07-19 補上 backdrop 視覺樣式（`#000000` 搭配 45% 不透明度，見 token `modal.backdrop-color` 與 `opacity.backdrop`）。2026-08-05（issue #40）：候選規格改用原生 `<dialog>`／`.showModal()` 實作，取代先前「focus trap、開啟／關閉動畫等...無法由靜態向量表達，仍待前端實作時定義」的擱置狀態——瀏覽器原生就會鎖定焦點在對話框內、並以 top layer 呈現於最上層；開閉維持瞬時（無轉場動畫，理由同 Split button 既有決定），僅 loading 範例的旋轉指示器沿用 batch 3 已審查的 Progress／Spinner 技法。
+- 開啟時焦點需移入對話框並鎖定在框內（原生 `<dialog>` 行為，issue #40 已實作／驗證）；`Escape` 關閉非破壞性對話框（danger 對話框刻意攔截 `Escape`，需明確點擊按鈕）。
 - 標題直接說明將發生的事；danger 對話框的說明文字需明確描述後果，不能只寫「確定」。
 
 ### 無障礙
