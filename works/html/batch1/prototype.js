@@ -131,3 +131,32 @@ document.querySelectorAll('[data-alert-dismiss]').forEach((btn) => {
     group?.focus();
   });
 });
+
+// Modal / Dialog (issue #40): native <dialog>.showModal() — the platform already focus-traps and
+// renders in the top layer, neither of which this file implements. Two things the platform does
+// NOT do for you, so prototype.js does: (1) return focus to whichever button opened the dialog on
+// close (native <dialog> just drops focus back to <body>, the same "focus must land somewhere
+// deliberate" requirement already established for Badge/Tag/Inline alert's own removal paths);
+// (2) the danger dialog's own case of docs/design-system-v0.1-draft.md's "Escape 關閉非破壞性對話框"
+// — Escape fires a native `cancel` event on close, which is only prevented for the one dialog
+// marked data-modal-no-cancel, so a destructive dialog needs an explicit button click, not an
+// accidental Escape.
+document.querySelectorAll('[data-modal-open]').forEach((opener) => {
+  opener.addEventListener('click', () => {
+    const dialog = document.getElementById(opener.dataset.modalOpen);
+    if (!dialog) return;
+    dialog._invoker = opener;
+    dialog.showModal();
+  });
+});
+document.querySelectorAll('[data-modal]').forEach((dialog) => {
+  dialog.addEventListener('cancel', (e) => {
+    if (dialog.hasAttribute('data-modal-no-cancel')) e.preventDefault();
+  });
+  dialog.addEventListener('close', () => {
+    dialog._invoker?.focus();
+  });
+  dialog.querySelectorAll('[data-modal-close]').forEach((btn) => {
+    btn.addEventListener('click', () => dialog.close());
+  });
+});

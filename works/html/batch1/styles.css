@@ -32,7 +32,8 @@
   --everline-border-width-default: 1px; --everline-border-width-focus: 2px;
   --everline-focus-ring-offset: 2px;
   /* opacity.* */
-  --everline-opacity-disabled: .55; --everline-opacity-hover-overlay: .06;
+  --everline-opacity-disabled: .55; --everline-opacity-hover-overlay: .06; --everline-opacity-backdrop: .45;
+  --everline-motion-duration-loop: 900ms;
   /* size.* / font.* */
   --everline-size-control-md: 48px;
   --everline-size-tag-md: 40px;
@@ -58,6 +59,8 @@
   --everline-component-button-foreground-neutral: var(--everline-color-semantic-foreground-primary);
   --everline-component-button-foreground-disabled: var(--everline-color-semantic-foreground-disabled);
   --everline-component-button-border-focus: var(--everline-color-semantic-border-focus);
+  --everline-component-button-height-compact: var(--everline-size-tag-md);
+  --everline-component-button-radius-compact: 20px;
 
   /* component.icon-button.* */
   --everline-component-icon-button-size: var(--everline-size-control-md);
@@ -186,6 +189,25 @@
   --everline-component-inline-alert-icon-color-danger: var(--everline-color-semantic-action-danger);
   --everline-component-inline-alert-icon-color-neutral: var(--everline-color-semantic-foreground-primary);
   --everline-component-inline-alert-dismiss-control-size: 48px;
+
+  /* component.modal.* */
+  --everline-component-modal-radius: var(--everline-radius-lg);
+  --everline-component-modal-padding: var(--everline-space-3);
+  --everline-component-modal-action-height: var(--everline-size-tag-md);
+  --everline-component-modal-background: var(--everline-color-semantic-background-overlay);
+  --everline-component-modal-border: var(--everline-color-semantic-border-default);
+  --everline-component-modal-border-width: var(--everline-border-width-default);
+  --everline-component-modal-action-primary: var(--everline-color-semantic-action-primary);
+  --everline-component-modal-action-danger: var(--everline-color-semantic-action-danger);
+  --everline-component-modal-backdrop-color: #000;
+  --everline-component-modal-width-reference: 380px;
+  --everline-component-modal-title-size: 17px;
+  --everline-component-modal-body-size: var(--everline-font-size-label);
+  --everline-component-modal-foreground-title: var(--everline-color-semantic-foreground-primary);
+  --everline-component-modal-foreground-body: var(--everline-color-base-gray-500);
+  --everline-component-modal-title-body-gap: var(--everline-space-1);
+  --everline-component-modal-action-gap: 12px;
+  --everline-component-modal-spinner-size: 20px;
 }
 
 /* Hover overlay, derived from the two tokens that define it rather than restating #fff:
@@ -283,6 +305,11 @@ h2 { font-size: var(--everline-space-3); line-height: 1.35; }
   cursor: not-allowed;
   box-shadow: none;
 }
+/* Compact size variant (issue #40, Modal's action row): docs/design-system-v0.1-draft.md
+   explicitly calls these "compact 40 px 按鈕" — a size variant of this same Button component, not
+   a separate one. Only height/radius change; padding-inline, colours, hover/disabled treatment
+   are all inherited unchanged from the base .button rules above. */
+.button--compact { height: var(--everline-component-button-height-compact); border-radius: var(--everline-component-button-radius-compact); }
 
 /* ---------- Checkbox ----------
    Native <input type="checkbox">, appearance:none, but the input itself is now sized to
@@ -725,16 +752,69 @@ fieldset.radio-group legend { font-size: var(--everline-font-size-label); font-w
 .inline-alert__dismiss:hover { background-image: linear-gradient(var(--everline-hover-overlay), var(--everline-hover-overlay)); }
 .inline-alert__dismiss svg { width: var(--everline-size-icon-sm); height: var(--everline-size-icon-sm); fill: none; stroke: currentColor; stroke-width: var(--everline-icon-stroke-width); stroke-linecap: round; stroke-linejoin: round; }
 
+/* ---------- Modal / Dialog ----------
+   Native <dialog>.showModal(): the platform already focus-traps (Tab cannot leave the dialog while
+   open) and renders in the top layer above everything else, so no z-index/layer token is consumed
+   here — the SVG's own "candidate" layer.modal/.modal-backdrop numbers are for cases without a
+   native top-layer primitive (e.g. Select's own overlay panel), not this one. Escape triggers the
+   dialog's native `cancel` event; prototype.js lets it close the default/loading dialogs (matching
+   docs/design-system-v0.1-draft.md's "Escape 關閉非破壞性對話框") but prevents it on the danger
+   dialog, since a destructive action must not be dismissible by an accidental Escape the same way
+   a plain "cancel" is. Focus does NOT automatically return to the invoking trigger on native
+   dialog close — prototype.js restores it explicitly, the same "focus must land somewhere
+   deliberate" requirement already established for Badge/Tag/Inline alert's own removal paths.
+   Backdrop click does not close the dialog: the SVG/spec text never described that interaction (only
+   Escape and the two explicit action buttons), and native <dialog> doesn't do it by default either
+   — doing nothing here is relying on native behaviour, not omitting something required. */
+.modal {
+  border: 0; border-radius: var(--everline-component-modal-radius);
+  box-shadow: inset 0 0 0 var(--everline-component-modal-border-width) var(--everline-component-modal-border);
+  background: var(--everline-component-modal-background);
+  padding: var(--everline-component-modal-padding);
+  max-width: var(--everline-component-modal-width-reference);
+  width: calc(100% - var(--everline-space-4) * 2);
+}
+.modal::backdrop { background: rgb(from var(--everline-component-modal-backdrop-color) r g b / var(--everline-opacity-backdrop)); }
+.modal__title { margin: 0; font-size: var(--everline-component-modal-title-size); font-weight: var(--everline-font-weight-semibold); color: var(--everline-component-modal-foreground-title); }
+.modal__body { margin: var(--everline-component-modal-title-body-gap) 0 0; font-size: var(--everline-component-modal-body-size); font-weight: var(--everline-font-weight-regular); color: var(--everline-component-modal-foreground-body); }
+.modal__actions { display: flex; justify-content: flex-end; gap: var(--everline-component-modal-action-gap); margin-top: var(--everline-component-modal-padding); }
+.modal-examples { display: flex; flex-wrap: wrap; gap: var(--everline-space-2); align-items: center; }
+/* Loading (issue #40): unlike every other disabled-state treatment in this file, c-modal's own
+   loading example dims the PRIMARY BUTTON'S BACKGROUND ITSELF via fill-opacity="0.55" — a real,
+   deliberately-drawn difference from Button's own disabled state (which the approved SVG explicitly
+   does NOT dim, see the .button:disabled comment above). True CSS alpha on background-color (not
+   the color-mix-against-a-solid-background trick used for TEXT elsewhere) is the direct, correct
+   translation: it composites over whatever's actually behind it, matching SVG fill-opacity
+   semantics exactly, and — because it's scoped to background-color only — never touches the
+   spinner or "建立中" label sitting on top of it, both of which stay fully opaque in the source. */
+/* :disabled (0,2,0 specificity: one class + one pseudo-class) would otherwise beat a plain
+   .button--loading (0,1,0) regardless of source order, silently falling back to .button:disabled's
+   own background-subdued fill — matched to :disabled explicitly so it actually wins. */
+.button--loading:disabled { background: rgb(from var(--everline-component-modal-action-primary) r g b / var(--everline-opacity-disabled)); }
+.modal__spinner {
+  width: var(--everline-component-modal-spinner-size); height: var(--everline-component-modal-spinner-size);
+  fill: none; stroke: var(--everline-color-base-white); stroke-width: var(--everline-icon-stroke-width);
+  stroke-linecap: round; stroke-dasharray: 12 8;
+  animation: everline-spin var(--everline-motion-duration-loop) linear infinite;
+}
+@keyframes everline-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .modal__spinner { animation: none; } }
+
 @media (max-width: 760px) {
   .catalog { padding: var(--everline-space-2); }
   .catalog-header { flex-direction: column; }
   .candidate-badge { white-space: normal; }
   .text-input, .textarea { width: 100%; }
   .split-button-examples { flex-direction: column; }
+  .modal-examples { flex-direction: column; align-items: stretch; }
 }
 
-/* No transition, animation or keyframe is declared anywhere in this batch — Button/Checkbox/
-   Text input/Textarea/Icon button/Switch/Radio/Split button/Badge/Tag/Inline alert have no drawn
+/* No transition or keyframe animation runs by default anywhere in this batch except the Modal
+   loading spinner above (@keyframes everline-spin) — every other component here (Button/Checkbox/
+   Text input/Textarea/Icon button/Switch/Radio/Split button/Badge/Tag/Inline alert) has no drawn
    hover/pressed/loading motion, and Split button's own "needs transition animation" SVG note can't
-   be honoured without a validated motion token (see index.html scope note), so there is nothing
-   for prefers-reduced-motion to switch off and no override is needed. */
+   be honoured without a validated motion token (see index.html scope note). The spinner is the one
+   deliberate exception, reusing batch 3's already-reviewed Progress/spinner technique (a
+   continuously-looping indicator, not a state transition, so the same reasoning that exempted it
+   there applies here) — it is switched off under prefers-reduced-motion, not sped up, matching the
+   documented fix for that exact failure mode (docs/STATUS.md, 2026-07-27 batch2 spinner entry). */

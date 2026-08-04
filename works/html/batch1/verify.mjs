@@ -6,6 +6,7 @@
  * 2026-07-31 — candidate ready for G1, awaiting human visual review.
  * Badge / Tag (#34) added 2026-08-03 — candidate ready for G1, awaiting human visual review.
  * Inline alert (#35) added 2026-08-04 — G1 passed 2026-08-04.
+ * Modal / Dialog (#40) added 2026-08-05 — candidate ready for G1, awaiting human visual review.
  *
  *   node works/html/batch1/verify.mjs
  *   CHROME="/path/to/chrome" node works/html/batch1/verify.mjs     # if auto-detection fails
@@ -201,6 +202,26 @@ function verifyTokens() {
   check('component.checkbox.size is still 32px (unchanged)', px(resolved.get('component.checkbox.size')) === '32px');
   check('component.text-input.background is still gray-600 #666666 (unchanged)',
     px(resolved.get('component.text-input.background')) === '#666666');
+  // Modal / Dialog (issue #40): 9 gaps found during P0 audit against the pre-existing (2026-07-19,
+  // never-verified) component.modal.* fields, plus 2 purely-additive fields on the already-G1-passed
+  // component.button (a compact size variant, per docs' own "compact 40 px 按鈕" wording).
+  check('component.modal.border-width resolves to 1px', px(resolved.get('component.modal.border-width')) === '1px', resolved.get('component.modal.border-width'));
+  check('component.modal.width-reference resolves to 380px', px(resolved.get('component.modal.width-reference')) === '380px', resolved.get('component.modal.width-reference'));
+  check('component.modal.title-size resolves to 17px (reuses .alert-title, same as component.inline-alert.title-size)', px(resolved.get('component.modal.title-size')) === '17px', resolved.get('component.modal.title-size'));
+  check('component.modal.body-size resolves to font.size-label 14px', px(resolved.get('component.modal.body-size')) === '14px', resolved.get('component.modal.body-size'));
+  check('component.modal.foreground-title resolves to off-white #F2F2F2', px(resolved.get('component.modal.foreground-title')) === '#F2F2F2', resolved.get('component.modal.foreground-title'));
+  check('component.modal.foreground-body resolves to gray-500 #B8B8B8 (NOT foreground-primary — reuses .alert-body, same as component.inline-alert.foreground-body)', px(resolved.get('component.modal.foreground-body')) === '#B8B8B8', resolved.get('component.modal.foreground-body'));
+  check('component.modal.title-body-gap resolves to space.1 8px', px(resolved.get('component.modal.title-body-gap')) === '8px', resolved.get('component.modal.title-body-gap'));
+  check('component.modal.action-gap resolves to 12px (secondary button right edge x=240 to primary left edge x=252)', px(resolved.get('component.modal.action-gap')) === '12px', resolved.get('component.modal.action-gap'));
+  check('component.modal.spinner-size resolves to 20px (circle r="10", diameter = 2 x r)', px(resolved.get('component.modal.spinner-size')) === '20px', resolved.get('component.modal.spinner-size'));
+  check('component.button.height-compact resolves to size.tag-md 40px (additive; component.button.height 48px unchanged)', px(resolved.get('component.button.height-compact')) === '40px', resolved.get('component.button.height-compact'));
+  check('component.button.radius-compact resolves to 20px (half of 40px, true pill at that height)', px(resolved.get('component.button.radius-compact')) === '20px', resolved.get('component.button.radius-compact'));
+  // Pre-existing modal fields this round must NOT have touched.
+  check('component.modal.radius is still radius.lg 16px (unchanged)', px(resolved.get('component.modal.radius')) === '16px');
+  check('component.modal.action-primary is still action-primary #598AE8 (unchanged)', px(resolved.get('component.modal.action-primary')) === '#598AE8');
+  // Pre-existing button fields this round must NOT have touched (already G1-passed, 2026-07-30).
+  check('component.button.height is still 48px (unchanged, compact is additive not a replacement)', px(resolved.get('component.button.height')) === '48px');
+  check('component.button.radius is still radius.control 24px (unchanged)', px(resolved.get('component.button.radius')) === '24px');
   return resolved;
 }
 
@@ -243,7 +264,7 @@ function valuesMatch(tokenResolved, cssLiteral) {
 function verifyCssContract(resolvedTokens) {
   section('works/html/batch1/styles.css — no raw dimensions in component rules');
   const css = readFileSync(CSS, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
-  const COMPONENT = /^[^@]*?(\.button|\.checkbox|\.text-input|\.textarea|\.icon-button|\.switch|\.radio|\.split-button|\.tag|\.inline-alert|fieldset\.radio-group|:where)/;
+  const COMPONENT = /^[^@]*?(\.button|\.checkbox|\.text-input|\.textarea|\.icon-button|\.switch|\.radio|\.split-button|\.tag|\.inline-alert|\.modal|fieldset\.radio-group|:where)/;
   const offenders = [];
   for (const m of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
     const selector = m[1].trim();
@@ -941,6 +962,100 @@ async function main() {
     const restoredAlertCount = await c.js(`document.querySelectorAll('.inline-alert-examples > .inline-alert').length`);
     check('the info example is restored for the G1 review screenshot below', restoredAlertCount === countBeforeDismiss, { restoredAlertCount, countBeforeDismiss });
 
+    /* ---------------- Modal / Dialog ---------------- */
+    section('Modal / Dialog');
+    const modalBefore = await c.js(`(()=>{
+      const cs=(e)=>getComputedStyle(e);
+      const def=document.getElementById('modal-default'), danger=document.getElementById('modal-danger');
+      const secondary=def.querySelector('.button--compact:not(.button--primary)'), primary=def.querySelector('.button--compact.button--primary');
+      return {
+        tag: def.tagName, defOpen: def.open, defRole: def.getAttribute('role'), dangerRole: danger.getAttribute('role'),
+        r: cs(def).borderRadius, actionH: cs(secondary).height, actionR: cs(secondary).borderRadius,
+        labelledBy: def.getAttribute('aria-labelledby') === 'modal-default-title', describedBy: def.getAttribute('aria-describedby') === 'modal-default-body',
+        primaryBg: cs(primary).backgroundColor
+      };
+    })()`);
+    check('modal element is a real <dialog>, starts closed (open=false)', modalBefore.tag === 'DIALOG' && modalBefore.defOpen === false, modalBefore);
+    check('default uses role="dialog", danger uses role="alertdialog" (per spec text)', modalBefore.defRole === 'dialog' && modalBefore.dangerRole === 'alertdialog', modalBefore);
+    check('container radius is 16px', modalBefore.r === '16px', modalBefore.r);
+    check('compact action button is 40px tall with 20px radius (Button\'s new compact variant)', modalBefore.actionH === '40px' && modalBefore.actionR === '20px', modalBefore);
+    check('dialog has aria-labelledby/aria-describedby pointing at its own title/body', modalBefore.labelledBy && modalBefore.describedBy, modalBefore);
+    check('primary compact action background is action-primary blue rgb(89, 138, 232)', modalBefore.primaryBg === 'rgb(89, 138, 232)', modalBefore.primaryBg);
+
+    // Real click test: opening a dialog uses the native showModal() (real top-layer + real focus
+    // trap — not something this file implements or needs to test, the platform guarantees it).
+    const defTrigger = `document.querySelector('[data-modal-open="modal-default"]')`;
+    await c.clickEl(defTrigger);
+    const afterDefaultOpen = await c.js(`(()=>{
+      const dlg=document.getElementById('modal-default');
+      return { open: dlg.open, focusInside: dlg.contains(document.activeElement) };
+    })()`);
+    check('clicking the trigger opens the default dialog (native showModal) and focus moves inside it', afterDefaultOpen.open === true && afterDefaultOpen.focusInside, afterDefaultOpen);
+
+    // Real click test: the cancel button closes it AND focus returns to the button that opened it
+    // (native <dialog> does not do this automatically — prototype.js restores it explicitly).
+    await c.clickEl(`document.querySelector('#modal-default [data-modal-close]:not(.button--primary)')`);
+    const afterCancelClick = await c.js(`(()=>{
+      const dlg=document.getElementById('modal-default');
+      return { open: dlg.open, focusIsOpener: document.activeElement === document.querySelector('[data-modal-open="modal-default"]') };
+    })()`);
+    check('clicking 取消 closes the default dialog and returns focus to its own opener button', afterCancelClick.open === false && afterCancelClick.focusIsOpener, afterCancelClick);
+
+    // Real keyboard test: Escape closes the non-destructive default dialog (native `cancel` event,
+    // not prevented for this one) and also restores focus to the opener.
+    await c.clickEl(defTrigger);
+    await c.key('Escape');
+    const afterDefaultEscape = await c.js(`(()=>{
+      const dlg=document.getElementById('modal-default');
+      return { open: dlg.open, focusIsOpener: document.activeElement === document.querySelector('[data-modal-open="modal-default"]') };
+    })()`);
+    check('Escape closes the default (non-destructive) dialog and returns focus to its opener', afterDefaultEscape.open === false && afterDefaultEscape.focusIsOpener, afterDefaultEscape);
+
+    // Real keyboard test: Escape does NOT close the destructive danger dialog (data-modal-no-cancel
+    // prevents the native `cancel` event) — an explicit button click is required instead.
+    const dangerTrigger = `document.querySelector('[data-modal-open="modal-danger"]')`;
+    await c.clickEl(dangerTrigger);
+    await c.key('Escape');
+    const afterDangerEscape = await c.js(`document.getElementById('modal-danger').open`);
+    check('Escape does NOT close the destructive danger dialog (a deliberate exception to the default dialog behaviour)', afterDangerEscape === true, afterDangerEscape);
+    const dangerColor = await c.js(`getComputedStyle(document.querySelector('#modal-danger .button--danger')).backgroundColor`);
+    check('danger dialog\'s destructive action renders as action-danger red rgb(193, 39, 45)', dangerColor === 'rgb(193, 39, 45)', dangerColor);
+    await c.clickEl(`document.querySelector('#modal-danger [data-modal-close]:not(.button--danger)')`);
+    const afterDangerCancel = await c.js(`(()=>{
+      const dlg=document.getElementById('modal-danger');
+      return { open: dlg.open, focusIsOpener: document.activeElement === document.querySelector('[data-modal-open="modal-danger"]') };
+    })()`);
+    check('clicking 取消 does close the danger dialog and returns focus to its opener', afterDangerCancel.open === false && afterDangerCancel.focusIsOpener, afterDangerCancel);
+
+    // Loading dialog: both actions are natively disabled, and the spinner is really animating —
+    // its own class is excluded from the file-wide "no animation" scan below precisely because
+    // this one is a deliberate, drawn exception (see styles.css's own comment).
+    await c.clickEl(`document.querySelector('[data-modal-open="modal-loading"]')`);
+    const loadingState = await c.js(`(()=>{
+      const dlg=document.getElementById('modal-loading');
+      const cancelBtn=dlg.querySelector('.button--compact:not(.button--primary)'), primaryBtn=dlg.querySelector('.button--compact.button--primary');
+      const spinner=dlg.querySelector('.modal__spinner');
+      const cs=getComputedStyle(spinner);
+      const primaryBg=getComputedStyle(primaryBtn).backgroundColor;
+      return { cancelDisabled: cancelBtn.disabled, primaryDisabled: primaryBtn.disabled, animationName: cs.animationName, animationDuration: cs.animationDuration, primaryBg };
+    })()`);
+    check('loading dialog: both action buttons use the native disabled attribute', loadingState.cancelDisabled === true && loadingState.primaryDisabled === true, loadingState);
+    check('loading spinner is really animating (animation-name set, 900ms duration matching motion.duration-loop)', loadingState.animationName === 'everline-spin' && loadingState.animationDuration === '0.9s', loadingState);
+    check("loading primary action background is a real alpha-composited action-primary at 55% (not the color-mix-against-solid-background technique used elsewhere), matching the SVG's own fill-opacity=\"0.55\" on the button background specifically",
+      loadingState.primaryBg === 'rgba(89, 138, 232, 0.55)' || loadingState.primaryBg === 'color(srgb 0.34902 0.541176 0.909804 / 0.55)', loadingState.primaryBg);
+
+    // Real prefers-reduced-motion test: the spinner stops (animation: none), it does not merely
+    // speed up — the exact failure mode already documented and fixed for batch 2's own spinner
+    // (docs/STATUS.md, 2026-07-27).
+    await c.send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
+    const reducedMotionSpinner = await c.js(`getComputedStyle(document.querySelector('#modal-loading .modal__spinner')).animationName`);
+    check('prefers-reduced-motion: reduce stops the spinner entirely (animation-name: none)', reducedMotionSpinner === 'none', reducedMotionSpinner);
+    await c.send('Emulation.setEmulatedMedia', { features: [] });
+    // The loading dialog has no close control of its own (both actions are disabled, matching the
+    // SVG) — close it programmatically so later checks (responsive scan, G1 screenshot) see the
+    // page's documented initial state (every dialog closed).
+    await c.js(`document.getElementById('modal-loading').close()`);
+
     /* ---------------- Checkbox ---------------- */
     section('Checkbox');
     const cb = await c.js(`(()=>{
@@ -1167,6 +1282,29 @@ async function main() {
     check('inline alert container background renders as background-surface rgb(51, 51, 51) (sampled from a real screenshot)',
       JSON.stringify(alertImg.at(...alertPts.bg)) === JSON.stringify(GRAY_333), alertImg.at(...alertPts.bg));
 
+    // Same real-screenshot-sample technique for Modal's own container background (background-
+    // overlay, already sampled for other components' panels but never for Modal's own CSS wiring)
+    // and the backdrop's real alpha composite over the page. Opened only long enough to sample,
+    // then closed again so the page returns to its documented initial (all-closed) state.
+    await c.clickEl(`document.querySelector('[data-modal-open="modal-default"]')`);
+    const modalPts = await c.js(`(()=>{
+      const dlg=document.getElementById('modal-default').getBoundingClientRect();
+      return {
+        bg: [Math.round(dlg.left+dlg.width/2), Math.round(dlg.top+8)],
+        backdrop: [Math.round(dlg.left-8), Math.round(dlg.top+8)]
+      };
+    })()`);
+    const modalImg = await c.shot();
+    const GRAY_4D = [77, 77, 77];
+    check('modal container background renders as background-overlay rgb(77, 77, 77) (sampled from a real screenshot)',
+      JSON.stringify(modalImg.at(...modalPts.bg)) === JSON.stringify(GRAY_4D), modalImg.at(...modalPts.bg));
+    // Backdrop is canvas (#1A1A1A, the page's own background) composited with 45% opacity black —
+    // sampled just outside the dialog's own box, where only the backdrop (not the dialog surface
+    // itself) is visible. 0.45*0 + 0.55*26 ≈ 14 per channel.
+    check('backdrop renders as a real alpha composite over the page background (not a flat colour), close to the expected ~14/14/14',
+      modalImg.at(...modalPts.backdrop).every((c) => Math.abs(c - 14) <= 4), modalImg.at(...modalPts.backdrop));
+    await c.key('Escape');
+
     /* ---------------- Responsive + motion ---------------- */
     section('Responsive and motion');
     for (const width of [760, 420]) {
@@ -1181,10 +1319,12 @@ async function main() {
     }
     await c.send('Emulation.clearDeviceMetricsOverride');
     await sleep(200);
-    const motion = await c.js(`(()=>{const bad=[];document.querySelectorAll('body *').forEach(e=>{const cs=getComputedStyle(e);
+    const motion = await c.js(`(()=>{const bad=[];document.querySelectorAll('body *').forEach(e=>{
+      if(e.classList.contains('modal__spinner')) return; // deliberate exception, see below
+      const cs=getComputedStyle(e);
       if(cs.animationName!=='none'||(cs.transitionDuration!=='0s'&&cs.transitionProperty!=='none'))
         bad.push((e.className||e.tagName)+':'+cs.animationName+'/'+cs.transitionDuration);});return bad.slice(0,5);})()`);
-    check('no animation or transition is declared anywhere (nothing was drawn in the SVG to justify one)',
+    check('no animation or transition is declared anywhere else (nothing else was drawn in the SVG to justify one; the Modal loading spinner is the one deliberate exception, checked separately below)',
       motion.length === 0, motion);
 
     /* ---------------- G1 review screenshot ---------------- */
