@@ -3,17 +3,17 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Everline v0.1 — 第一批 HTML/CSS 候選元件（issue #17，Button/Checkbox/Text input/Textarea/Inline alert 已畢業，Icon button/Switch/Radio/Split button/Badge/Tag 等待 G1）</title>
+    <title>Everline v0.1 — 第一批 HTML/CSS 候選元件（issue #17，Button/Checkbox/Text input/Textarea/Inline alert 已畢業，Icon button/Switch/Radio/Split button/Badge/Tag/Menu 等待 G1）</title>
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <main class="catalog" aria-labelledby="page-title">
       <header class="catalog-header">
         <div>
-          <p class="eyebrow">Everline v0.1 · 第一批（issue #17）· 4／15 群已畢業，issues #30–#33、#34 共 5 群等待 G1</p>
+          <p class="eyebrow">Everline v0.1 · 第一批（issue #17）· 4／15 群已畢業，issues #30–#34、#37 共 6 群等待 G1</p>
           <h1 id="page-title">Everline Design Language — Components Batch 1 HTML/CSS Candidate</h1>
-          <p class="lede">Button · Icon button · Switch · Checkbox · Radio · Split button / Dropdown · Text input / Textarea · Badge / Tag · Inline alert</p>
-          <p class="trace">驗證：<code>node works/html/batch1/verify.mjs</code>（零相依，只需 Node 22+ 與 Chrome）· Button／Checkbox／Text input／Textarea（c-button／c-checkbox／c-text-input／c-textarea 共 4 個 SVG 群組）2026-07-30 人類 G1 審查通過後已標記群組級 <code>superseded-by</code>；Inline alert（issue #35，<code>c-inline-alert</code>）2026-08-04 人類 G1 審查通過後同樣已標記 <code>superseded-by</code>——合計 5 個 SVG 群組目前皆以本檔案為候選規格來源。Icon button（issue #30）／Switch（issue #31）／Radio（issue #32）／Split button（issue #33）／Badge Tag（issue #34）此輪仍是 <strong>candidate ready for G1，尚未通過人類審查，master.svg 對應的 c-icon-button／c-switch／c-radio／c-split-button／c-badge-tag 群組尚未標記 <code>superseded-by</code></strong>，master SVG 仍是這 5 群目前的權威來源。master.svg 除 c-color-swatch 外共 16 個產品元件群組，此輪畢業＋等待 G1 合計 10 個，其餘 6 個 SVG 群組不受影響；issue #17 15 群清單中，已畢業 4 群＋等待 G1 的 5 群共 9 群，仍有 6 群未動工。整份仍是 candidate，未宣告 stable。</p>
+          <p class="lede">Button · Icon button · Switch · Checkbox · Radio · Split button / Dropdown · Text input / Textarea · Badge / Tag · Inline alert · Menu / Context menu</p>
+          <p class="trace">驗證：<code>node works/html/batch1/verify.mjs</code>（零相依，只需 Node 22+ 與 Chrome）· Button／Checkbox／Text input／Textarea（c-button／c-checkbox／c-text-input／c-textarea 共 4 個 SVG 群組）2026-07-30 人類 G1 審查通過後已標記群組級 <code>superseded-by</code>；Inline alert（issue #35，<code>c-inline-alert</code>）2026-08-04 人類 G1 審查通過後同樣已標記 <code>superseded-by</code>——合計 5 個 SVG 群組目前皆以本檔案為候選規格來源。Icon button（issue #30）／Switch（issue #31）／Radio（issue #32）／Split button（issue #33）／Badge Tag（issue #34）／Menu（issue #37）此輪仍是 <strong>candidate ready for G1，尚未通過人類審查，master.svg 對應的 c-icon-button／c-switch／c-radio／c-split-button／c-badge-tag／c-menu 群組尚未標記 <code>superseded-by</code></strong>，master SVG 仍是這 6 群目前的權威來源。master.svg 除 c-color-swatch 外共 16 個產品元件群組，此輪畢業＋等待 G1 合計 11 個，其餘 5 個 SVG 群組（Select／Tabs／Tooltip／Modal／Toast）不受影響；issue #17 15 群清單中，已畢業 4 群＋等待 G1 的 6 群共 10 群，仍有 5 群未動工。整份仍是 candidate，未宣告 stable。</p>
         </div>
         <p class="candidate-badge"><span aria-hidden="true"></span> CANDIDATE · MIXED G1 STATUS, SEE TRACE</p>
       </header>
@@ -100,6 +100,18 @@
           <li><strong>狀態圖示實際只有 24.5px，非宣稱的 28px</strong>：圖示 SVG 的 <code>viewBox="0 0 32 32"</code>（32 個單位是為了同時容納較寬的 danger 三角形）被壓縮進一個依 <code>icon-size</code>（28px）決定寬高的 CSS 容器，導致 viewBox 內每個單位、包含 circle 的 28 個單位，全部一起被等比縮小成 24.5px。已新增 <code>component.inline-alert.icon-render-margin</code>（2px，純實作用的縮放安全邊界，非 SVG 量測值）：圖示 SVG 容器改為 <code>icon-size + icon-render-margin × 2</code>（32px），讓 viewBox 的 32 個單位與渲染像素維持 1:1，圖示水平位置的 calc() 也一併扣掉這個邊界，確保視覺中心不變。<code>verify.mjs</code> 新增對 <code>&lt;circle&gt;</code> 元素本身（而非外層 SVG 容器）的真實 <code>getBoundingClientRect</code> 量測斷言，不再只信任容器尺寸。</li>
           <li><strong>關閉鈕位置偏移 24px、X 圖示只有 8px 寬（來源是 12px）</strong>：容器原本無條件套用 <code>padding-inline-end: 24px</code>（給沒有關閉鈕的變體留白），疊加在關閉鈕自己 48px 寬置中的效果之上，導致圖示中心距卡片右緣變成 48px，而非來源 SVG 實測的 24px（<code>translate(712 24)</code>，X 圖示本地座標 18,18 至 30,30 換算後的中心距）——與 PR #46 當初 Badge/Tag 移除鈕圖示位移是同一種錯誤形狀（命中區疊加在既有內距之上，而非取代它）。已新增 <code>.inline-alert:has(.inline-alert__dismiss)</code> 規則將該變體的 <code>padding-inline-end</code> 歸零（24px 期望位移剛好等於 48px 按鈕寬度的一半，歸零後按鈕貼齊卡片右緣即可自然置中對到 24px），並將 X 圖示路徑從 8 個單位改畫成 12 個單位，與來源尺寸一致。<code>verify.mjs</code> 新增對兩個 <code>&lt;path&gt;</code> 的真實 <code>getBoundingClientRect</code> 量測斷言（圖示寬度、距右緣距離），不再只信任 CSS 宣告值。</li>
           <li><strong>兩個未被消費的 focus token</strong>：<code>component.inline-alert.border-width</code>／<code>border-focus</code> 先前只在 <code>:root</code> 宣告，沒有任何 <code>.inline-alert*</code> CSS 規則實際引用——關閉鈕的 focus ring 其實完全由既有跨元件的全域 <code>:focus-visible</code> 規則滿足規格文字「2 px blue focus ring」的要求，這兩個 token 是重複而非缺口，已直接移除（tokens／CSS／<code>verify.mjs</code> 三處同步），不做成沒有消費者的裝飾性宣告。</li>
+        </ul>
+      </aside>
+
+      <aside class="scope-note" aria-labelledby="scope-title-5">
+        <h2 id="scope-title-5">本輪新增（issue #37）：Menu / Context menu token 缺口與 G1 決策清單 — candidate ready for G1，尚未通過人類視覺審查</h2>
+        <p>本輪新增 Menu / Context menu（issue #37，issue #17 15 群清單第 11 項），對應 <code>works/everline-components-master.svg</code> 的 <code>c-menu</code> 群組（主面板 5 個 item ＋ 切換面板 3 個 item 共兩個範例）。<strong>本群完成 P0–P2，尚未通過 G1 人類視覺審查</strong>，master.svg 對應區塊未標記 <code>superseded-by</code>，<code>docs/STATUS.md</code>／<code>docs/design-system-v0.1-draft.md</code> 只記錄「等待 G1」事實，未宣稱已畢業或 stable，issue #37 亦未打勾關閉，且不使用 <code>Closes #17</code>。</p>
+        <p><strong>P0 token 完整性核對</strong>：<code>component.menu.*</code> 早在 2026-07-19 就先行宣告了 10 個欄位，但從未對照 <code>c-menu</code> 實際核實過。本輪核對後補上 8 個缺口，皆為純新增：<code>item-padding-inline</code>（12px，逐一量測每個 item 文字與捷徑文字的左右內距，不落在既有 8px 級距上）、<code>border</code>／<code>border-width</code>（面板本身的 <code>stroke="#444"</code> 描邊，先前一個字都沒有涵蓋）、<code>item-focus</code>／<code>item-focus-width</code>（「keyboard focus item」範例自己畫出的 2px 藍色 ring——這是本批目前唯一一個明確畫出專屬鍵盤 focus 視覺的元件，其餘元件皆沿用全域 <code>:focus-visible</code>，故本元件的 item 改為覆蓋掉全域樣式、改用這組專屬 token）、<code>checked-icon-inset</code>（4px，checked item 打勾圖示比其餘 item 的 12px 文字內距更靠近邊緣的量測光學內縮，比照 <code>component.switch.thumb-inset</code> 既有先例）、<code>shortcut-font-size</code>（12px，捷徑提示文字沿用 SVG 樣式表 <code>.caption</code> 的字級，不落在既有 <code>font.size-*</code> 任何一階，比照 <code>component.inline-alert.title-size</code> 既有先例）。</p>
+        <p><strong>刻意未實作、留給 G1 決定的項目</strong>（依 <code>AGENTS.md</code>：SVG 未畫出的視覺不得自行發明）：</p>
+        <ul>
+          <li>submenu 指示（例如右側箭頭）——規格文字明寫「尚未畫出」，本批不新增。</li>
+          <li>捷徑提示文字（如「⌘G」「Esc」）僅為視覺提示，本批未綁定實際全域鍵盤快捷鍵——規格文字只要求「帶鍵盤快捷鍵提示的一般 item」，未要求真的攔截該按鍵組合，範圍外。</li>
+          <li>checked item 的 <code>role="menuitemcheckbox"</code>／<code>aria-checked</code> 為真實可切換（點擊或 <code>Enter</code>／<code>Space</code> 會真的翻轉勾選圖示顯示與否），但 SVG 只畫出「已勾選」一種外觀，從未畫出未勾選時圖示以外還有什麼差異，故未勾選時只是圖示隱藏，不發明任何額外視覺——與 Badge/Tag outline 變體的既有處理原則相同。</li>
         </ul>
       </aside>
 
@@ -394,6 +406,51 @@
           </div>
         </div>
         <p class="example-label">依序：info（唯一畫出關閉鈕的變體，<code>role="status"</code>，點擊關閉鈕會將整個 alert 從畫面移除）、danger（<code>role="alert"</code>，需立即處理的錯誤，沒有關閉鈕）、neutral（<code>role="status"</code>，css 不帶修飾詞的基底類別，沒有關閉鈕）。標題文字色 off-white（<code>component.inline-alert.foreground-title</code>），說明文字色是 SVG 實測的獨立灰階（<code>component.inline-alert.foreground-body</code>，本輪新增 <code>color.base.gray-500</code>，與標題色不同，見上方 scope note）。沒有 success／warning 變體，也沒有任何操作按鈕——SVG 未畫出，本批不發明。</p>
+      </section>
+
+      <!-- ===================== Menu / Context menu ===================== -->
+      <section class="component-section" aria-labelledby="menu-title">
+        <div class="section-heading">
+          <p class="eyebrow">Overlay</p>
+          <h2 id="menu-title">Menu / Context menu</h2>
+          <p>面板圓角 16px · item row 40px · item 內距 12px · default／hover／keyboard focus／danger／disabled／checked／帶捷徑提示</p>
+        </div>
+        <div class="menu-examples">
+          <div class="menu" data-menu>
+            <button class="icon-button" type="button" aria-label="更多操作" aria-haspopup="menu" aria-expanded="false" aria-controls="menu-1-panel" data-menu-trigger>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6h.01M12 12h.01M12 18h.01"/></svg>
+            </button>
+            <div class="menu__panel" id="menu-1-panel" role="menu" aria-label="項目操作" hidden data-menu-panel>
+              <button class="menu__item" role="menuitem" type="button" tabindex="-1" data-menu-action="複製">複製</button>
+              <button class="menu__item" role="menuitem" type="button" tabindex="-1" data-menu-action="貼上">貼上</button>
+              <button class="menu__item" role="menuitem" type="button" tabindex="-1" data-menu-action="重新命名">重新命名</button>
+              <div class="menu__divider" role="separator"></div>
+              <button class="menu__item menu__item--danger" role="menuitem" type="button" tabindex="-1" data-menu-action="刪除">刪除</button>
+              <button class="menu__item" role="menuitem" type="button" tabindex="-1" disabled>設為預設</button>
+            </div>
+          </div>
+          <div class="menu" data-menu>
+            <button class="icon-button" type="button" aria-label="檢視選項" aria-haspopup="menu" aria-expanded="false" aria-controls="menu-2-panel" data-menu-trigger>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6h.01M12 12h.01M12 18h.01"/></svg>
+            </button>
+            <div class="menu__panel" id="menu-2-panel" role="menu" aria-label="檢視選項" hidden data-menu-panel>
+              <button class="menu__item" role="menuitemcheckbox" aria-checked="true" type="button" tabindex="-1" data-menu-action="顯示網格">
+                <svg class="menu__item-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8l4 4 8-9"/></svg>
+                顯示網格
+              </button>
+              <button class="menu__item" role="menuitem" type="button" tabindex="-1" data-menu-action="貼齊邊界">
+                貼齊邊界
+                <span class="menu__shortcut">⌘G</span>
+              </button>
+              <div class="menu__divider" role="separator"></div>
+              <button class="menu__item" role="menuitem" type="button" tabindex="-1" data-menu-action="關閉面板">
+                關閉面板
+                <span class="menu__shortcut">Esc</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <p class="example-label" data-menu-status>依序：主選單（<code>複製</code>／<code>貼上</code>／<code>重新命名</code>／分隔線／<code>刪除</code>[danger，文字色 <code>component.menu.danger-foreground</code>]／<code>設為預設</code>[原生 <code>disabled</code>]）、檢視選單（<code>顯示網格</code>[真實 <code>role="menuitemcheckbox"</code>，點擊或 <code>Enter</code>／<code>Space</code> 真的切換 <code>aria-checked</code> 與圖示顯示]／<code>貼齊邊界</code>＋捷徑提示「⌘G」／分隔線／<code>關閉面板</code>＋捷徑提示「Esc」，提示文字僅視覺展示，本批未綁定實際全域快捷鍵）。兩個觸發鈕皆重用 Icon button（依 SVG 註記「trigger reuses Icon button / Button」），<code>ArrowDown</code>／<code>Enter</code>／<code>Space</code> 開啟並移入第一個可用項、方向鍵移動並略過 disabled 項、<code>Enter</code> 執行並關閉、<code>Escape</code> 關閉並將焦點還給觸發鈕（依規格文字「關閉後焦點必須明確返回觸發元件」）；<code>Tab</code> 離開與點擊選單外的 light-dismiss 則不搶焦點——比照 Split button 選單既有的同一個判斷：使用者這兩種情況下是主動要把焦點移到別處（下一個可 Tab 到的元素，或使用者實際點擊的目標），此時若還把焦點拉回觸發鈕反而是搶焦點的錯誤行為，「不可遺失」指的是不能掉到 <code>&lt;body&gt;</code> 或憑空消失，這兩條路徑本來就會落在真實、明確的元素上。keyboard focus item 使用本元件專屬的 2px 藍色 ring（<code>component.menu.item-focus</code>），覆蓋掉其餘元件沿用的全域 <code>:focus-visible</code> 樣式——這是本批目前唯一一個 SVG 明確畫出專屬鍵盤 focus 視覺的元件。hover 為真實 <code>:hover</code>，未預先固定在任何範例上。submenu 指示 SVG 未畫出，本批不新增。</p>
       </section>
     </main>
     <script src="prototype.js"></script>

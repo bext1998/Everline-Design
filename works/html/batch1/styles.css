@@ -186,6 +186,25 @@
   --everline-component-inline-alert-icon-color-danger: var(--everline-color-semantic-action-danger);
   --everline-component-inline-alert-icon-color-neutral: var(--everline-color-semantic-foreground-primary);
   --everline-component-inline-alert-dismiss-control-size: 48px;
+
+  /* component.menu.* */
+  --everline-component-menu-row-height: var(--everline-size-tag-md);
+  --everline-component-menu-radius: var(--everline-radius-lg);
+  --everline-component-menu-item-radius: var(--everline-radius-sm);
+  --everline-component-menu-padding: var(--everline-space-1);
+  --everline-component-menu-item-padding-inline: 12px;
+  --everline-component-menu-background: var(--everline-color-semantic-background-overlay);
+  --everline-component-menu-border: var(--everline-color-semantic-border-default);
+  --everline-component-menu-border-width: var(--everline-border-width-default);
+  --everline-component-menu-item-focus: var(--everline-color-semantic-border-focus);
+  --everline-component-menu-item-focus-width: var(--everline-border-width-focus);
+  --everline-component-menu-divider: var(--everline-color-semantic-border-default);
+  --everline-component-menu-danger-foreground: var(--everline-color-semantic-action-danger);
+  --everline-component-menu-disabled-foreground: var(--everline-color-base-gray-600);
+  --everline-component-menu-checked-indicator: var(--everline-color-semantic-action-primary);
+  --everline-component-menu-checked-icon-inset: 4px;
+  --everline-component-menu-shortcut-foreground: var(--everline-color-base-gray-600);
+  --everline-component-menu-shortcut-font-size: 12px;
 }
 
 /* Hover overlay, derived from the two tokens that define it rather than restating #fff:
@@ -725,12 +744,78 @@ fieldset.radio-group legend { font-size: var(--everline-font-size-label); font-w
 .inline-alert__dismiss:hover { background-image: linear-gradient(var(--everline-hover-overlay), var(--everline-hover-overlay)); }
 .inline-alert__dismiss svg { width: var(--everline-size-icon-sm); height: var(--everline-size-icon-sm); fill: none; stroke: currentColor; stroke-width: var(--everline-icon-stroke-width); stroke-linecap: round; stroke-linejoin: round; }
 
+/* ---------- Menu / Context menu ----------
+   Real role="menu" + role="menuitem"/"menuitemcheckbox" <button>s with roving tabindex, the same
+   real-ARIA-widget approach already used for Split button/Select's menus — opened by a real
+   trigger button (the SVG's own note says "shown open (trigger reuses Icon button / Button)", so
+   the demo trigger below reuses .icon-button rather than inventing a new trigger style).
+   Unlike every batch-1 component so far, this SVG explicitly draws its OWN dedicated
+   keyboard-focus-item ring (a 2px blue rounded rect) rather than leaving focus undrawn, so menu
+   items override the shared global :focus-visible outline with this component's own box-shadow
+   ring instead of just relying on it — a real, drawn difference, not an oversight.
+   hover/danger/disabled/checked/shortcut are all real CSS/DOM, not baked into any example as a
+   permanently-"hovered"-looking row: hover is a live :hover rule, disabled uses the native
+   `disabled` attribute, checked is a real toggleable role="menuitemcheckbox" with aria-checked,
+   and the divider is a real role="separator" element. Submenu indicators were never drawn and are
+   not implemented. */
+.menu-examples { display: flex; flex-wrap: wrap; gap: var(--everline-space-4); align-items: flex-start; }
+.menu { position: relative; display: inline-block; }
+/* No width token — same "content-driven, container-sized" precedent already established for Text
+   input/Select (component.select has no width field either). 220px below is only a catalog demo
+   reference width, in a selector containing "example" so it doesn't read as a component contract
+   value, matching .field-examples .text-input's exact same exemption. */
+.menu-examples .menu__panel { min-width: 220px; }
+.menu__panel {
+  position: absolute; top: 100%; left: 0; z-index: var(--everline-layer-overlay);
+  margin: 0; padding: var(--everline-component-menu-padding); border: var(--everline-component-menu-border-width) solid var(--everline-component-menu-border);
+  border-radius: var(--everline-component-menu-radius);
+  background: var(--everline-component-menu-background);
+  display: flex; flex-direction: column;
+}
+.menu__panel[hidden] { display: none; }
+.menu__item {
+  display: flex; align-items: center; width: 100%;
+  height: var(--everline-component-menu-row-height);
+  padding-inline: var(--everline-component-menu-item-padding-inline);
+  gap: var(--everline-space-1);
+  border: 0; border-radius: var(--everline-component-menu-item-radius);
+  background: transparent; color: var(--everline-color-semantic-foreground-primary);
+  font: inherit; font-size: var(--everline-font-size-label); font-weight: var(--everline-font-weight-semibold);
+  text-align: start; cursor: pointer;
+}
+.menu__item:hover:not(:disabled) { background-image: linear-gradient(var(--everline-hover-overlay), var(--everline-hover-overlay)); }
+.menu__item:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 var(--everline-component-menu-item-focus-width) var(--everline-component-menu-item-focus);
+}
+.menu__item:disabled { color: var(--everline-component-menu-disabled-foreground); cursor: not-allowed; }
+.menu__item--danger { color: var(--everline-component-menu-danger-foreground); }
+/* Optical inset: the drawn check glyph sits 4px from the row edge, 8px closer than every other
+   item's 12px text inset (component.menu.checked-icon-inset) — pulled left from the item's own
+   padding-inline via a negative margin, same "observed optical inset, not a scale step" treatment
+   as component.switch.thumb-inset. */
+.menu__item-icon {
+  flex: 0 0 auto; margin-inline-start: calc(var(--everline-component-menu-checked-icon-inset) - var(--everline-component-menu-item-padding-inline));
+  width: var(--everline-size-icon-sm); height: var(--everline-size-icon-sm);
+  fill: none; stroke: var(--everline-component-menu-checked-indicator);
+  stroke-width: var(--everline-icon-stroke-width); stroke-linecap: round; stroke-linejoin: round;
+  visibility: hidden;
+}
+.menu__item[aria-checked="true"] .menu__item-icon { visibility: visible; }
+.menu__shortcut {
+  margin-inline-start: auto; flex: 0 0 auto;
+  font-size: var(--everline-component-menu-shortcut-font-size); font-weight: var(--everline-font-weight-regular);
+  color: var(--everline-component-menu-shortcut-foreground);
+}
+.menu__divider { flex: 0 0 auto; height: var(--everline-component-menu-border-width); margin-block: var(--everline-component-menu-padding); background: var(--everline-component-menu-divider); }
+
 @media (max-width: 760px) {
   .catalog { padding: var(--everline-space-2); }
   .catalog-header { flex-direction: column; }
   .candidate-badge { white-space: normal; }
   .text-input, .textarea { width: 100%; }
   .split-button-examples { flex-direction: column; }
+  .menu-examples { flex-direction: column; }
 }
 
 /* No transition, animation or keyframe is declared anywhere in this batch — Button/Checkbox/
