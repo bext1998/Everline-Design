@@ -6,6 +6,7 @@
  * 2026-07-31 — candidate ready for G1, awaiting human visual review.
  * Badge / Tag (#34) added 2026-08-03 — candidate ready for G1, awaiting human visual review.
  * Inline alert (#35) added 2026-08-04 — G1 passed 2026-08-04.
+ * Menu / Context menu (#37) added 2026-08-04 — candidate ready for G1, awaiting human visual review.
  *
  *   node works/html/batch1/verify.mjs
  *   CHROME="/path/to/chrome" node works/html/batch1/verify.mjs     # if auto-detection fails
@@ -201,6 +202,21 @@ function verifyTokens() {
   check('component.checkbox.size is still 32px (unchanged)', px(resolved.get('component.checkbox.size')) === '32px');
   check('component.text-input.background is still gray-600 #666666 (unchanged)',
     px(resolved.get('component.text-input.background')) === '#666666');
+  // Menu / Context menu (issue #37): 10 pre-existing component.menu.* fields were declared
+  // 2026-07-19 but never checked against c-menu until this round's P0 audit, which found the gaps
+  // below (all pure additions, no existing resolved value changed).
+  check('component.menu.item-padding-inline resolves to 12px (item text/shortcut inset)', px(resolved.get('component.menu.item-padding-inline')) === '12px', resolved.get('component.menu.item-padding-inline'));
+  check('component.menu.border resolves to border-default #444444 (panel stroke)', px(resolved.get('component.menu.border')) === '#444444', resolved.get('component.menu.border'));
+  check('component.menu.border-width resolves to 1px', px(resolved.get('component.menu.border-width')) === '1px', resolved.get('component.menu.border-width'));
+  check('component.menu.item-focus resolves to border-focus #598AE8 (the drawn keyboard-focus-item ring)', px(resolved.get('component.menu.item-focus')) === '#598AE8', resolved.get('component.menu.item-focus'));
+  check('component.menu.item-focus-width resolves to 2px', px(resolved.get('component.menu.item-focus-width')) === '2px', resolved.get('component.menu.item-focus-width'));
+  check('component.menu.checked-icon-inset resolves to 4px (optical inset, not a scale step)', px(resolved.get('component.menu.checked-icon-inset')) === '4px', resolved.get('component.menu.checked-icon-inset'));
+  check('component.menu.shortcut-font-size resolves to 12px (matches no existing font.size-* step)', px(resolved.get('component.menu.shortcut-font-size')) === '12px', resolved.get('component.menu.shortcut-font-size'));
+  // Pre-existing menu fields this round must NOT have touched.
+  check('component.menu.row-height is still size.tag-md 40px (unchanged)', px(resolved.get('component.menu.row-height')) === '40px');
+  check('component.menu.radius is still radius.lg 16px (unchanged)', px(resolved.get('component.menu.radius')) === '16px');
+  check('component.menu.danger-foreground is still action-danger #C1272D (unchanged)', px(resolved.get('component.menu.danger-foreground')) === '#C1272D');
+  check('component.menu.checked-indicator is still action-primary #598AE8 (unchanged)', px(resolved.get('component.menu.checked-indicator')) === '#598AE8');
   return resolved;
 }
 
@@ -243,7 +259,7 @@ function valuesMatch(tokenResolved, cssLiteral) {
 function verifyCssContract(resolvedTokens) {
   section('works/html/batch1/styles.css — no raw dimensions in component rules');
   const css = readFileSync(CSS, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
-  const COMPONENT = /^[^@]*?(\.button|\.checkbox|\.text-input|\.textarea|\.icon-button|\.switch|\.radio|\.split-button|\.tag|\.inline-alert|fieldset\.radio-group|:where)/;
+  const COMPONENT = /^[^@]*?(\.button|\.checkbox|\.text-input|\.textarea|\.icon-button|\.switch|\.radio|\.split-button|\.tag|\.inline-alert|\.menu|fieldset\.radio-group|:where)/;
   const offenders = [];
   for (const m of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
     const selector = m[1].trim();
@@ -941,6 +957,132 @@ async function main() {
     const restoredAlertCount = await c.js(`document.querySelectorAll('.inline-alert-examples > .inline-alert').length`);
     check('the info example is restored for the G1 review screenshot below', restoredAlertCount === countBeforeDismiss, { restoredAlertCount, countBeforeDismiss });
 
+    /* ---------------- Menu / Context menu ---------------- */
+    section('Menu / Context menu');
+    const menus = await c.js(`document.querySelectorAll('[data-menu]').length`);
+    check('two menu examples are present (main + checked/shortcut variant)', menus === 2, menus);
+    const menuBefore = await c.js(`(()=>{
+      const cs=(e)=>getComputedStyle(e);
+      const trigger=document.querySelectorAll('[data-menu-trigger]')[0], panel=document.querySelectorAll('[data-menu-panel]')[0];
+      const item0=panel.querySelectorAll('[role=menuitem]')[0];
+      const disabledItem=[...panel.querySelectorAll('[role=menuitem]')].find(i=>i.disabled);
+      const divider=panel.querySelector('[role=separator]');
+      return {
+        itemH: cs(item0).height, itemR: cs(item0).borderRadius, panelR: cs(panel).borderRadius,
+        hasPopup: trigger.getAttribute('aria-haspopup'), expanded: trigger.getAttribute('aria-expanded'),
+        panelHidden: panel.hidden, panelRole: panel.getAttribute('role'), itemRole: item0.getAttribute('role'),
+        disabledIsNative: disabledItem?.disabled === true, hasDivider: !!divider
+      };
+    })()`);
+    check('menu item row height is 40px', menuBefore.itemH === '40px', menuBefore.itemH);
+    check('menu item radius is 8px', menuBefore.itemR === '8px', menuBefore.itemR);
+    check('menu panel radius is 16px', menuBefore.panelR === '16px', menuBefore.panelR);
+    check('trigger has aria-haspopup="menu", starts aria-expanded="false", panel starts hidden with role="menu"',
+      menuBefore.hasPopup === 'menu' && menuBefore.expanded === 'false' && menuBefore.panelHidden === true && menuBefore.panelRole === 'menu', menuBefore);
+    check('items use role="menuitem"; the disabled item uses the native disabled attribute; a role="separator" divider is present',
+      menuBefore.itemRole === 'menuitem' && menuBefore.disabledIsNative && menuBefore.hasDivider, menuBefore);
+
+    // Real click test: opening the trigger focuses the first ENABLED item.
+    await c.clickEl(`document.querySelectorAll('[data-menu-trigger]')[0]`);
+    const menuAfterOpen = await c.js(`(()=>{
+      const trigger=document.querySelectorAll('[data-menu-trigger]')[0];
+      return { expanded: trigger.getAttribute('aria-expanded'), hidden: document.querySelectorAll('[data-menu-panel]')[0].hidden, focusedText: document.activeElement.textContent.trim() };
+    })()`);
+    check('clicking the trigger opens the menu, sets aria-expanded=true, and focuses the first item',
+      menuAfterOpen.expanded === 'true' && menuAfterOpen.hidden === false && menuAfterOpen.focusedText === '複製', menuAfterOpen);
+
+    // Real keyboard test: ArrowDown 3 times from the first item reaches the danger item (刪除),
+    // then a 4th ArrowDown must skip the disabled item and wrap to the first — proving disabled
+    // items are excluded from arrow-key traversal.
+    await c.key('ArrowDown'); await c.key('ArrowDown'); await c.key('ArrowDown');
+    const atDanger = await c.js('document.activeElement.textContent.trim()');
+    check('ArrowDown x3 from the first item reaches the danger item (刪除)', atDanger === '刪除', atDanger);
+
+    // The item's own dedicated 2px focus ring (component.menu.item-focus) only needs checking
+    // after a genuine KEYBOARD-driven focus change — the click that opened the menu above focused
+    // the first item programmatically off a mouse click, which real browsers' :focus-visible
+    // heuristic correctly does not treat as keyboard modality (same reason Split button's own
+    // analogous outline check runs after its own ArrowDown, not right after its opening click).
+    const itemFocusRing = await c.js('getComputedStyle(document.activeElement).boxShadow');
+    check('after real keyboard navigation, the focused item shows this component\'s own dedicated focus ring (border-focus blue, 2px), not the generic global outline',
+      itemFocusRing.includes('89, 138, 232') && itemFocusRing.includes('2px'), itemFocusRing);
+    const itemFocusOutline = await c.js('getComputedStyle(document.activeElement).outlineStyle');
+    check('the generic global focus-visible outline is suppressed on menu items (replaced by the dedicated ring above)', itemFocusOutline === 'none', itemFocusOutline);
+    const dangerColor = await c.js('getComputedStyle(document.activeElement).color');
+    check('the danger item renders in action-danger red rgb(193, 39, 45)', dangerColor === 'rgb(193, 39, 45)', dangerColor);
+    await c.key('ArrowDown');
+    const afterWrapArrowDown = await c.js('document.activeElement.textContent.trim()');
+    check('ArrowDown from the danger item skips the disabled item and wraps to the first (roving tabindex, disabled excluded)',
+      afterWrapArrowDown === '複製', afterWrapArrowDown);
+
+    // Real keyboard test: Enter on the danger item activates it, closes the menu, records which
+    // item fired, and returns focus to the trigger.
+    await c.key('ArrowDown'); await c.key('ArrowDown'); await c.key('ArrowDown'); // back to 刪除
+    await c.key('Enter');
+    const afterDangerEnter = await c.js(`(()=>{
+      const trigger=document.querySelectorAll('[data-menu-trigger]')[0];
+      return { hidden: document.querySelectorAll('[data-menu-panel]')[0].hidden, expanded: trigger.getAttribute('aria-expanded'), focusIsTrigger: document.activeElement===trigger, lastAction: document.querySelector('[data-menu-status]').dataset.lastAction };
+    })()`);
+    check('Enter on the danger item closes the menu, clears aria-expanded, returns focus to the trigger, and records which item fired',
+      afterDangerEnter.hidden === true && afterDangerEnter.expanded === 'false' && afterDangerEnter.focusIsTrigger && afterDangerEnter.lastAction === '刪除', afterDangerEnter);
+
+    // Real keyboard test: Escape closes and returns focus to the trigger.
+    await c.clickEl(`document.querySelectorAll('[data-menu-trigger]')[0]`);
+    await c.key('Escape');
+    const afterMenuEscape = await c.js(`(()=>{
+      const trigger=document.querySelectorAll('[data-menu-trigger]')[0];
+      return { hidden: document.querySelectorAll('[data-menu-panel]')[0].hidden, focusIsTrigger: document.activeElement===trigger };
+    })()`);
+    check('Escape closes the menu and returns focus to the trigger', afterMenuEscape.hidden === true && afterMenuEscape.focusIsTrigger, afterMenuEscape);
+
+    // Real click test: light dismiss closes the menu WITHOUT forcibly returning focus to the
+    // trigger (the user clicked elsewhere on purpose — see prototype.js's own reasoning).
+    await c.clickEl(`document.querySelectorAll('[data-menu-trigger]')[0]`);
+    await c.click(20, 20);
+    const afterMenuOutsideClick = await c.js(`(()=>{
+      const trigger=document.querySelectorAll('[data-menu-trigger]')[0];
+      return { hidden: document.querySelectorAll('[data-menu-panel]')[0].hidden, focusIsTrigger: document.activeElement===trigger };
+    })()`);
+    check('clicking outside the open menu closes it (light dismiss) without stealing focus back to the trigger',
+      afterMenuOutsideClick.hidden === true && afterMenuOutsideClick.focusIsTrigger === false, afterMenuOutsideClick);
+
+    // Real click/keyboard test: the checked item (role="menuitemcheckbox") really toggles.
+    const trigger2 = `document.querySelectorAll('[data-menu-trigger]')[1]`;
+    await c.clickEl(trigger2);
+    const checkedBefore = await c.js(`(()=>{
+      const it=document.activeElement;
+      return { role: it.getAttribute('role'), checked: it.getAttribute('aria-checked'), iconVisibility: getComputedStyle(it.querySelector('.menu__item-icon')).visibility };
+    })()`);
+    check('opening the second menu focuses the checked item (role="menuitemcheckbox", aria-checked="true", icon visible)',
+      checkedBefore.role === 'menuitemcheckbox' && checkedBefore.checked === 'true' && checkedBefore.iconVisibility === 'visible', checkedBefore);
+    await c.key('Enter');
+    const checkedAfterToggle = await c.js(`document.getElementById('menu-2-panel').querySelector('[role=menuitemcheckbox]').getAttribute('aria-checked')`);
+    check('Enter on the checked item toggles aria-checked to "false" (a real DOM toggle, not just a visual)', checkedAfterToggle === 'false', checkedAfterToggle);
+    // Restore the documented initial checked state so the G1 review screenshot matches index.html.
+    await c.clickEl(trigger2);
+    await c.key('Enter');
+    const checkedRestored = await c.js(`(()=>{
+      const it=document.getElementById('menu-2-panel').querySelector('[role=menuitemcheckbox]');
+      return { checked: it.getAttribute('aria-checked'), iconVisibility: getComputedStyle(it.querySelector('.menu__item-icon')).visibility };
+    })()`);
+    check('the checked item is restored to aria-checked="true" with its icon visible again for the G1 review screenshot',
+      checkedRestored.checked === 'true' && checkedRestored.iconVisibility === 'visible', checkedRestored);
+
+    // Shortcut hint text is present and reads as part of the item (visual-only, no real
+    // keybinding is bound — see index.html's own example-label note).
+    const shortcutText = await c.js(`[...document.querySelectorAll('.menu__shortcut')].map(s=>s.textContent.trim())`);
+    check('both shortcut hints ("⌘G", "Esc") are rendered', JSON.stringify(shortcutText) === JSON.stringify(['⌘G', 'Esc']), shortcutText);
+
+    // Real keyboard test: Tab closes the menu but does NOT forcibly refocus the trigger (the
+    // established Split-button-menu exception — see prototype.js's own reasoning).
+    await c.clickEl(`document.querySelectorAll('[data-menu-trigger]')[1]`);
+    await c.key('Tab');
+    const afterMenuTab = await c.js(`(()=>{
+      const trigger=document.querySelectorAll('[data-menu-trigger]')[1];
+      return { hidden: document.getElementById('menu-2-panel').hidden, focusIsTrigger: document.activeElement===trigger };
+    })()`);
+    check('Tab closes the menu without forcibly returning focus to the trigger', afterMenuTab.hidden === true && afterMenuTab.focusIsTrigger === false, afterMenuTab);
+
     /* ---------------- Checkbox ---------------- */
     section('Checkbox');
     const cb = await c.js(`(()=>{
@@ -1166,6 +1308,21 @@ async function main() {
       JSON.stringify(alertImg.at(...alertPts.railNeutral)) === JSON.stringify(GRAY_666), alertImg.at(...alertPts.railNeutral));
     check('inline alert container background renders as background-surface rgb(51, 51, 51) (sampled from a real screenshot)',
       JSON.stringify(alertImg.at(...alertPts.bg)) === JSON.stringify(GRAY_333), alertImg.at(...alertPts.bg));
+
+    // Same real-screenshot-sample technique for Menu's panel background — background-overlay
+    // (gray-700, #4D4D4D) has never had a real screenshot sample taken in this file before (Split
+    // button's own menu reuses the same token but was only checked via getComputedStyle). Opened
+    // only long enough to sample, then closed again so the page returns to its documented initial
+    // (closed) state for the G1 screenshot below.
+    await c.clickEl(`document.querySelectorAll('[data-menu-trigger]')[0]`);
+    await c.js(`document.querySelectorAll('[data-menu-panel]')[0].scrollIntoView({block:'center'})`);
+    await sleep(150);
+    const menuPanelPt = await c.js(`(()=>{const r=document.querySelectorAll('[data-menu-panel]')[0].getBoundingClientRect();return [Math.round(r.left+r.width/2), Math.round(r.top+8)];})()`);
+    const menuPanelImg = await c.shot();
+    const GRAY_4D = [77, 77, 77];
+    check('menu panel background renders as background-overlay rgb(77, 77, 77) (sampled from a real screenshot)',
+      JSON.stringify(menuPanelImg.at(...menuPanelPt)) === JSON.stringify(GRAY_4D), menuPanelImg.at(...menuPanelPt));
+    await c.key('Escape');
 
     /* ---------------- Responsive + motion ---------------- */
     section('Responsive and motion');

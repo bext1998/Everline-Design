@@ -131,3 +131,91 @@ document.querySelectorAll('[data-alert-dismiss]').forEach((btn) => {
     group?.focus();
   });
 });
+
+// Menu / Context menu (issue #37): a real role="menu" panel of role="menuitem"/"menuitemcheckbox"
+// <button>s with roving tabindex, opened by a real trigger — same pattern as Split button's menu.
+// docs/design-system-v0.1-draft.md requires focus to return to the trigger when the menu closes
+// ("關閉後焦點必須明確返回觸發元件，不可遺失"), so Escape/Enter/light-dismiss all do that — but
+// Tab is the one established exception (same as Split button's own Tab handler): forcing focus
+// back onto the trigger there would fight the browser's native Tab navigation and trap the user
+// inside this control instead of letting them move on, and native Tab already lands on a real,
+// deliberate next element rather than losing focus to <body>, which is what that requirement is
+// actually guarding against.
+document.querySelectorAll('[data-menu]').forEach((root) => {
+  const trigger = root.querySelector('[data-menu-trigger]');
+  const panel = root.querySelector('[data-menu-panel]');
+  const items = [...panel.querySelectorAll('[role="menuitem"], [role="menuitemcheckbox"]')];
+  const status = document.querySelector('[data-menu-status]');
+
+  const enabled = (it) => !it.disabled;
+  const isOpen = () => !panel.hidden;
+
+  function focusItem(it) {
+    items.forEach((o) => { o.tabIndex = o === it ? 0 : -1; });
+    it.focus();
+  }
+
+  function openMenu() {
+    panel.hidden = false;
+    trigger.setAttribute('aria-expanded', 'true');
+    const first = items.find(enabled);
+    if (first) focusItem(first);
+  }
+
+  function closeMenu({ returnFocus = true } = {}) {
+    if (!isOpen()) return;
+    panel.hidden = true;
+    trigger.setAttribute('aria-expanded', 'false');
+    if (returnFocus) trigger.focus();
+  }
+
+  function activate(it) {
+    if (!enabled(it)) return;
+    if (it.getAttribute('role') === 'menuitemcheckbox') {
+      it.setAttribute('aria-checked', it.getAttribute('aria-checked') === 'true' ? 'false' : 'true');
+    }
+    if (status) status.dataset.lastAction = it.dataset.menuAction || it.textContent.trim();
+    closeMenu();
+  }
+
+  trigger.addEventListener('click', () => { if (isOpen()) closeMenu(); else openMenu(); });
+  trigger.addEventListener('keydown', (e) => {
+    if (isOpen()) return;
+    if (e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openMenu(); }
+  });
+
+  items.forEach((item, i) => {
+    item.addEventListener('click', () => activate(item));
+    item.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        for (let n = 1; n <= items.length; n += 1) {
+          const next = items[(i + n) % items.length];
+          if (enabled(next)) { focusItem(next); break; }
+        }
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        for (let n = 1; n <= items.length; n += 1) {
+          const prev = items[(i - n + items.length) % items.length];
+          if (enabled(prev)) { focusItem(prev); break; }
+        }
+      } else if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        activate(item);
+      } else if (e.key === 'Escape') {
+        e.preventDefault();
+        closeMenu();
+      } else if (e.key === 'Tab') {
+        closeMenu({ returnFocus: false });
+      }
+    });
+  });
+
+  // Light dismiss does NOT return focus to the trigger, same as Split button's own light-dismiss
+  // handler: the user clicked somewhere else on purpose (often a real, focusable element), and
+  // stealing focus back to the trigger would fight that click's own natural focus target instead
+  // of just closing the now-irrelevant menu.
+  document.addEventListener('click', (e) => {
+    if (isOpen() && !root.contains(e.target)) closeMenu({ returnFocus: false });
+  });
+});

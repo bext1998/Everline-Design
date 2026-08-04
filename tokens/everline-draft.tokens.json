@@ -245,18 +245,25 @@
       "search-match-highlight": { "$type": "color", "$value": "{color.semantic.action-primary}", "$description": "Combobox variant: color applied to the matched substring in filtered results." }
     },
     "menu": {
-      "$description": "Batch 1 candidate (2026-07-19). Context/command menu surface.",
+      "$description": "Batch 1 candidate (2026-07-19). Context/command menu surface. Gaps below found during P0 token audit (2026-08-04, issue #37), each verified against c-menu in works/everline-components-master.svg.",
       "row-height": { "$type": "dimension", "$value": "{size.tag-md}" },
       "radius": { "$type": "dimension", "$value": "{radius.lg}" },
       "item-radius": { "$type": "dimension", "$value": "{radius.sm}" },
       "padding": { "$type": "dimension", "$value": "{space.1}" },
+      "item-padding-inline": { "$type": "dimension", "$value": { "value": 12, "unit": "px" }, "$description": "Gap found 2026-08-04. Every item label/shortcut sits 12px in from the row's own edges (e.g. text x=\"12\" against a 204px-wide row; the trailing shortcut text is right-aligned to x=\"192\", 204-192=12). Not on the 8px scale.step grid — a real measured value, same as component.select.indicator-inset." },
       "background": { "$type": "color", "$value": "{color.semantic.background-overlay}" },
+      "border": { "$type": "color", "$value": "{color.semantic.border-default}", "$description": "Gap found 2026-08-04. The panel rect's own stroke=\"#444\"." },
+      "border-width": { "$type": "dimension", "$value": "{border.width-default}", "$description": "Gap found 2026-08-04. The panel rect declares no explicit stroke-width, so it renders at SVG's implicit default of 1." },
       "hover-background": { "$type": "color", "$value": "#ffffff", "$description": "Combine with opacity.hover-overlay via fill-opacity, same technique as tabs.hover-background. Changed 2026-07-19 from a solid gray-700 fill because gray-700 is now background-overlay itself (menu's own panel fill) — a solid hover row in the same color would be invisible." },
+      "item-focus": { "$type": "color", "$value": "{color.semantic.border-focus}", "$description": "Gap found 2026-08-04. The 'keyboard focus item' example draws its own dedicated 2px blue ring (stroke=\"#598ae8\"), distinct from every other batch-1 component that left keyboard focus undrawn and relies on the generic global :focus-visible ring instead — this component's SVG explicitly specifies its own per-item focus visual." },
+      "item-focus-width": { "$type": "dimension", "$value": "{border.width-focus}", "$description": "Gap found 2026-08-04. Matches the same ring's stroke-width=\"2\"." },
       "divider": { "$type": "color", "$value": "{color.semantic.border-default}" },
       "danger-foreground": { "$type": "color", "$value": "{color.semantic.action-danger}" },
       "disabled-foreground": { "$type": "color", "$value": "{color.base.gray-600}" },
       "checked-indicator": { "$type": "color", "$value": "{color.semantic.action-primary}" },
-      "shortcut-foreground": { "$type": "color", "$value": "{color.base.gray-600}" }
+      "checked-icon-inset": { "$type": "dimension", "$value": { "value": 4, "unit": "px" }, "$description": "Gap found 2026-08-04. The checked item's check-glyph path (\"M4 14l4 4 8-9\") starts at local x=4, noticeably closer to the row edge than the 12px item-padding-inline every other item's text uses — an observed optical inset for a small glyph, not a component scale step, same treatment as component.switch.thumb-inset." },
+      "shortcut-foreground": { "$type": "color", "$value": "{color.base.gray-600}" },
+      "shortcut-font-size": { "$type": "dimension", "$value": { "value": 12, "unit": "px" }, "$description": "Gap found 2026-08-04. The shortcut hint text (e.g. \"⌘G\", \"Esc\") reuses the master SVG's own .caption stylesheet class (font-size 12px), which sits below every existing font.size-* step (14/16/24) — same 'new literal component-specific font size' precedent as component.inline-alert.title-size (17px)." }
     },
     "tabs": {
       "$description": "Batch 1 candidate (2026-07-19).",
