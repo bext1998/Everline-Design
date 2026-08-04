@@ -40,6 +40,7 @@
   --everline-size-icon-md: 24px;
   --everline-icon-stroke-width: 2;
   --everline-layer-overlay: 100;
+  --everline-layer-tooltip: 200;
   --everline-font-family-sans: "Noto Sans TC", system-ui, sans-serif;
   --everline-font-size-label: 14px; --everline-font-size-body: 16px;
   --everline-font-weight-regular: 400; --everline-font-weight-semibold: 600;
@@ -186,6 +187,17 @@
   --everline-component-inline-alert-icon-color-danger: var(--everline-color-semantic-action-danger);
   --everline-component-inline-alert-icon-color-neutral: var(--everline-color-semantic-foreground-primary);
   --everline-component-inline-alert-dismiss-control-size: 48px;
+
+  /* component.tooltip.* */
+  --everline-component-tooltip-radius: var(--everline-radius-sm);
+  --everline-component-tooltip-max-width: 240px;
+  --everline-component-tooltip-height: 36px;
+  --everline-component-tooltip-padding-inline: var(--everline-space-2);
+  --everline-component-tooltip-font-size: 13px;
+  --everline-component-tooltip-arrow-base: 12px;
+  --everline-component-tooltip-arrow-size: 8px;
+  --everline-component-tooltip-background: var(--everline-color-semantic-background-overlay);
+  --everline-component-tooltip-foreground: var(--everline-color-semantic-foreground-primary);
 }
 
 /* Hover overlay, derived from the two tokens that define it rather than restating #fff:
@@ -725,12 +737,64 @@ fieldset.radio-group legend { font-size: var(--everline-font-size-label); font-w
 .inline-alert__dismiss:hover { background-image: linear-gradient(var(--everline-hover-overlay), var(--everline-hover-overlay)); }
 .inline-alert__dismiss svg { width: var(--everline-size-icon-sm); height: var(--everline-size-icon-sm); fill: none; stroke: currentColor; stroke-width: var(--everline-icon-stroke-width); stroke-linecap: round; stroke-linejoin: round; }
 
+/* ---------- Tooltip ----------
+   Pure CSS, no JS: the trigger (a real .icon-button, reusing that component per the SVG's own
+   "常搭配 Icon button" pairing) and its tooltip are siblings inside a positioned wrapper; the
+   tooltip is shown via :hover/:focus-within on the wrapper, which already covers every requirement
+   in docs/design-system-v0.1-draft.md — appears on hover OR keyboard focus, disappears when either
+   ends, and is never itself a Tab stop (it never receives a tabindex). No transition, per this
+   batch's own no-motion rule; it snaps, not fades.
+   Only the two placements the SVG actually drew (beside/below) are implemented as separate CSS
+   classes — real viewport-edge collision detection to pick between them automatically would need a
+   positioning engine (e.g. Floating UI) this framework-neutral candidate doesn't depend on; see
+   index.html's own scope note.
+   padding-inline is NOT SVG-measurable (both examples centre their text with text-anchor="middle",
+   which hides the real left/right padding) — reuses component.tag.padding-inline's value instead
+   of inventing an unmeasured number; see the token's own $description. */
+/* Stacked vertically, not side by side: the "beside" tooltip pokes out to the right of its own
+   trigger far enough (arrow + bubble width) to visually collide with a second example sitting in
+   a horizontal row at the gap sizes used elsewhere in this catalog — a demo-layout collision, not
+   a component sizing issue, avoided here by giving each example its own row. */
+.tooltip-examples { display: flex; flex-direction: column; gap: var(--everline-space-4); padding: var(--everline-space-3); padding-inline-start: var(--everline-space-4); }
+/* align-self: flex-start stops this from stretching to fill an ancestor flex container's cross
+   axis (e.g. a column-direction container) — the wrapper must stay sized to its own trigger so
+   left:100%/top:100% below resolve against the trigger's own edge, not an arbitrary container
+   width. Found via a real screenshot-sampled colour check landing on the wrong pixels entirely. */
+.tooltip-wrapper { position: relative; display: inline-flex; align-self: flex-start; }
+.tooltip {
+  display: none;
+  position: absolute; z-index: var(--everline-layer-tooltip);
+  align-items: center; justify-content: center;
+  width: max-content; max-width: var(--everline-component-tooltip-max-width);
+  height: var(--everline-component-tooltip-height);
+  padding-inline: var(--everline-component-tooltip-padding-inline);
+  border-radius: var(--everline-component-tooltip-radius);
+  background: var(--everline-component-tooltip-background);
+  color: var(--everline-component-tooltip-foreground);
+  font-size: var(--everline-component-tooltip-font-size);
+  white-space: nowrap;
+}
+.tooltip-wrapper:hover .tooltip, .tooltip-wrapper:focus-within .tooltip { display: flex; }
+.tooltip--beside { left: calc(100% + var(--everline-component-tooltip-arrow-size)); top: 50%; transform: translateY(-50%); }
+.tooltip--beside::before {
+  content: ""; position: absolute; left: calc(-1 * var(--everline-component-tooltip-arrow-size)); top: 50%; transform: translateY(-50%);
+  border-style: solid; border-width: calc(var(--everline-component-tooltip-arrow-base) / 2) var(--everline-component-tooltip-arrow-size) calc(var(--everline-component-tooltip-arrow-base) / 2) 0;
+  border-color: transparent var(--everline-component-tooltip-background) transparent transparent;
+}
+.tooltip--below { top: calc(100% + var(--everline-component-tooltip-arrow-size)); left: 50%; transform: translateX(-50%); }
+.tooltip--below::before {
+  content: ""; position: absolute; top: calc(-1 * var(--everline-component-tooltip-arrow-size)); left: 50%; transform: translateX(-50%);
+  border-style: solid; border-width: 0 calc(var(--everline-component-tooltip-arrow-base) / 2) var(--everline-component-tooltip-arrow-size) calc(var(--everline-component-tooltip-arrow-base) / 2);
+  border-color: transparent transparent var(--everline-component-tooltip-background) transparent;
+}
+
 @media (max-width: 760px) {
   .catalog { padding: var(--everline-space-2); }
   .catalog-header { flex-direction: column; }
   .candidate-badge { white-space: normal; }
   .text-input, .textarea { width: 100%; }
   .split-button-examples { flex-direction: column; }
+  .tooltip-examples { flex-wrap: wrap; }
 }
 
 /* No transition, animation or keyframe is declared anywhere in this batch — Button/Checkbox/

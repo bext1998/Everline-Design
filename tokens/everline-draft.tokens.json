@@ -270,9 +270,14 @@
       "hover-background": { "$type": "color", "$value": "#ffffff", "$description": "Combine with opacity.hover-overlay via fill-opacity." }
     },
     "tooltip": {
-      "$description": "Batch 1 candidate (2026-07-19).",
+      "$description": "Batch 1 candidate (2026-07-19). Gaps below found during P0 token audit (2026-08-04, issue #39), each verified against c-tooltip in works/everline-components-master.svg.",
       "radius": { "$type": "dimension", "$value": "{radius.sm}" },
       "max-width": { "$type": "dimension", "$value": { "value": 240, "unit": "px" }, "$description": "Candidate wrap width; not yet product-validated." },
+      "height": { "$type": "dimension", "$value": { "value": 36, "unit": "px" }, "$description": "Gap found 2026-08-04. Both drawn examples' bubble rect height=\"36\" — not on the component-heights scale (32/40/48/56/64)." },
+      "padding-inline": { "$type": "dimension", "$value": "{space.2}", "$description": "Gap found 2026-08-04. NOT directly SVG-measurable — both examples centre their label text with text-anchor=\"middle\", which hides the actual left/right padding. Reuses space.2 (16px), the same padding-inline component.tag already uses for a similarly-sized compact pill label, rather than inventing an unmeasured value. Extension decision pending G1, same treatment as Badge/Tag's hit-area-size." },
+      "font-size": { "$type": "dimension", "$value": { "value": 13, "unit": "px" }, "$description": "Gap found 2026-08-04. Both examples' label text has an explicit font-size=\"13\" override (the .label class default is 14px/font.size-label) — matches no existing font.size-* step." },
+      "arrow-base": { "$type": "dimension", "$value": { "value": 12, "unit": "px" }, "$description": "Gap found 2026-08-04. The pointer triangle's flat edge: beside placement's arrow path spans y 18-30 (12 units); below placement's spans x 18-30 (12 units) — same 12px in both orientations, just the axis rotates." },
+      "arrow-size": { "$type": "dimension", "$value": { "value": 8, "unit": "px" }, "$description": "Gap found 2026-08-04. The pointer triangle's depth (how far its tip pokes toward the trigger): beside placement's arrow spans x 56-64 (8 units); below placement's spans y 56-64 (8 units)." },
       "background": { "$type": "color", "$value": "{color.semantic.background-overlay}" },
       "foreground": { "$type": "color", "$value": "{color.semantic.foreground-primary}" }
     },
