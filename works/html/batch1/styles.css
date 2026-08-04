@@ -186,6 +186,19 @@
   --everline-component-inline-alert-icon-color-danger: var(--everline-color-semantic-action-danger);
   --everline-component-inline-alert-icon-color-neutral: var(--everline-color-semantic-foreground-primary);
   --everline-component-inline-alert-dismiss-control-size: 48px;
+
+  /* component.toast.* */
+  --everline-component-toast-height: 56px;
+  --everline-component-toast-radius: var(--everline-radius-lg);
+  --everline-component-toast-background: var(--everline-color-semantic-background-surface);
+  --everline-component-toast-action-foreground: var(--everline-color-semantic-action-primary);
+  --everline-component-toast-danger-icon-size: 24px;
+  --everline-component-toast-danger-icon-background: var(--everline-color-semantic-action-danger);
+  --everline-component-toast-danger-icon-foreground: var(--everline-color-base-white);
+  --everline-component-toast-danger-icon-stroke-width: 2.2;
+  --everline-component-toast-icon-text-gap: 14px;
+  --everline-component-toast-padding-inline: 20px;
+  --everline-component-toast-icon-inset: 10px;
 }
 
 /* Hover overlay, derived from the two tokens that define it rather than restating #fff:
@@ -724,6 +737,53 @@ fieldset.radio-group legend { font-size: var(--everline-font-size-label); font-w
 }
 .inline-alert__dismiss:hover { background-image: linear-gradient(var(--everline-hover-overlay), var(--everline-hover-overlay)); }
 .inline-alert__dismiss svg { width: var(--everline-size-icon-sm); height: var(--everline-size-icon-sm); fill: none; stroke: currentColor; stroke-width: var(--everline-icon-stroke-width); stroke-linecap: round; stroke-linejoin: round; }
+
+/* ---------- Toast / Snackbar ----------
+   Static demo list, not position:fixed — real fixed positioning, stacking order, and auto-dismiss
+   orchestration are a "toast manager" product-integration concern (this file's own equivalent of
+   Modal's pre-native-<dialog> "requires frontend implementation" deferral), and
+   docs/design-system-v0.1-draft.md itself defers auto-dismiss timing and a close button as
+   "尚未定義" — neither is implemented. role="status" on every variant, including danger, per that
+   same section's explicit text (unlike Inline alert, Toast's own accessibility text does not carve
+   out role="alert" for its danger/error variant).
+   The 'queued' example is shipped WITHOUT a distinct stacking visual: the SVG's own peek-card rect
+   (x=8 y=8 w=272 h=48) is geometrically fully contained within the main rect (x=0 y=0 w=280 h=56)
+   painted after it, so it is entirely occluded — the opposite of the spec text's stated "背後可見
+   的堆疊卡片暗示佇列". This is a real SVG-vs-spec-text conflict, not a token gap; not guessing a
+   corrected offset (see docs/STATUS.md), left for a human decision. */
+.toast-examples { display: flex; flex-direction: column; gap: var(--everline-space-2); }
+.toast {
+  display: inline-flex; align-items: center; gap: var(--everline-component-toast-icon-text-gap);
+  width: max-content; max-width: 100%;
+  height: var(--everline-component-toast-height);
+  padding-inline: var(--everline-component-toast-padding-inline);
+  border-radius: var(--everline-component-toast-radius);
+  background: var(--everline-component-toast-background);
+  color: var(--everline-color-semantic-foreground-primary);
+}
+.toast__icon {
+  flex: 0 0 auto; margin-inline-start: calc(var(--everline-component-toast-icon-inset) - var(--everline-component-toast-padding-inline));
+  width: var(--everline-size-icon-md); height: var(--everline-size-icon-md);
+  fill: none; stroke: var(--everline-component-toast-action-foreground);
+  stroke-width: var(--everline-icon-stroke-width); stroke-linecap: round; stroke-linejoin: round;
+}
+.toast__message { margin: 0; font-size: var(--everline-font-size-label); font-weight: var(--everline-font-weight-semibold); flex: 1 1 auto; min-width: 0; }
+.toast__action {
+  flex: 0 0 auto; margin-inline-start: auto;
+  border: 0; background: transparent; padding: 0;
+  color: var(--everline-component-toast-action-foreground); font: inherit; font-weight: var(--everline-font-weight-semibold);
+  cursor: pointer;
+}
+.toast--danger .toast__icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: var(--everline-component-toast-danger-icon-size); height: var(--everline-component-toast-danger-icon-size);
+  border-radius: 50%; background: var(--everline-component-toast-danger-icon-background);
+  fill: none; stroke: none;
+}
+.toast--danger .toast__icon svg {
+  width: 100%; height: 100%; fill: none; stroke: var(--everline-component-toast-danger-icon-foreground);
+  stroke-width: var(--everline-component-toast-danger-icon-stroke-width); stroke-linecap: round;
+}
 
 @media (max-width: 760px) {
   .catalog { padding: var(--everline-space-2); }
