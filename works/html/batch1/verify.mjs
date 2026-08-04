@@ -6,6 +6,7 @@
  * 2026-07-31 — candidate ready for G1, awaiting human visual review.
  * Badge / Tag (#34) added 2026-08-03 — candidate ready for G1, awaiting human visual review.
  * Inline alert (#35) added 2026-08-04 — G1 passed 2026-08-04.
+ * Select / Combobox (#36) added 2026-08-04 — candidate ready for G1, awaiting human visual review.
  *
  *   node works/html/batch1/verify.mjs
  *   CHROME="/path/to/chrome" node works/html/batch1/verify.mjs     # if auto-detection fails
@@ -201,6 +202,25 @@ function verifyTokens() {
   check('component.checkbox.size is still 32px (unchanged)', px(resolved.get('component.checkbox.size')) === '32px');
   check('component.text-input.background is still gray-600 #666666 (unchanged)',
     px(resolved.get('component.text-input.background')) === '#666666');
+  // Select / Combobox (issue #36): 11 pre-existing component.select.* fields were declared
+  // 2026-07-19 but never checked against c-select until this round's P0 audit, which found the
+  // gaps below (all pure additions, no existing resolved value changed).
+  check('color.base.gray-550 resolves to #A8A8A8 (backfilled from c-select\'s combobox search icon)', px(resolved.get('color.base.gray-550')) === '#A8A8A8', resolved.get('color.base.gray-550'));
+  check('component.select.border-width resolves to 1px (trigger stroke-width)', px(resolved.get('component.select.border-width')) === '1px', resolved.get('component.select.border-width'));
+  check('component.select.foreground resolves to foreground-primary #F2F2F2', px(resolved.get('component.select.foreground')) === '#F2F2F2', resolved.get('component.select.foreground'));
+  check('component.select.foreground-disabled resolves to foreground-disabled #F2F2F2', px(resolved.get('component.select.foreground-disabled')) === '#F2F2F2', resolved.get('component.select.foreground-disabled'));
+  check('component.select.selected-foreground resolves to white #FFFFFF (distinct from default option foreground)', px(resolved.get('component.select.selected-foreground')) === '#FFFFFF', resolved.get('component.select.selected-foreground'));
+  check('component.select.option-disabled-foreground resolves to gray-600 #666666', px(resolved.get('component.select.option-disabled-foreground')) === '#666666', resolved.get('component.select.option-disabled-foreground'));
+  check('component.select.indicator-inset resolves to 12px (indicator rect x="12")', px(resolved.get('component.select.indicator-inset')) === '12px', resolved.get('component.select.indicator-inset'));
+  check('component.select.indicator-width resolves to 4px', px(resolved.get('component.select.indicator-width')) === '4px', resolved.get('component.select.indicator-width'));
+  check('component.select.indicator-radius resolves to 2px', px(resolved.get('component.select.indicator-radius')) === '2px', resolved.get('component.select.indicator-radius'));
+  check('component.select.border-width-focus resolves to 2px (combobox contained focus outline)', px(resolved.get('component.select.border-width-focus')) === '2px', resolved.get('component.select.border-width-focus'));
+  check('component.select.border-focus resolves to border-focus #598AE8', px(resolved.get('component.select.border-focus')) === '#598AE8', resolved.get('component.select.border-focus'));
+  check('component.select.search-icon-color resolves to the newly-backfilled gray-550 #A8A8A8', px(resolved.get('component.select.search-icon-color')) === '#A8A8A8', resolved.get('component.select.search-icon-color'));
+  // Pre-existing select fields this round must NOT have touched.
+  check('component.select.trigger-height is still 48px (unchanged)', px(resolved.get('component.select.trigger-height')) === '48px');
+  check('component.select.menu-radius is still radius.lg 16px (unchanged)', px(resolved.get('component.select.menu-radius')) === '16px');
+  check('component.select.selected-background is still action-primary #598AE8 (unchanged)', px(resolved.get('component.select.selected-background')) === '#598AE8');
   return resolved;
 }
 
@@ -243,7 +263,7 @@ function valuesMatch(tokenResolved, cssLiteral) {
 function verifyCssContract(resolvedTokens) {
   section('works/html/batch1/styles.css — no raw dimensions in component rules');
   const css = readFileSync(CSS, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
-  const COMPONENT = /^[^@]*?(\.button|\.checkbox|\.text-input|\.textarea|\.icon-button|\.switch|\.radio|\.split-button|\.tag|\.inline-alert|fieldset\.radio-group|:where)/;
+  const COMPONENT = /^[^@]*?(\.button|\.checkbox|\.text-input|\.textarea|\.icon-button|\.switch|\.radio|\.split-button|\.tag|\.inline-alert|\.select|fieldset\.radio-group|:where)/;
   const offenders = [];
   for (const m of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
     const selector = m[1].trim();
@@ -941,6 +961,149 @@ async function main() {
     const restoredAlertCount = await c.js(`document.querySelectorAll('.inline-alert-examples > .inline-alert').length`);
     check('the info example is restored for the G1 review screenshot below', restoredAlertCount === countBeforeDismiss, { restoredAlertCount, countBeforeDismiss });
 
+    /* ---------------- Select / Combobox ---------------- */
+    section('Select / Combobox');
+    const selBefore = await c.js(`(()=>{
+      const cs=(e)=>getComputedStyle(e);
+      const trigger=${sel('[data-select-trigger]')}, menu=${sel('[data-select-menu]')};
+      const opt0=document.getElementById('select-1-opt-0');
+      return {
+        triggerH: cs(trigger).height, triggerR: cs(trigger).borderRadius,
+        optionH: cs(opt0).height, menuR: cs(menu).borderRadius,
+        hasPopup: trigger.getAttribute('aria-haspopup'), expanded: trigger.getAttribute('aria-expanded'),
+        menuHidden: menu.hidden, menuRole: menu.getAttribute('role'),
+        optRole: opt0.getAttribute('role'), selectedAttr: document.getElementById('select-1-opt-1').getAttribute('aria-selected'),
+        disabledAttr: document.getElementById('select-1-opt-2').getAttribute('aria-disabled')
+      };
+    })()`);
+    check('select trigger height is 48px', selBefore.triggerH === '48px', selBefore.triggerH);
+    check('select trigger radius is 24px', selBefore.triggerR === '24px', selBefore.triggerR);
+    check('select option row height is 48px', selBefore.optionH === '48px', selBefore.optionH);
+    check('select menu radius is 16px', selBefore.menuR === '16px', selBefore.menuR);
+    check('trigger has aria-haspopup="listbox", starts aria-expanded="false", menu starts hidden with role="listbox"',
+      selBefore.hasPopup === 'listbox' && selBefore.expanded === 'false' && selBefore.menuHidden === true && selBefore.menuRole === 'listbox', selBefore);
+    check('options use role="option"; the pre-selected/disabled options carry real aria-selected/aria-disabled',
+      selBefore.optRole === 'option' && selBefore.selectedAttr === 'true' && selBefore.disabledAttr === 'true', selBefore);
+
+    // Real click test: opening the trigger moves focus to the already-selected option (per
+    // docs/design-system-v0.1-draft.md's "目前選取值需可由輔助科技辨識" requirement — the currently
+    // selected item is where keyboard navigation should resume, not always the first item).
+    await c.clickEl(sel('[data-select-trigger]'));
+    const selAfterOpen = await c.js(`(()=>{
+      const trigger=${sel('[data-select-trigger]')};
+      return { expanded: trigger.getAttribute('aria-expanded'), hidden: ${sel('[data-select-menu]')}.hidden, focusedId: document.activeElement.id };
+    })()`);
+    check('clicking the trigger opens the menu, sets aria-expanded=true, and focuses the currently-selected option',
+      selAfterOpen.expanded === 'true' && selAfterOpen.hidden === false && selAfterOpen.focusedId === 'select-1-opt-1', selAfterOpen);
+
+    // Real keyboard test: ArrowDown from the selected (middle) option must skip the disabled
+    // third option and wrap around to the first — proving disabled options are excluded from
+    // arrow-key traversal, not just visually muted.
+    await c.key('ArrowDown');
+    const afterSelectArrowDown = await c.js('document.activeElement.id');
+    check('ArrowDown from the selected option skips the disabled option and wraps to the first (roving tabindex, disabled excluded)',
+      afterSelectArrowDown === 'select-1-opt-0', afterSelectArrowDown);
+
+    // Real keyboard test: Enter selects the focused option, updates the visible trigger label and
+    // aria-selected, and closes the menu.
+    await c.key('Enter');
+    const afterSelectEnter = await c.js(`(()=>{
+      const trigger=${sel('[data-select-trigger]')};
+      return {
+        hidden: ${sel('[data-select-menu]')}.hidden, expanded: trigger.getAttribute('aria-expanded'),
+        label: trigger.textContent.trim(), focusIsTrigger: document.activeElement===trigger,
+        opt0Selected: document.getElementById('select-1-opt-0').getAttribute('aria-selected'),
+        opt1Selected: document.getElementById('select-1-opt-1').getAttribute('aria-selected')
+      };
+    })()`);
+    check('Enter selects the focused option, updates the trigger label, moves aria-selected, closes the menu, and returns focus to the trigger',
+      afterSelectEnter.hidden === true && afterSelectEnter.expanded === 'false' && afterSelectEnter.label === '選項一' &&
+      afterSelectEnter.focusIsTrigger && afterSelectEnter.opt0Selected === 'true' && afterSelectEnter.opt1Selected === null, afterSelectEnter);
+    // Restore the documented initial selection (選項二) so later steps (screenshot sampling, the
+    // G1 review capture) see the state index.html actually declares.
+    await c.clickEl(sel('[data-select-trigger]'));
+    await c.clickEl(`document.getElementById('select-1-opt-1')`);
+
+    // Real keyboard test: Escape closes without changing the current selection.
+    await c.clickEl(sel('[data-select-trigger]'));
+    await c.key('Escape');
+    const afterSelectEscape = await c.js(`(()=>{
+      const trigger=${sel('[data-select-trigger]')};
+      return { hidden: ${sel('[data-select-menu]')}.hidden, focusIsTrigger: document.activeElement===trigger, label: trigger.textContent.trim() };
+    })()`);
+    check('Escape closes the menu, returns focus to the trigger, and leaves the selected value unchanged',
+      afterSelectEscape.hidden === true && afterSelectEscape.focusIsTrigger && afterSelectEscape.label === '選項二（已選取）', afterSelectEscape);
+
+    // Real click test: light dismiss — clicking outside the open select closes it.
+    await c.clickEl(sel('[data-select-trigger]'));
+    await c.click(20, 20);
+    const afterSelectOutsideClick = await c.js(`${sel('[data-select-menu]')}.hidden`);
+    check('clicking outside the open select closes it (light dismiss)', afterSelectOutsideClick === true, afterSelectOutsideClick);
+
+    check('the disabled select trigger uses the native disabled attribute',
+      (await c.js("document.querySelectorAll('.select__trigger')[1].disabled")) === true);
+
+    /* ---------------- Combobox ---------------- */
+    section('Combobox');
+    const comboBefore = await c.js(`(()=>{
+      const input=${sel('[data-combobox-input]')}, menu=${sel('[data-combobox-menu]')};
+      return {
+        role: input.getAttribute('role'), expanded: input.getAttribute('aria-expanded'), hidden: menu.hidden,
+        selectMenuPos: getComputedStyle(${sel('[data-select-menu]')}).position, comboMenuPos: getComputedStyle(menu).position
+      };
+    })()`);
+    check('combobox input uses role="combobox", starts aria-expanded="false", menu starts hidden',
+      comboBefore.role === 'combobox' && comboBefore.expanded === 'false' && comboBefore.hidden === true, comboBefore);
+    check("plain Select's menu overlays (position:absolute) but Combobox's stays in normal flow (position:static) — the MD3 'contained style' structural difference docs/design-system-v0.1-draft.md calls for",
+      comboBefore.selectMenuPos === 'absolute' && comboBefore.comboMenuPos === 'static', comboBefore);
+
+    // Real focus test: focusing the pre-filled input re-runs the filter and opens the menu.
+    await c.js(`${sel('[data-combobox-input]')}.focus()`);
+    const comboAfterFocus = await c.js(`(()=>{
+      const input=${sel('[data-combobox-input]')}, wrapper=${sel('[data-combobox]')};
+      return { expanded: input.getAttribute('aria-expanded'), hidden: ${sel('[data-combobox-menu]')}.hidden, ring: getComputedStyle(wrapper).boxShadow };
+    })()`);
+    check('focusing the pre-filled combobox input opens the menu and sets aria-expanded=true', comboAfterFocus.expanded === 'true' && comboAfterFocus.hidden === false, comboAfterFocus);
+    check('the contained focus ring (border-focus, 2px) wraps the whole trigger+listbox wrapper via :focus-within',
+      comboAfterFocus.ring.includes('89, 138, 232') && comboAfterFocus.ring.includes('2px'), comboAfterFocus.ring);
+
+    // Real keyboard test: ArrowDown from the input moves into the first visible option.
+    await c.key('ArrowDown');
+    const comboAfterArrowDown = await c.js('document.activeElement.id');
+    check('ArrowDown on the open combobox input moves focus into the first visible option', comboAfterArrowDown === 'combobox-1-opt-0', comboAfterArrowDown);
+
+    // Real keyboard test: Enter on a filtered option selects it, writing its full label into the
+    // input (not just the matched substring) and closing the menu.
+    await c.key('Enter');
+    const comboAfterEnter = await c.js(`(()=>{
+      const input=${sel('[data-combobox-input]')};
+      return { value: input.value, hidden: ${sel('[data-combobox-menu]')}.hidden, focusIsInput: document.activeElement===input };
+    })()`);
+    check('Enter on a filtered option writes its full label into the input, closes the menu, and returns focus to the input',
+      comboAfterEnter.value === '看板檢視' && comboAfterEnter.hidden === true && comboAfterEnter.focusIsInput, comboAfterEnter);
+
+    // Real input-event test: typing a query with no matches hides every option and closes the
+    // menu. Deliberately NOT '設定' — that string is a genuine substring of "看板欄位設定" (one of
+    // the two demo labels), so it would actually match; needs a query neither label contains.
+    await c.js(`(()=>{const i=${sel('[data-combobox-input]')}; i.value='不存在的詞'; i.dispatchEvent(new Event('input',{bubbles:true}));})()`);
+    const comboNoMatch = await c.js(`(()=>{
+      const opts=[...${sel('[data-combobox-menu]')}.querySelectorAll('[role=option]')];
+      return { allHidden: opts.every(o=>o.hidden), menuHidden: ${sel('[data-combobox-menu]')}.hidden };
+    })()`);
+    check('typing a query with no matches hides every option and closes the menu', comboNoMatch.allHidden && comboNoMatch.menuHidden, comboNoMatch);
+
+    // Restore the documented initial value/state ("看板", highlighted in both options, menu
+    // closed) so the G1 review screenshot below matches what index.html actually declares.
+    await c.js(`(()=>{const i=${sel('[data-combobox-input]')}; i.value='看板'; i.dispatchEvent(new Event('input',{bubbles:true}));})()`);
+    await c.key('Escape');
+    const comboRestored = await c.js(`(()=>{
+      const input=${sel('[data-combobox-input]')};
+      const match0=document.querySelector('#combobox-1-opt-0 .select__match'), match1=document.querySelector('#combobox-1-opt-1 .select__match');
+      return { value: input.value, hidden: ${sel('[data-combobox-menu]')}.hidden, match0: match0?.textContent, match1: match1?.textContent };
+    })()`);
+    check('combobox is restored to its documented initial value with both options re-highlighted and the menu closed',
+      comboRestored.value === '看板' && comboRestored.hidden === true && comboRestored.match0 === '看板' && comboRestored.match1 === '看板', comboRestored);
+
     /* ---------------- Checkbox ---------------- */
     section('Checkbox');
     const cb = await c.js(`(()=>{
@@ -1166,6 +1329,22 @@ async function main() {
       JSON.stringify(alertImg.at(...alertPts.railNeutral)) === JSON.stringify(GRAY_666), alertImg.at(...alertPts.railNeutral));
     check('inline alert container background renders as background-surface rgb(51, 51, 51) (sampled from a real screenshot)',
       JSON.stringify(alertImg.at(...alertPts.bg)) === JSON.stringify(GRAY_333), alertImg.at(...alertPts.bg));
+
+    // Same real-screenshot-sample technique for Select's trigger fill and its selected-option row
+    // — the menu is reopened only long enough to capture the sample, then closed again so the page
+    // returns to its documented initial (closed) state for the G1 screenshot below.
+    await c.js(`${sel('[data-select-trigger]')}.scrollIntoView({block:'center'})`);
+    await sleep(150);
+    const selTriggerPt = await c.js(`(()=>{const r=${sel('[data-select-trigger]')}.getBoundingClientRect();return [Math.round(r.left+8), Math.round(r.top+r.height/2)];})()`);
+    const selTriggerImg = await c.shot();
+    check('select trigger background renders as background-surface rgb(51, 51, 51) (sampled from a real screenshot)',
+      JSON.stringify(selTriggerImg.at(...selTriggerPt)) === JSON.stringify(GRAY_333), selTriggerImg.at(...selTriggerPt));
+    await c.clickEl(sel('[data-select-trigger]'));
+    const selRowPt = await c.js(`(()=>{const r=document.getElementById('select-1-opt-1').getBoundingClientRect();return [Math.round(r.left+40), Math.round(r.top+r.height/2)];})()`);
+    const selRowImg = await c.shot();
+    check('selected option row background renders as action-primary blue (sampled from a real screenshot)',
+      JSON.stringify(selRowImg.at(...selRowPt)) === JSON.stringify(BLUE), selRowImg.at(...selRowPt));
+    await c.key('Escape');
 
     /* ---------------- Responsive + motion ---------------- */
     section('Responsive and motion');

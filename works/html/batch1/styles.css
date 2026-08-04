@@ -11,6 +11,7 @@
   --everline-color-base-white: #fff;
   --everline-color-base-off-white: #f2f2f2;
   --everline-color-base-gray-500: #b8b8b8;
+  --everline-color-base-gray-550: #a8a8a8;
   --everline-color-base-gray-600: #666;
   --everline-color-base-gray-700: #4d4d4d;
   --everline-color-base-gray-800: #444;
@@ -186,6 +187,30 @@
   --everline-component-inline-alert-icon-color-danger: var(--everline-color-semantic-action-danger);
   --everline-component-inline-alert-icon-color-neutral: var(--everline-color-semantic-foreground-primary);
   --everline-component-inline-alert-dismiss-control-size: 48px;
+
+  /* component.select.* */
+  --everline-component-select-trigger-height: var(--everline-size-control-md);
+  --everline-component-select-trigger-radius: var(--everline-radius-control);
+  --everline-component-select-padding-inline: var(--everline-space-3);
+  --everline-component-select-border-width: var(--everline-border-width-default);
+  --everline-component-select-menu-row-height: var(--everline-size-control-md);
+  --everline-component-select-menu-radius: var(--everline-radius-lg);
+  --everline-component-select-background: var(--everline-color-semantic-background-surface);
+  --everline-component-select-border: var(--everline-color-semantic-border-default);
+  --everline-component-select-menu-background: var(--everline-color-semantic-background-overlay);
+  --everline-component-select-selected-background: var(--everline-color-semantic-action-primary);
+  --everline-component-select-selected-foreground: var(--everline-color-semantic-foreground-inverse);
+  --everline-component-select-indicator-inset: 12px;
+  --everline-component-select-indicator-width: 4px;
+  --everline-component-select-indicator-radius: 2px;
+  --everline-component-select-option-disabled-foreground: var(--everline-color-base-gray-600);
+  --everline-component-select-background-disabled: var(--everline-color-semantic-background-subdued);
+  --everline-component-select-foreground: var(--everline-color-semantic-foreground-primary);
+  --everline-component-select-foreground-disabled: var(--everline-color-semantic-foreground-disabled);
+  --everline-component-select-border-width-focus: var(--everline-border-width-focus);
+  --everline-component-select-border-focus: var(--everline-color-semantic-border-focus);
+  --everline-component-select-search-icon-color: var(--everline-color-base-gray-550);
+  --everline-component-select-search-match-highlight: var(--everline-color-semantic-action-primary);
 }
 
 /* Hover overlay, derived from the two tokens that define it rather than restating #fff:
@@ -725,12 +750,110 @@ fieldset.radio-group legend { font-size: var(--everline-font-size-label); font-w
 .inline-alert__dismiss:hover { background-image: linear-gradient(var(--everline-hover-overlay), var(--everline-hover-overlay)); }
 .inline-alert__dismiss svg { width: var(--everline-size-icon-sm); height: var(--everline-size-icon-sm); fill: none; stroke: currentColor; stroke-width: var(--everline-icon-stroke-width); stroke-linecap: round; stroke-linejoin: round; }
 
+/* ---------- Select / Combobox ----------
+   Plain Select: a real <button aria-haspopup="listbox"> trigger plus a <ul role="listbox"> of
+   <li role="option"> children with roving tabindex — the same real-ARIA-widget-over-styled-<select>
+   approach already used for Split button's menu. The listbox floats via position:absolute (a
+   standard dropdown overlay) so it never shifts surrounding page layout, same technique as
+   Split button's own menu.
+   Combobox: per docs/design-system-v0.1-draft.md's explicit decision (Material Design 3 SearchView
+   "contained style"), the 2px focus outline wraps trigger+listbox as ONE shape, not just the input
+   row — implemented by letting the listbox sit in normal flow (not absolutely positioned) inside
+   the same wrapper the outline is drawn on via :focus-within, so the ring naturally grows to
+   contain both. This is a real behavioural difference from plain Select's overlay-style menu, not
+   an oversight: MD3's own SearchView expands in place rather than floating above content.
+   Only closed/open/disabled/combobox-with-filtering are implemented — hover item and a dedicated
+   keyboard-focus-item visual were both explicitly left undrawn by docs/design-system-v0.1-draft.md
+   ("hover item、keyboard focus...尚未畫出"), so option rows get no hover treatment and rely on the
+   same global :focus-visible ring already used everywhere else in this file, not a new visual. */
+.select-examples { display: flex; flex-wrap: wrap; gap: var(--everline-space-4); align-items: flex-start; }
+.select-examples .select, .select-examples .select-combobox { width: 220px; max-width: 100%; }
+.select { position: relative; }
+.select__trigger {
+  display: flex; align-items: center; justify-content: space-between; width: 100%;
+  height: var(--everline-component-select-trigger-height);
+  padding-inline: var(--everline-component-select-padding-inline);
+  border: 0; border-radius: var(--everline-component-select-trigger-radius);
+  box-shadow: inset 0 0 0 var(--everline-component-select-border-width) var(--everline-component-select-border);
+  background: var(--everline-component-select-background);
+  color: var(--everline-component-select-foreground);
+  font: inherit; cursor: pointer;
+}
+.select__trigger:hover:not(:disabled) { background-image: linear-gradient(var(--everline-hover-overlay), var(--everline-hover-overlay)); }
+.select__trigger:disabled {
+  background: var(--everline-component-select-background-disabled);
+  color: color-mix(in srgb, var(--everline-component-select-foreground-disabled) calc(var(--everline-opacity-disabled) * 100%), var(--everline-component-select-background-disabled));
+  box-shadow: none; cursor: not-allowed;
+}
+.select__chevron { width: var(--everline-size-icon-sm); height: var(--everline-size-icon-sm); flex: 0 0 auto; fill: none; stroke: currentColor; stroke-width: var(--everline-icon-stroke-width); stroke-linecap: round; stroke-linejoin: round; }
+.select__trigger[aria-expanded="true"] .select__chevron { transform: rotate(180deg); }
+.select:has(.select__trigger[aria-expanded="true"]) .select__trigger { border-end-start-radius: 0; border-end-end-radius: 0; }
+.select__menu {
+  position: absolute; top: 100%; left: 0; width: 100%; z-index: var(--everline-layer-overlay);
+  margin: 0; padding: 0; list-style: none;
+  border-radius: var(--everline-component-select-menu-radius);
+  background: var(--everline-component-select-menu-background);
+  overflow: hidden;
+}
+.select__menu[hidden] { display: none; }
+.select:has(.select__trigger[aria-expanded="true"]) .select__menu { border-start-start-radius: 0; border-start-end-radius: 0; }
+.select__option {
+  position: relative; display: flex; align-items: center;
+  height: var(--everline-component-select-menu-row-height);
+  padding-inline: var(--everline-component-select-padding-inline);
+  color: var(--everline-component-select-foreground);
+  cursor: pointer;
+}
+.select__option[aria-selected="true"] {
+  background: var(--everline-component-select-selected-background);
+  color: var(--everline-component-select-selected-foreground);
+}
+.select__option[aria-selected="true"]::before {
+  content: ""; position: absolute; left: var(--everline-component-select-indicator-inset);
+  top: var(--everline-space-1); bottom: var(--everline-space-1);
+  width: var(--everline-component-select-indicator-width); border-radius: var(--everline-component-select-indicator-radius);
+  background: var(--everline-component-select-selected-foreground);
+}
+.select__option[aria-disabled="true"] { color: var(--everline-component-select-option-disabled-foreground); cursor: not-allowed; }
+.select__match { color: var(--everline-component-select-search-match-highlight); }
+
+/* Combobox: field + listbox share one wrapper so the :focus-within ring (below) can grow to
+   contain both. calc() padding-inline-start reuses the same icon-inset/icon-size/content-gap
+   arithmetic already reviewed for component.search-field (16 + 16 + 8 = 40px) rather than adding a
+   near-duplicate token — the source SVG's hand-drawn icon sits a few px off that grid, which reads
+   as drawing tolerance on a sketched glyph, not a distinct measured value worth its own token. */
+.select-combobox { position: relative; border-radius: var(--everline-component-select-trigger-radius); }
+.select-combobox:has(.select__menu:not([hidden])) { border-radius: var(--everline-component-select-trigger-radius) var(--everline-component-select-trigger-radius) var(--everline-component-select-menu-radius) var(--everline-component-select-menu-radius); }
+.select-combobox:focus-within { box-shadow: 0 0 0 var(--everline-component-select-border-width-focus) var(--everline-component-select-border-focus); }
+.select-combobox__field {
+  position: relative; display: flex; align-items: center;
+  height: var(--everline-component-select-trigger-height);
+  border-radius: var(--everline-component-select-trigger-radius);
+  background: var(--everline-component-select-background);
+}
+.select-combobox:has(.select__menu:not([hidden])) .select-combobox__field { border-end-start-radius: 0; border-end-end-radius: 0; }
+.select-combobox__icon {
+  position: absolute; left: var(--everline-space-2); top: 50%; transform: translateY(-50%); pointer-events: none;
+  width: var(--everline-size-icon-sm); height: var(--everline-size-icon-sm);
+  fill: none; stroke: var(--everline-component-select-search-icon-color);
+  stroke-width: var(--everline-icon-stroke-width); stroke-linecap: round; stroke-linejoin: round;
+}
+.select-combobox__input {
+  width: 100%; height: 100%; border: 0; background: transparent; font: inherit;
+  padding-inline-start: calc(var(--everline-space-2) + var(--everline-size-icon-sm) + var(--everline-space-1));
+  padding-inline-end: var(--everline-component-select-padding-inline);
+  color: var(--everline-component-select-foreground);
+}
+.select-combobox__input:focus { outline: none; }
+.select-combobox .select__menu { position: static; }
+
 @media (max-width: 760px) {
   .catalog { padding: var(--everline-space-2); }
   .catalog-header { flex-direction: column; }
   .candidate-badge { white-space: normal; }
   .text-input, .textarea { width: 100%; }
   .split-button-examples { flex-direction: column; }
+  .select-examples { flex-direction: column; }
 }
 
 /* No transition, animation or keyframe is declared anywhere in this batch — Button/Checkbox/

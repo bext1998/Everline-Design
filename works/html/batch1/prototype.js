@@ -131,3 +131,193 @@ document.querySelectorAll('[data-alert-dismiss]').forEach((btn) => {
     group?.focus();
   });
 });
+
+// Select / Combobox (issue #36): a real <button aria-haspopup="listbox"> trigger with a real
+// role="listbox"/role="option" panel and roving tabindex — the same real-ARIA-widget approach
+// already established for Split button's menu, not a styled native <select>. Only closed/open/
+// disabled/combobox-with-filtering are implemented; hover item and a dedicated keyboard-focus-item
+// visual were both explicitly left undrawn by docs/design-system-v0.1-draft.md ("hover item、
+// keyboard focus...尚未畫出"), so no extra class is toggled for them — options rely only on the
+// same global :focus-visible ring every other component in this file already uses.
+document.querySelectorAll('[data-select]').forEach((root) => {
+  const trigger = root.querySelector('[data-select-trigger]');
+  const valueEl = root.querySelector('[data-select-value]');
+  const menu = root.querySelector('[data-select-menu]');
+  const options = [...menu.querySelectorAll('[role="option"]')];
+
+  const enabled = (opt) => opt.getAttribute('aria-disabled') !== 'true';
+  const isOpen = () => !menu.hidden;
+
+  function focusOption(opt) {
+    options.forEach((o) => { o.tabIndex = o === opt ? 0 : -1; });
+    opt.focus();
+  }
+
+  function openMenu() {
+    menu.hidden = false;
+    trigger.setAttribute('aria-expanded', 'true');
+    const current = options.find((o) => o.getAttribute('aria-selected') === 'true') || options.find(enabled);
+    if (current) focusOption(current);
+  }
+
+  function closeMenu({ returnFocus = true } = {}) {
+    if (!isOpen()) return;
+    menu.hidden = true;
+    trigger.setAttribute('aria-expanded', 'false');
+    if (returnFocus) trigger.focus();
+  }
+
+  function selectOption(opt) {
+    if (!enabled(opt)) return;
+    options.forEach((o) => o.removeAttribute('aria-selected'));
+    opt.setAttribute('aria-selected', 'true');
+    valueEl.textContent = opt.textContent.trim();
+    closeMenu();
+  }
+
+  trigger.addEventListener('click', () => { if (isOpen()) closeMenu(); else openMenu(); });
+  trigger.addEventListener('keydown', (e) => {
+    if (isOpen()) return;
+    if (e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openMenu(); }
+  });
+
+  options.forEach((opt, i) => {
+    opt.addEventListener('click', () => selectOption(opt));
+    opt.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        for (let n = 1; n <= options.length; n += 1) {
+          const next = options[(i + n) % options.length];
+          if (enabled(next)) { focusOption(next); break; }
+        }
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        for (let n = 1; n <= options.length; n += 1) {
+          const prev = options[(i - n + options.length) % options.length];
+          if (enabled(prev)) { focusOption(prev); break; }
+        }
+      } else if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        selectOption(opt);
+      } else if (e.key === 'Escape') {
+        e.preventDefault();
+        closeMenu();
+      } else if (e.key === 'Tab') {
+        closeMenu({ returnFocus: false });
+      }
+    });
+  });
+
+  document.addEventListener('click', (e) => {
+    if (isOpen() && !root.contains(e.target)) closeMenu({ returnFocus: false });
+  });
+});
+
+// Combobox variant of Select (issue #36): a real role="combobox" <input> plus a role="listbox"
+// panel. Filtering narrows options by substring match against each option's plain-text label
+// (data-label) and re-highlights the matched substring with .select__match — the SVG only shows
+// the after-filtering result, so the exact matching algorithm (substring position, re-highlight on
+// every keystroke) is a necessary behavioural extension to make the drawn screenshot actually
+// interactive, not a new visual (see index.html's scope note). Per docs/design-system-v0.1-draft.md
+// the listbox stays in normal document flow here (not position:absolute like plain Select's), so
+// the :focus-within contained focus ring in styles.css can grow to wrap both the field and the
+// listbox as one shape (Material Design 3 SearchView "contained style").
+document.querySelectorAll('[data-combobox]').forEach((root) => {
+  const input = root.querySelector('[data-combobox-input]');
+  const menu = root.querySelector('[data-combobox-menu]');
+  const options = [...menu.querySelectorAll('[role="option"]')];
+  // Selecting an option calls input.focus() to return focus there — which synchronously fires the
+  // 'focus' listener below and would otherwise immediately reopen the menu, since the just-written
+  // value still matches the option that produced it. This flag suppresses exactly that one
+  // synchronous reopen, without touching the normal "refocusing a filled field reopens its
+  // suggestions" behaviour the listener exists for.
+  let suppressAutoOpen = false;
+
+  const visible = (opt) => !opt.hidden;
+  const isOpen = () => !menu.hidden;
+
+  function renderMatch(opt, query) {
+    const label = opt.dataset.label;
+    if (!query) { opt.textContent = label; opt.hidden = false; return; }
+    const idx = label.indexOf(query);
+    if (idx === -1) { opt.hidden = true; return; }
+    opt.hidden = false;
+    opt.textContent = '';
+    if (idx > 0) opt.append(label.slice(0, idx));
+    const mark = document.createElement('span');
+    mark.className = 'select__match';
+    mark.textContent = label.slice(idx, idx + query.length);
+    opt.append(mark);
+    if (idx + query.length < label.length) opt.append(label.slice(idx + query.length));
+  }
+
+  function openMenu() {
+    menu.hidden = false;
+    input.setAttribute('aria-expanded', 'true');
+  }
+
+  function closeMenu({ returnFocus = false } = {}) {
+    if (!isOpen()) return;
+    menu.hidden = true;
+    input.setAttribute('aria-expanded', 'false');
+    options.forEach((o) => { o.tabIndex = -1; });
+    if (returnFocus) input.focus();
+  }
+
+  function filter() {
+    const query = input.value.trim();
+    options.forEach((opt) => renderMatch(opt, query));
+    if (options.some(visible)) openMenu(); else closeMenu();
+  }
+
+  function selectOption(opt) {
+    input.value = opt.dataset.label;
+    suppressAutoOpen = true;
+    closeMenu({ returnFocus: true });
+    suppressAutoOpen = false;
+  }
+
+  input.addEventListener('input', filter);
+  input.addEventListener('focus', () => { if (!suppressAutoOpen && input.value.trim()) filter(); });
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (!isOpen()) filter();
+      const first = options.find(visible);
+      if (first) { options.forEach((o) => { o.tabIndex = o === first ? 0 : -1; }); first.focus(); }
+    } else if (e.key === 'Escape' && isOpen()) {
+      e.preventDefault();
+      closeMenu({ returnFocus: true });
+    }
+  });
+
+  options.forEach((opt) => {
+    opt.addEventListener('click', () => selectOption(opt));
+    opt.addEventListener('keydown', (e) => {
+      const vis = options.filter(visible);
+      const i = vis.indexOf(opt);
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        const next = vis[(i + 1) % vis.length];
+        options.forEach((o) => { o.tabIndex = -1; });
+        next.tabIndex = 0; next.focus();
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (i === 0) { input.focus(); return; }
+        const prev = vis[i - 1];
+        options.forEach((o) => { o.tabIndex = -1; });
+        prev.tabIndex = 0; prev.focus();
+      } else if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        selectOption(opt);
+      } else if (e.key === 'Escape') {
+        e.preventDefault();
+        closeMenu({ returnFocus: true });
+      }
+    });
+  });
+
+  document.addEventListener('click', (e) => {
+    if (isOpen() && !root.contains(e.target)) closeMenu();
+  });
+});
