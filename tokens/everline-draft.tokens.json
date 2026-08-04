@@ -288,7 +288,7 @@
       "backdrop-color": { "$type": "color", "$value": "#000000", "$description": "Combine with opacity.backdrop via fill-opacity, not a baked alpha hex." }
     },
     "toast": {
-      "$description": "Batch 1 candidate (2026-07-19). Auto-dismiss timing not yet defined.",
+      "$description": "Batch 1 candidate (2026-07-19). Auto-dismiss timing not yet defined. Gaps below found during P0 token audit (2026-08-05, issue #41), each verified against c-toast in works/everline-components-master.svg. NOTE: the 'queued' example's own peek-card rect (x=8 y=8 width=272 height=48, painted BEFORE the main rect at x=0 y=0 width=280 height=56) is geometrically fully contained within the main rect's bounds and therefore entirely occluded by it when painted in document order — the opposite of docs/design-system-v0.1-draft.md's stated intent ('背後可見的堆疊卡片暗示佇列', a visibly-peeking card). This is a real SVG-vs-spec-text conflict, not a token gap; not guessing a corrected offset, see works/html/batch1/index.html's own scope note and docs/STATUS.md — flagged Requires human decision, the queued example ships without a distinct stacking visual pending that call.",
       "height": { "$type": "dimension", "$value": "{scale.component-heights.lg}", "$description": "56 px, one 8 px step above the standard control-md height." },
       "radius": { "$type": "dimension", "$value": "{radius.lg}" },
       "background": { "$type": "color", "$value": "{color.semantic.background-surface}" },
@@ -296,7 +296,10 @@
       "danger-icon-size": { "$type": "dimension", "$value": { "value": 24, "unit": "px" }, "$description": "Solid-fill circular danger icon, distinct from the bare-stroke icons used by the other toast variants." },
       "danger-icon-background": { "$type": "color", "$value": "{color.semantic.action-danger}" },
       "danger-icon-foreground": { "$type": "color", "$value": "{color.semantic.foreground-inverse}" },
-      "icon-text-gap": { "$type": "dimension", "$value": { "value": 14, "unit": "px" }, "$description": "Candidate; user-specified range was 12-16 px." }
+      "danger-icon-stroke-width": { "$type": "number", "$value": 2.2, "$description": "Gap found 2026-08-05. The danger icon's exclamation glyph (\"M22 22v8 M22 34h.01\") has an explicit stroke-width=\"2.2\" override, distinct from the shared icon.stroke-width (2) every other icon in this file uses." },
+      "icon-text-gap": { "$type": "dimension", "$value": { "value": 14, "unit": "px" }, "$description": "Candidate; user-specified range was 12-16 px. Re-verified 2026-08-05 against the danger icon (a full circle, more precisely measurable than the default checkmark's own irregular path bbox): circle right edge x=34, label text x=48, gap = 14. Confirmed correct, unchanged." },
+      "padding-inline": { "$type": "dimension", "$value": { "value": 20, "unit": "px" }, "$description": "Gap found 2026-08-05. Text-only variants' label starts at x=\"20\" (toast-action, toast-queued) — not on the existing 8px scale.step grid (16/24)." },
+      "icon-inset": { "$type": "dimension", "$value": { "value": 10, "unit": "px" }, "$description": "Gap found 2026-08-05. The leading icon's own slot starts closer to the edge than plain text: danger's circle bbox left edge is x=10 (cx=22, r=12), not the 20px text padding-inline — confirmed consistent with the default checkmark's own path bbox, which sits inside that same 10-34 slot without filling it edge to edge (an irregular hand-drawn glyph, same tolerance already accepted elsewhere for icon glyphs in this file)." }
     },
     "list-item": {
       "$description": "Batch 2 candidate (2026-07-20). Shared row language for List, Data table, and Kanban column's task-card rows only — deliberately NOT retrofitted onto Select/Split-button/Menu's existing selected-item visuals in this pass (see docs/design-system-v0.1-batch2-draft.md for the retrofit-later note).",

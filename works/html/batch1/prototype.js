@@ -131,3 +131,25 @@ document.querySelectorAll('[data-alert-dismiss]').forEach((btn) => {
     group?.focus();
   });
 });
+
+// Toast / Snackbar (issue #41): "復原"/"重試" are real <button>s (keyboard-operable, per spec
+// text); clicking one removes its own toast — a real, observably different result, same "no
+// removal animation exists in the SVG to justify one" reasoning already applied to Badge/Tag's
+// remove control and Inline alert's dismiss control. This batch shows two toasts with an action at
+// once (unlike Inline alert's single dismissible example), so it reuses Badge/Tag's own
+// multiple-instance pattern: focus moves to the next remaining action button in the group, then
+// the previous one, then the group container itself as a last resort — never <body>. The group
+// container carries tabindex="-1" in index.html precisely so it can receive focus
+// programmatically without ever entering the Tab order on its own.
+document.querySelectorAll('[data-toast-action]').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    const toast = btn.closest('.toast');
+    const group = toast?.parentElement;
+    const actionsInGroup = group ? [...group.querySelectorAll('[data-toast-action]')] : [];
+    const myIndex = actionsInGroup.indexOf(btn);
+    toast?.remove();
+    const next = actionsInGroup[myIndex + 1] || actionsInGroup[myIndex - 1];
+    if (next && next.isConnected) next.focus();
+    else group?.focus();
+  });
+});

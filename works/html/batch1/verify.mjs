@@ -6,6 +6,7 @@
  * 2026-07-31 — candidate ready for G1, awaiting human visual review.
  * Badge / Tag (#34) added 2026-08-03 — candidate ready for G1, awaiting human visual review.
  * Inline alert (#35) added 2026-08-04 — G1 passed 2026-08-04.
+ * Toast / Snackbar (#41) added 2026-08-05 — candidate ready for G1, awaiting human visual review.
  *
  *   node works/html/batch1/verify.mjs
  *   CHROME="/path/to/chrome" node works/html/batch1/verify.mjs     # if auto-detection fails
@@ -201,6 +202,17 @@ function verifyTokens() {
   check('component.checkbox.size is still 32px (unchanged)', px(resolved.get('component.checkbox.size')) === '32px');
   check('component.text-input.background is still gray-600 #666666 (unchanged)',
     px(resolved.get('component.text-input.background')) === '#666666');
+  // Toast / Snackbar (issue #41): 3 gaps found during P0 audit against the pre-existing (2026-07-19,
+  // never-verified) component.toast.* fields; icon-text-gap was re-verified (not a gap) using the
+  // more precisely measurable danger icon (a full circle) instead of the default checkmark's own
+  // irregular path bbox.
+  check('component.toast.padding-inline resolves to 20px (text-only variants\' label inset)', px(resolved.get('component.toast.padding-inline')) === '20px', resolved.get('component.toast.padding-inline'));
+  check('component.toast.icon-inset resolves to 10px (leading icon sits closer to the edge than text)', px(resolved.get('component.toast.icon-inset')) === '10px', resolved.get('component.toast.icon-inset'));
+  check('component.toast.danger-icon-stroke-width resolves to 2.2 (distinct from the shared icon.stroke-width 2)', resolved.get('component.toast.danger-icon-stroke-width') === 2.2, resolved.get('component.toast.danger-icon-stroke-width'));
+  check('component.toast.icon-text-gap re-verified at 14px (re-measured against the danger icon\'s circle, unchanged)', px(resolved.get('component.toast.icon-text-gap')) === '14px', resolved.get('component.toast.icon-text-gap'));
+  // Pre-existing toast fields this round must NOT have touched.
+  check('component.toast.height is still 56px (unchanged)', px(resolved.get('component.toast.height')) === '56px');
+  check('component.toast.danger-icon-size is still 24px (unchanged)', px(resolved.get('component.toast.danger-icon-size')) === '24px');
   return resolved;
 }
 
@@ -243,7 +255,7 @@ function valuesMatch(tokenResolved, cssLiteral) {
 function verifyCssContract(resolvedTokens) {
   section('works/html/batch1/styles.css — no raw dimensions in component rules');
   const css = readFileSync(CSS, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
-  const COMPONENT = /^[^@]*?(\.button|\.checkbox|\.text-input|\.textarea|\.icon-button|\.switch|\.radio|\.split-button|\.tag|\.inline-alert|fieldset\.radio-group|:where)/;
+  const COMPONENT = /^[^@]*?(\.button|\.checkbox|\.text-input|\.textarea|\.icon-button|\.switch|\.radio|\.split-button|\.tag|\.inline-alert|\.toast|fieldset\.radio-group|:where)/;
   const offenders = [];
   for (const m of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
     const selector = m[1].trim();
@@ -941,6 +953,92 @@ async function main() {
     const restoredAlertCount = await c.js(`document.querySelectorAll('.inline-alert-examples > .inline-alert').length`);
     check('the info example is restored for the G1 review screenshot below', restoredAlertCount === countBeforeDismiss, { restoredAlertCount, countBeforeDismiss });
 
+    /* ---------------- Toast / Snackbar ---------------- */
+    section('Toast / Snackbar');
+    const toastBefore = await c.js(`(()=>{
+      const cs=(e)=>getComputedStyle(e);
+      const toasts=[...document.querySelectorAll('.toast-examples > .toast')];
+      const [shown, withAction, queued, danger] = toasts;
+      return {
+        count: toasts.length,
+        h: cs(shown).height, r: cs(shown).borderRadius,
+        roles: toasts.map(t => t.getAttribute('role')),
+        actionRole: withAction.querySelector('[data-toast-action]').tagName,
+        dangerIconBg: cs(danger.querySelector('.toast__icon')).backgroundColor,
+        queuedHasDistinctVisual: queued.children.length === (1) // just the <p>, no extra stacking element
+      };
+    })()`);
+    check('4 toast examples are present', toastBefore.count === 4, toastBefore.count);
+    check('toast height is 56px, radius 16px', toastBefore.h === '56px' && toastBefore.r === '16px', toastBefore);
+    check('all 4 variants use role="status", including danger (per spec text, unlike Inline alert)', toastBefore.roles.every(r => r === 'status'), toastBefore.roles);
+    check('the action is a real <button> (keyboard-operable)', toastBefore.actionRole === 'BUTTON', toastBefore.actionRole);
+    check('danger icon background renders as action-danger red rgb(193, 39, 45)', toastBefore.dangerIconBg === 'rgb(193, 39, 45)', toastBefore.dangerIconBg);
+    check('queued example ships with no distinct stacking visual (documented SVG/spec conflict, not guessed)', toastBefore.queuedHasDistinctVisual, toastBefore.queuedHasDistinctVisual);
+
+    // Real click test: clicking an action button removes exactly its own toast, and — since two
+    // toasts have an action button in this batch — moves focus to the next remaining action
+    // button, not <body>.
+    const countBeforeUndo = await c.js(`document.querySelectorAll('.toast-examples > .toast').length`);
+    await c.clickEl(`document.querySelectorAll('[data-toast-action]')[0]`);
+    const afterUndoClick = await c.js(`(()=>{
+      const group=document.querySelector('.toast-examples');
+      return {
+        count: document.querySelectorAll('.toast-examples > .toast').length,
+        focusIsRetry: document.activeElement === document.querySelector('[data-toast-action]'),
+        focusIsGroup: document.activeElement === group
+      };
+    })()`);
+    check('clicking 復原 removes exactly that toast from the DOM', afterUndoClick.count === countBeforeUndo - 1, { before: countBeforeUndo, after: afterUndoClick.count });
+    check('focus moves to the next remaining action button (重試), not <body>', afterUndoClick.focusIsRetry, afterUndoClick);
+
+    // Real click test: removing the last remaining action button falls back to the group container.
+    await c.clickEl(`document.querySelectorAll('[data-toast-action]')[0]`);
+    const afterRetryClick = await c.js(`(()=>{
+      const group=document.querySelector('.toast-examples');
+      return { count: document.querySelectorAll('.toast-examples > .toast').length, focusIsGroup: document.activeElement === group };
+    })()`);
+    check('removing the last remaining action toast moves focus to the group container, not <body>', afterRetryClick.focusIsGroup, afterRetryClick);
+
+    // Both the with-action and danger toasts were removed by the two clicks above. Rebuild the
+    // whole group from index.html's own known-good markup (simpler and more reliable than trying
+    // to re-insert two differently-shaped removed nodes in the right relative order) and rebind
+    // real listeners the same way prototype.js does, so the G1 review screenshot below matches
+    // index.html's documented initial state.
+    await c.js(`(()=>{
+      const group=document.querySelector('.toast-examples');
+      group.innerHTML = \`
+        <div class="toast" role="status">
+          <svg class="toast__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12l4 4 8-9"/></svg>
+          <p class="toast__message">已複製連結</p>
+        </div>
+        <div class="toast" role="status">
+          <p class="toast__message">已刪除任務</p>
+          <button class="toast__action" type="button" data-toast-action>復原</button>
+        </div>
+        <div class="toast" role="status">
+          <p class="toast__message">已同步 3 個項目</p>
+        </div>
+        <div class="toast toast--danger" role="status">
+          <span class="toast__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M12 8v6 M12 17h.01"/></svg>
+          </span>
+          <p class="toast__message">同步失敗</p>
+          <button class="toast__action" type="button" data-toast-action>重試</button>
+        </div>\`;
+      group.querySelectorAll('[data-toast-action]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const toast = btn.closest('.toast');
+          const actionsInGroup = [...group.querySelectorAll('[data-toast-action]')];
+          const myIndex = actionsInGroup.indexOf(btn);
+          toast?.remove();
+          const next = actionsInGroup[myIndex + 1] || actionsInGroup[myIndex - 1];
+          if (next && next.isConnected) next.focus(); else group?.focus();
+        });
+      });
+    })()`);
+    const restoredToastCount = await c.js(`document.querySelectorAll('.toast-examples > .toast').length`);
+    check('all 4 toast examples are restored for the G1 review screenshot below', restoredToastCount === 4, restoredToastCount);
+
     /* ---------------- Checkbox ---------------- */
     section('Checkbox');
     const cb = await c.js(`(()=>{
@@ -1166,6 +1264,26 @@ async function main() {
       JSON.stringify(alertImg.at(...alertPts.railNeutral)) === JSON.stringify(GRAY_666), alertImg.at(...alertPts.railNeutral));
     check('inline alert container background renders as background-surface rgb(51, 51, 51) (sampled from a real screenshot)',
       JSON.stringify(alertImg.at(...alertPts.bg)) === JSON.stringify(GRAY_333), alertImg.at(...alertPts.bg));
+
+    // Same real-screenshot-sample technique for Toast's own container background and its danger
+    // icon's solid red circle.
+    await c.js(`document.querySelectorAll('.toast-examples > .toast')[0].scrollIntoView({block:'center'})`);
+    await sleep(150);
+    const toastPts = await c.js(`(()=>{
+      const shown=document.querySelectorAll('.toast-examples > .toast')[0].getBoundingClientRect();
+      const dangerIcon=document.querySelector('.toast--danger .toast__icon').getBoundingClientRect();
+      return {
+        bg: [Math.round(shown.left+shown.width-8), Math.round(shown.top+8)],
+        // Off-centre, not the circle's exact centre: the white exclamation-mark glyph sits there,
+        // same "avoid the text/glyph, sample the flat fill" lesson already applied elsewhere.
+        dangerIcon: [Math.round(dangerIcon.left+4), Math.round(dangerIcon.top+dangerIcon.height/2)]
+      };
+    })()`);
+    const toastImg = await c.shot();
+    check('toast container background renders as background-surface rgb(51, 51, 51) (sampled from a real screenshot)',
+      JSON.stringify(toastImg.at(...toastPts.bg)) === JSON.stringify(GRAY_333), toastImg.at(...toastPts.bg));
+    check('danger toast icon background renders as action-danger red rgb(193, 39, 45) (sampled from a real screenshot)',
+      JSON.stringify(toastImg.at(...toastPts.dangerIcon)) === JSON.stringify(RED), toastImg.at(...toastPts.dangerIcon));
 
     /* ---------------- Responsive + motion ---------------- */
     section('Responsive and motion');
