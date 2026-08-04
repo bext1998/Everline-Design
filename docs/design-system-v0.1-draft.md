@@ -9,7 +9,8 @@
 第一批畢業（issue #17，1/4，2026-07-30）：`works/html/batch1/`（issue #17 15 群清單中的 Button、Checkbox、Text input／Textarea 三群，**2026-07-30 人類 G1 審查通過，已畢業，仍是 candidate 未宣告 stable**）；`works/everline-components-master.svg` 對應的 c-button／c-checkbox／c-text-input／c-textarea 四個 SVG 群組已標記群組級 `superseded-by: works/html/batch1/index.html`（master.svg 整份檔案狀態不變；除 c-color-swatch 外共 16 個產品元件群組，扣除這 4 個，其餘 12 個 SVG 群組不受影響）。issue #17 其餘 12 群（15 群中未畢業的部分）仍以本檔案與 `works/everline-components-master.svg` 為權威來源。
 Icon button（issue #30）／Switch（issue #31）／Radio（issue #32）／Split button／Dropdown（issue #33）（2026-07-31）：`works/html/batch1/` 已擴充這 4 群的 HTML/CSS candidate，**candidate ready for G1，尚未通過人類視覺審查，未畢業**；master.svg 對應的 c-icon-button／c-switch／c-radio／c-split-button 群組尚未標記 `superseded-by`，仍是這 4 群目前的權威來源。
 Badge / Tag（issue #34，issue #17 15 群清單第 8 項，2026-08-03）：`works/html/batch1/` 已擴充 Badge / Tag 的 HTML/CSS candidate，**candidate ready for G1，尚未通過人類視覺審查，未畢業**；master.svg 對應的 `c-badge-tag` 群組尚未標記 `superseded-by`，仍是這一群目前的權威來源。
-Inline alert（issue #35，issue #17 15 群清單第 9 項，2026-08-04）：`works/html/batch1/` 已擴充 Inline alert 的 HTML/CSS candidate，**2026-08-04 人類 G1 審查通過，已畢業，仍是 candidate，未宣告 stable**；`works/everline-components-master.svg` 對應的 `c-inline-alert` 群組已標記群組級 `superseded-by: works/html/batch1/index.html`，master.svg 檔案層級狀態不變。P0 核對發現本節下方「24 px 狀態圖示」與 SVG 實測值（`circle r="14"`，直徑 28px）不符，已一併修正；並發現 `alert-neutral` 指示條與圖示並非同一顏色、`.alert-body` 文字色（`#b8b8b8`）並非既有任何 token，詳見 `tokens/everline-draft.tokens.json` 與 `docs/STATUS.md`。issue #17 15 群清單中，已畢業 4 群＋等待 G1 的 5 群共 9 群，仍有 6 群未動工。
+Inline alert（issue #35，issue #17 15 群清單第 9 項，2026-08-04）：`works/html/batch1/` 已擴充 Inline alert 的 HTML/CSS candidate，**2026-08-04 人類 G1 審查通過，已畢業，仍是 candidate，未宣告 stable**；`works/everline-components-master.svg` 對應的 `c-inline-alert` 群組已標記群組級 `superseded-by: works/html/batch1/index.html`，master.svg 檔案層級狀態不變。P0 核對發現本節下方「24 px 狀態圖示」與 SVG 實測值（`circle r="14"`，直徑 28px）不符，已一併修正；並發現 `alert-neutral` 指示條與圖示並非同一顏色、`.alert-body` 文字色（`#b8b8b8`）並非既有任何 token，詳見 `tokens/everline-draft.tokens.json` 與 `docs/STATUS.md`。
+Tabs（issue #38，issue #17 15 群清單第 12 項，2026-08-04）：`works/html/batch1/` 已擴充 Tabs 的 HTML/CSS candidate，**candidate ready for G1，尚未通過人類視覺審查，未畢業**；master.svg 對應的 `c-tabs` 群組尚未標記 `superseded-by`，仍是這一群目前的權威來源。P0 核對發現 `component.tabs.foreground-default` 早在 2026-07-19 就宣告為 `color.base.gray-700`（`#4D4D4D`），但從未對照 SVG 核實——`c-tabs` 的 default（未選取）分頁文字實際是 `#a8a8a8`，已新增 `color.base.gray-550` backfill 並更正此 token（修正既有落差，非單純新增）；另補上 `divider-width`、`hover-padding-inline`、`hover-height`、`hover-radius` 4 個缺口，詳見 `tokens/everline-draft.tokens.json` 與 `docs/STATUS.md`。issue #17 15 群清單中，已畢業 4 群＋等待 G1 的 6 群共 10 群，仍有 5 群未動工。
 
 本文件是受控延伸用的校準稿，不是穩定版規格。已觀察到的值與本次推導值分開記錄；使用者確認前，不應將候選內容視為 Everline 的凍結決策。
 
@@ -439,7 +440,7 @@ Text input 用於單行短文字；Textarea 用於描述、備註與多行內容
 
 ## Tabs
 
-狀態：`candidate`（第一批新元件，2026-07-19）
+狀態：`candidate`（2026-08-04，issue #38：HTML/CSS candidate ready for G1，見 `works/html/batch1/`，尚未通過人類視覺審查，未畢業）
 
 ### 用途與邊界
 
