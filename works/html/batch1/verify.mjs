@@ -6,6 +6,7 @@
  * 2026-07-31 — candidate ready for G1, awaiting human visual review.
  * Badge / Tag (#34) added 2026-08-03 — candidate ready for G1, awaiting human visual review.
  * Inline alert (#35) added 2026-08-04 — G1 passed 2026-08-04.
+ * Tooltip (#39) added 2026-08-04 — candidate ready for G1, awaiting human visual review.
  *
  *   node works/html/batch1/verify.mjs
  *   CHROME="/path/to/chrome" node works/html/batch1/verify.mjs     # if auto-detection fails
@@ -201,6 +202,16 @@ function verifyTokens() {
   check('component.checkbox.size is still 32px (unchanged)', px(resolved.get('component.checkbox.size')) === '32px');
   check('component.text-input.background is still gray-600 #666666 (unchanged)',
     px(resolved.get('component.text-input.background')) === '#666666');
+  // Tooltip (issue #39): 5 gaps found during P0 audit against the pre-existing (2026-07-19,
+  // never-verified) component.tooltip.* fields.
+  check('component.tooltip.height resolves to 36px (both bubble rects)', px(resolved.get('component.tooltip.height')) === '36px', resolved.get('component.tooltip.height'));
+  check('component.tooltip.padding-inline resolves to space.2 16px (reused from component.tag, not SVG-measurable)', px(resolved.get('component.tooltip.padding-inline')) === '16px', resolved.get('component.tooltip.padding-inline'));
+  check('component.tooltip.font-size resolves to 13px (explicit SVG font-size override, matches no font.size-* step)', px(resolved.get('component.tooltip.font-size')) === '13px', resolved.get('component.tooltip.font-size'));
+  check('component.tooltip.arrow-base resolves to 12px', px(resolved.get('component.tooltip.arrow-base')) === '12px', resolved.get('component.tooltip.arrow-base'));
+  check('component.tooltip.arrow-size resolves to 8px', px(resolved.get('component.tooltip.arrow-size')) === '8px', resolved.get('component.tooltip.arrow-size'));
+  // Pre-existing tooltip fields this round must NOT have touched.
+  check('component.tooltip.radius is still radius.sm 8px (unchanged)', px(resolved.get('component.tooltip.radius')) === '8px');
+  check('component.tooltip.background is still background-overlay #4D4D4D (unchanged)', px(resolved.get('component.tooltip.background')) === '#4D4D4D');
   return resolved;
 }
 
@@ -243,7 +254,7 @@ function valuesMatch(tokenResolved, cssLiteral) {
 function verifyCssContract(resolvedTokens) {
   section('works/html/batch1/styles.css — no raw dimensions in component rules');
   const css = readFileSync(CSS, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
-  const COMPONENT = /^[^@]*?(\.button|\.checkbox|\.text-input|\.textarea|\.icon-button|\.switch|\.radio|\.split-button|\.tag|\.inline-alert|fieldset\.radio-group|:where)/;
+  const COMPONENT = /^[^@]*?(\.button|\.checkbox|\.text-input|\.textarea|\.icon-button|\.switch|\.radio|\.split-button|\.tag|\.inline-alert|\.tooltip|fieldset\.radio-group|:where)/;
   const offenders = [];
   for (const m of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
     const selector = m[1].trim();
@@ -375,6 +386,12 @@ class Cdp {
     for (const type of ['mousePressed', 'mouseReleased']) {
       await this.send('Input.dispatchMouseEvent', { type, x, y, button: 'left', clickCount: 1 });
     }
+    await sleep(120);
+  }
+  // Real mouse-move (no press/release) — triggers a genuine :hover, needed for Tooltip since it
+  // has no click interaction of its own to verify against.
+  async hoverAt(x, y) {
+    await this.send('Input.dispatchMouseEvent', { type: 'mouseMoved', x, y });
     await sleep(120);
   }
   async key(key, code) {
@@ -941,6 +958,63 @@ async function main() {
     const restoredAlertCount = await c.js(`document.querySelectorAll('.inline-alert-examples > .inline-alert').length`);
     check('the info example is restored for the G1 review screenshot below', restoredAlertCount === countBeforeDismiss, { restoredAlertCount, countBeforeDismiss });
 
+    /* ---------------- Tooltip ---------------- */
+    section('Tooltip');
+    const tooltipBefore = await c.js(`(()=>{
+      const cs=(e)=>getComputedStyle(e);
+      const beside=document.getElementById('tooltip-beside'), below=document.getElementById('tooltip-below');
+      const trigger=beside.closest('.tooltip-wrapper').querySelector('.icon-button');
+      return {
+        besideDisplay: cs(beside).display, belowDisplay: cs(below).display,
+        besideRole: beside.getAttribute('role'), besideTabIndex: beside.tabIndex,
+        h: cs(beside).height, r: cs(beside).borderRadius, fontSize: cs(beside).fontSize,
+        describedBy: trigger.getAttribute('aria-describedby') === 'tooltip-beside', hasLabel: !!trigger.getAttribute('aria-label')
+      };
+    })()`);
+    check('both tooltips start hidden (display: none)', tooltipBefore.besideDisplay === 'none' && tooltipBefore.belowDisplay === 'none', tooltipBefore);
+    check('tooltip uses role="tooltip" and is never a Tab stop (tabIndex -1, i.e. not explicitly focusable)', tooltipBefore.besideRole === 'tooltip' && tooltipBefore.besideTabIndex === -1, tooltipBefore);
+    check('tooltip bubble height is 36px, radius 8px, font-size 13px', tooltipBefore.h === '36px' && tooltipBefore.r === '8px' && tooltipBefore.fontSize === '13px', tooltipBefore);
+    check('trigger has both its own aria-label AND aria-describedby pointing at the tooltip (per spec text, both required)', tooltipBefore.describedBy && tooltipBefore.hasLabel, tooltipBefore);
+
+    // Real keyboard test: focusing the trigger reveals its tooltip via :focus-within (no JS).
+    await c.js(`document.querySelectorAll('.tooltip-wrapper .icon-button')[0].focus()`);
+    const afterFocus = await c.js(`getComputedStyle(document.getElementById('tooltip-beside')).display`);
+    check('focusing the trigger reveals the beside tooltip (real :focus-within, no JS)', afterFocus === 'flex', afterFocus);
+    await c.js(`document.activeElement.blur()`);
+    const afterBlur = await c.js(`getComputedStyle(document.getElementById('tooltip-beside')).display`);
+    check('blurring the trigger hides the tooltip again', afterBlur === 'none', afterBlur);
+
+    // Real mouse-hover test (mouseMoved, no click): hovering the trigger reveals its tooltip via
+    // :hover, and moving away hides it again.
+    const besideTriggerBox = await c.js(`(()=>{const r=document.querySelectorAll('.tooltip-wrapper .icon-button')[0].getBoundingClientRect();return [Math.round(r.left+r.width/2), Math.round(r.top+r.height/2)];})()`);
+    await c.hoverAt(...besideTriggerBox);
+    const afterHover = await c.js(`getComputedStyle(document.getElementById('tooltip-beside')).display`);
+    check('hovering the trigger reveals the beside tooltip (real mouseMoved event, no JS)', afterHover === 'flex', afterHover);
+    await c.hoverAt(20, 20);
+    const afterHoverAway = await c.js(`getComputedStyle(document.getElementById('tooltip-beside')).display`);
+    check('moving the mouse away hides the tooltip again', afterHoverAway === 'none', afterHoverAway);
+
+    // Placement geometry: beside sits to the right, vertically centred; below sits underneath,
+    // horizontally centred. Verified via real getBoundingClientRect after actually revealing each
+    // one (hover), not just trusting the declared CSS.
+    await c.hoverAt(...besideTriggerBox);
+    const besideGeom = await c.js(`(()=>{
+      const trigger=document.querySelectorAll('.tooltip-wrapper .icon-button')[0].getBoundingClientRect();
+      const tip=document.getElementById('tooltip-beside').getBoundingClientRect();
+      return { toRight: tip.left > trigger.right, vCentreDiff: Math.abs((tip.top+tip.bottom)/2 - (trigger.top+trigger.bottom)/2) };
+    })()`);
+    check('beside placement: tooltip sits to the right of the trigger, vertically centred on it', besideGeom.toRight && besideGeom.vCentreDiff < 1, besideGeom);
+    await c.hoverAt(20, 20);
+    const belowTriggerBox = await c.js(`(()=>{const r=document.querySelectorAll('.tooltip-wrapper .icon-button')[1].getBoundingClientRect();return [Math.round(r.left+r.width/2), Math.round(r.top+r.height/2)];})()`);
+    await c.hoverAt(...belowTriggerBox);
+    const belowGeom = await c.js(`(()=>{
+      const trigger=document.querySelectorAll('.tooltip-wrapper .icon-button')[1].getBoundingClientRect();
+      const tip=document.getElementById('tooltip-below').getBoundingClientRect();
+      return { below: tip.top > trigger.bottom, hCentreDiff: Math.abs((tip.left+tip.right)/2 - (trigger.left+trigger.right)/2) };
+    })()`);
+    check('below placement: tooltip sits underneath the trigger, horizontally centred on it', belowGeom.below && belowGeom.hCentreDiff < 1, belowGeom);
+    await c.hoverAt(20, 20);
+
     /* ---------------- Checkbox ---------------- */
     section('Checkbox');
     const cb = await c.js(`(()=>{
@@ -1166,6 +1240,25 @@ async function main() {
       JSON.stringify(alertImg.at(...alertPts.railNeutral)) === JSON.stringify(GRAY_666), alertImg.at(...alertPts.railNeutral));
     check('inline alert container background renders as background-surface rgb(51, 51, 51) (sampled from a real screenshot)',
       JSON.stringify(alertImg.at(...alertPts.bg)) === JSON.stringify(GRAY_333), alertImg.at(...alertPts.bg));
+
+    // Same real-screenshot-sample technique for Tooltip's bubble background — background-overlay
+    // (gray-700, #4D4D4D) has been sampled before (Menu's panel) but never for this component's
+    // own CSS wiring. Revealed via real hover, then moved away again afterward so the page returns
+    // to its documented initial (hidden) state for the G1 screenshot below.
+    await c.js(`document.querySelectorAll('.tooltip-wrapper .icon-button')[0].scrollIntoView({block:'center'})`);
+    await sleep(150);
+    const besideTrigger2 = await c.js(`(()=>{const r=document.querySelectorAll('.tooltip-wrapper .icon-button')[0].getBoundingClientRect();return [Math.round(r.left+r.width/2), Math.round(r.top+r.height/2)];})()`);
+    await c.hoverAt(...besideTrigger2);
+    await sleep(300);
+    // Sample near the tooltip's own left edge (just past where the arrow meets the box), not its
+    // horizontal centre — the centre coincides with the middle of the label text itself, which
+    // risks landing on an anti-aliased glyph edge rather than the flat background fill.
+    const tooltipPt = await c.js(`(()=>{const t=document.getElementById('tooltip-beside');const r=t.getBoundingClientRect();return [Math.round(r.left+6), Math.round(r.top+r.height/2)];})()`);
+    const tooltipImg = await c.shot();
+    const GRAY_4D = [77, 77, 77];
+    check('tooltip bubble background renders as background-overlay rgb(77, 77, 77) (sampled from a real screenshot)',
+      JSON.stringify(tooltipImg.at(...tooltipPt)) === JSON.stringify(GRAY_4D), tooltipImg.at(...tooltipPt));
+    await c.hoverAt(20, 20);
 
     /* ---------------- Responsive + motion ---------------- */
     section('Responsive and motion');
