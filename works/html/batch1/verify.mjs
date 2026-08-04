@@ -6,6 +6,7 @@
  * 2026-07-31 — candidate ready for G1, awaiting human visual review.
  * Badge / Tag (#34) added 2026-08-03 — candidate ready for G1, awaiting human visual review.
  * Inline alert (#35) added 2026-08-04 — G1 passed 2026-08-04.
+ * Tabs (#38) added 2026-08-04 — candidate ready for G1, awaiting human visual review.
  *
  *   node works/html/batch1/verify.mjs
  *   CHROME="/path/to/chrome" node works/html/batch1/verify.mjs     # if auto-detection fails
@@ -201,6 +202,17 @@ function verifyTokens() {
   check('component.checkbox.size is still 32px (unchanged)', px(resolved.get('component.checkbox.size')) === '32px');
   check('component.text-input.background is still gray-600 #666666 (unchanged)',
     px(resolved.get('component.text-input.background')) === '#666666');
+  // Tabs (issue #38): P0 audit found component.tabs.foreground-default was a real VALUE mismatch
+  // (declared 2026-07-19 against gray-700, never checked against the SVG), plus 4 additive gaps.
+  check('color.base.gray-550 resolves to #A8A8A8 (backfilled from c-tabs\'s default label colour)', px(resolved.get('color.base.gray-550')) === '#A8A8A8', resolved.get('color.base.gray-550'));
+  check('component.tabs.foreground-default now resolves to the corrected gray-550 #A8A8A8 (was gray-700 #4D4D4D, never matched the SVG)', px(resolved.get('component.tabs.foreground-default')) === '#A8A8A8', resolved.get('component.tabs.foreground-default'));
+  check('component.tabs.divider-width resolves to 1px', px(resolved.get('component.tabs.divider-width')) === '1px', resolved.get('component.tabs.divider-width'));
+  check('component.tabs.hover-padding-inline resolves to space.1 8px', px(resolved.get('component.tabs.hover-padding-inline')) === '8px', resolved.get('component.tabs.hover-padding-inline'));
+  check('component.tabs.hover-height resolves to 28px (matches no component-heights step)', px(resolved.get('component.tabs.hover-height')) === '28px', resolved.get('component.tabs.hover-height'));
+  check('component.tabs.hover-radius resolves to 6px (matches no radius.* step)', px(resolved.get('component.tabs.hover-radius')) === '6px', resolved.get('component.tabs.hover-radius'));
+  // Pre-existing tabs fields this round must NOT have touched.
+  check('component.tabs.indicator-width is still border.width-focus 2px (unchanged)', px(resolved.get('component.tabs.indicator-width')) === '2px');
+  check('component.tabs.foreground-selected is still foreground-inverse white #FFFFFF (unchanged)', px(resolved.get('component.tabs.foreground-selected')) === '#FFFFFF');
   return resolved;
 }
 
@@ -243,7 +255,7 @@ function valuesMatch(tokenResolved, cssLiteral) {
 function verifyCssContract(resolvedTokens) {
   section('works/html/batch1/styles.css — no raw dimensions in component rules');
   const css = readFileSync(CSS, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
-  const COMPONENT = /^[^@]*?(\.button|\.checkbox|\.text-input|\.textarea|\.icon-button|\.switch|\.radio|\.split-button|\.tag|\.inline-alert|fieldset\.radio-group|:where)/;
+  const COMPONENT = /^[^@]*?(\.button|\.checkbox|\.text-input|\.textarea|\.icon-button|\.switch|\.radio|\.split-button|\.tag|\.inline-alert|\.tabs|\.tab\b|\.tabpanel|fieldset\.radio-group|:where)/;
   const offenders = [];
   for (const m of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
     const selector = m[1].trim();
@@ -940,6 +952,89 @@ async function main() {
     })()`);
     const restoredAlertCount = await c.js(`document.querySelectorAll('.inline-alert-examples > .inline-alert').length`);
     check('the info example is restored for the G1 review screenshot below', restoredAlertCount === countBeforeDismiss, { restoredAlertCount, countBeforeDismiss });
+
+    /* ---------------- Tabs ---------------- */
+    section('Tabs');
+    const tabsBefore = await c.js(`(()=>{
+      const cs=(e)=>getComputedStyle(e);
+      const list=${sel('[role=tablist]')}, tabs=[...list.querySelectorAll('[role=tab]')];
+      const activity=document.getElementById('tab-activity'), settings=document.getElementById('tab-settings'), history=document.getElementById('tab-history');
+      return {
+        tabH: cs(activity).height, tabR: cs(activity).borderRadius,
+        dividerWidth: cs(list).borderBottomWidth, dividerColor: cs(list).borderBottomColor,
+        listRole: list.getAttribute('role'), tabRole: activity.getAttribute('role'),
+        panelRole: document.getElementById('panel-activity').getAttribute('role'),
+        activitySelected: activity.getAttribute('aria-selected'), activityTabIndex: activity.tabIndex,
+        settingsSelected: settings.getAttribute('aria-selected'), settingsTabIndex: settings.tabIndex,
+        historyDisabled: history.disabled,
+        activityPanelHidden: document.getElementById('panel-activity').hidden,
+        settingsPanelHidden: document.getElementById('panel-settings').hidden,
+        tabCount: tabs.length
+      };
+    })()`);
+    check('tab height is 28px', tabsBefore.tabH === '28px', tabsBefore.tabH);
+    check('tab radius is 6px', tabsBefore.tabR === '6px', tabsBefore.tabR);
+    check('tablist divider is 1px border-default rgb(68, 68, 68)', tabsBefore.dividerWidth === '1px' && tabsBefore.dividerColor === 'rgb(68, 68, 68)', tabsBefore);
+    check('uses role="tablist"/"tab"/"tabpanel"', tabsBefore.listRole === 'tablist' && tabsBefore.tabRole === 'tab' && tabsBefore.panelRole === 'tabpanel', tabsBefore);
+    check('the documented initial state: 活動 selected (tabindex=0) and its panel visible, 設定 unselected (tabindex=-1) and its panel hidden',
+      tabsBefore.activitySelected === 'true' && tabsBefore.activityTabIndex === 0 && tabsBefore.activityPanelHidden === false &&
+      tabsBefore.settingsSelected === 'false' && tabsBefore.settingsTabIndex === -1 && tabsBefore.settingsPanelHidden === true, tabsBefore);
+    check('the disabled tab (紀錄) uses the native disabled attribute', tabsBefore.historyDisabled === true, tabsBefore.historyDisabled);
+    check('all 5 tabs are present', tabsBefore.tabCount === 5, tabsBefore.tabCount);
+
+    const tabColors = await c.js(`(()=>{
+      const cs=(e)=>getComputedStyle(e);
+      return { selected: cs(document.getElementById('tab-activity')).color, default: cs(document.getElementById('tab-settings')).color, disabledOpacity: cs(document.getElementById('tab-history')).opacity };
+    })()`);
+    check('selected tab text is white rgb(255, 255, 255)', tabColors.selected === 'rgb(255, 255, 255)', tabColors.selected);
+    check('default (unselected) tab text is the corrected gray-550 rgb(168, 168, 168)', tabColors.default === 'rgb(168, 168, 168)', tabColors.default);
+    check('disabled tab uses opacity 0.55', tabColors.disabledOpacity === '0.55', tabColors.disabledOpacity);
+
+    const indicatorShadow = await c.js(`getComputedStyle(document.getElementById('tab-activity')).boxShadow`);
+    check('selected tab draws its 2px action-primary indicator as an inset box-shadow flush with the tablist divider',
+      indicatorShadow.includes('89, 138, 232') && indicatorShadow.includes('2px') && indicatorShadow.includes('inset'), indicatorShadow);
+
+    // Real click test: clicking an unselected tab selects it, switches the visible panel, and
+    // moves real DOM focus to it.
+    await c.clickEl(sel('#tab-settings'));
+    const afterSettingsClick = await c.js(`(()=>{
+      return {
+        settingsSelected: document.getElementById('tab-settings').getAttribute('aria-selected'),
+        activitySelected: document.getElementById('tab-activity').getAttribute('aria-selected'),
+        settingsPanelHidden: document.getElementById('panel-settings').hidden,
+        activityPanelHidden: document.getElementById('panel-activity').hidden,
+        focusIsSettings: document.activeElement === document.getElementById('tab-settings')
+      };
+    })()`);
+    check('clicking 設定 selects it, deselects 活動, swaps which panel is visible, and moves focus to it',
+      afterSettingsClick.settingsSelected === 'true' && afterSettingsClick.activitySelected === 'false' &&
+      afterSettingsClick.settingsPanelHidden === false && afterSettingsClick.activityPanelHidden === true &&
+      afterSettingsClick.focusIsSettings, afterSettingsClick);
+
+    // Real keyboard test: ArrowRight moves AND immediately activates (automatic activation) —
+    // 設定 -> 附件, then a second ArrowRight must skip the disabled 紀錄 and land on 預覽.
+    await c.key('ArrowRight');
+    const afterFirstArrowRight = await c.js(`document.activeElement.id`);
+    check('ArrowRight from 設定 moves to and selects 附件', afterFirstArrowRight === 'tab-attachments', afterFirstArrowRight);
+    await c.key('ArrowRight');
+    const afterSecondArrowRight = await c.js(`(()=>{
+      return { id: document.activeElement.id, previewSelected: document.getElementById('tab-preview').getAttribute('aria-selected'), previewPanelHidden: document.getElementById('panel-preview').hidden };
+    })()`);
+    check('ArrowRight from 附件 skips the disabled 紀錄 tab and selects 預覽 (roving tabindex, disabled excluded)',
+      afterSecondArrowRight.id === 'tab-preview' && afterSecondArrowRight.previewSelected === 'true' && afterSecondArrowRight.previewPanelHidden === false, afterSecondArrowRight);
+
+    // Real keyboard test: ArrowLeft from 預覽 must likewise skip 紀錄 backwards and land on 附件.
+    await c.key('ArrowLeft');
+    const afterArrowLeft = await c.js('document.activeElement.id');
+    check('ArrowLeft from 預覽 skips the disabled 紀錄 tab and selects 附件', afterArrowLeft === 'tab-attachments', afterArrowLeft);
+
+    // Restore the documented initial selection (活動) so later steps (RGB sampling, the G1 review
+    // capture) see the state index.html actually declares.
+    await c.clickEl(sel('#tab-activity'));
+    const tabsRestored = await c.js(`(()=>{
+      return { activitySelected: document.getElementById('tab-activity').getAttribute('aria-selected'), activityPanelHidden: document.getElementById('panel-activity').hidden };
+    })()`);
+    check('tabs restored to the documented initial selection (活動) for the G1 review screenshot', tabsRestored.activitySelected === 'true' && tabsRestored.activityPanelHidden === false, tabsRestored);
 
     /* ---------------- Checkbox ---------------- */
     section('Checkbox');

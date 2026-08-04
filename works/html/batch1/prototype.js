@@ -131,3 +131,38 @@ document.querySelectorAll('[data-alert-dismiss]').forEach((btn) => {
     group?.focus();
   });
 });
+
+// Tabs (issue #38): real role="tablist"/"tab"/"tabpanel" with roving tabindex and AUTOMATIC
+// activation — ArrowLeft/ArrowRight both move focus and switch the visible panel in one step, the
+// common simple-tabs behaviour docs/design-system-v0.1-draft.md's "方向鍵在群組內移動" maps onto
+// (as opposed to "manual activation", where arrows would only move focus and a separate Enter/
+// Space would be needed to switch). Tab leaves the group for free since only the selected tab ever
+// carries tabindex="0" — no keydown handling needed for that.
+document.querySelectorAll('[role="tablist"]').forEach((tablist) => {
+  const tabs = [...tablist.querySelectorAll('[role="tab"]')];
+  const enabled = (t) => !t.disabled;
+
+  function select(tab) {
+    tabs.forEach((t) => {
+      const selected = t === tab;
+      t.setAttribute('aria-selected', String(selected));
+      t.tabIndex = selected ? 0 : -1;
+      const panel = document.getElementById(t.getAttribute('aria-controls'));
+      if (panel) panel.hidden = !selected;
+    });
+    tab.focus();
+  }
+
+  tabs.forEach((tab, i) => {
+    tab.addEventListener('click', () => { if (enabled(tab)) select(tab); });
+    tab.addEventListener('keydown', (e) => {
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      e.preventDefault();
+      const dir = e.key === 'ArrowRight' ? 1 : -1;
+      for (let n = 1; n <= tabs.length; n += 1) {
+        const next = tabs[(i + dir * n + tabs.length) % tabs.length];
+        if (enabled(next)) { select(next); break; }
+      }
+    });
+  });
+});

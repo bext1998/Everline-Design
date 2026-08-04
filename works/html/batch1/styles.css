@@ -11,6 +11,7 @@
   --everline-color-base-white: #fff;
   --everline-color-base-off-white: #f2f2f2;
   --everline-color-base-gray-500: #b8b8b8;
+  --everline-color-base-gray-550: #a8a8a8;
   --everline-color-base-gray-600: #666;
   --everline-color-base-gray-700: #4d4d4d;
   --everline-color-base-gray-800: #444;
@@ -186,6 +187,19 @@
   --everline-component-inline-alert-icon-color-danger: var(--everline-color-semantic-action-danger);
   --everline-component-inline-alert-icon-color-neutral: var(--everline-color-semantic-foreground-primary);
   --everline-component-inline-alert-dismiss-control-size: 48px;
+
+  /* component.tabs.* */
+  --everline-component-tabs-indicator-width: var(--everline-border-width-focus);
+  --everline-component-tabs-indicator-color: var(--everline-color-semantic-action-primary);
+  --everline-component-tabs-divider: var(--everline-color-semantic-border-default);
+  --everline-component-tabs-divider-width: var(--everline-border-width-default);
+  --everline-component-tabs-foreground-selected: var(--everline-color-semantic-foreground-inverse);
+  --everline-component-tabs-foreground-default: var(--everline-color-base-gray-550);
+  --everline-component-tabs-foreground-disabled: var(--everline-color-semantic-foreground-disabled);
+  --everline-component-tabs-foreground-hover: var(--everline-color-semantic-foreground-primary);
+  --everline-component-tabs-hover-padding-inline: var(--everline-space-1);
+  --everline-component-tabs-hover-height: 28px;
+  --everline-component-tabs-hover-radius: 6px;
 }
 
 /* Hover overlay, derived from the two tokens that define it rather than restating #fff:
@@ -725,12 +739,56 @@ fieldset.radio-group legend { font-size: var(--everline-font-size-label); font-w
 .inline-alert__dismiss:hover { background-image: linear-gradient(var(--everline-hover-overlay), var(--everline-hover-overlay)); }
 .inline-alert__dismiss svg { width: var(--everline-size-icon-sm); height: var(--everline-size-icon-sm); fill: none; stroke: currentColor; stroke-width: var(--everline-icon-stroke-width); stroke-linecap: round; stroke-linejoin: round; }
 
+/* ---------- Tabs ----------
+   Real role="tablist"/"tab"/"tabpanel" with roving tabindex and automatic activation (ArrowLeft/
+   ArrowRight both move focus AND switch the visible panel immediately, the common simple-tabs
+   behaviour docs/design-system-v0.1-draft.md's "方向鍵在群組內移動" maps onto) — Tab leaves the
+   whole group for free since only the selected tab ever carries tabindex="0".
+   The SVG only draws an explicit hit-area box (with padding/height/radius) for the HOVER example;
+   every other state is bare text with no drawn background. Rather than give hover a bespoke box
+   other states lack, every tab always reserves that same padding/height/radius — invisible
+   (transparent) except on hover — so every tab gets a real, consistent click target sized off the
+   one state that WAS measured, instead of an ad hoc guess. The selected indicator is a 2px inset
+   box-shadow at the tab's own bottom edge, which lines up with the tablist's own divider
+   (border-bottom) directly beneath it, matching the SVG's underline-sits-flush-on-the-divider
+   look without any separate positioning token.
+   Disabled uses plain `opacity` (not the color-mix-against-a-solid-background technique used
+   elsewhere in this file) because a resting tab has no solid background of its own to preserve —
+   the SVG itself dims the disabled label via a plain fill-opacity on the text, which opacity here
+   reproduces directly. */
+.tabs-examples { display: flex; flex-direction: column; gap: var(--everline-space-2); }
+.tabs {
+  display: flex; gap: var(--everline-space-1);
+  border-bottom: var(--everline-component-tabs-divider-width) solid var(--everline-component-tabs-divider);
+}
+.tab {
+  display: inline-flex; align-items: center;
+  height: var(--everline-component-tabs-hover-height);
+  padding-inline: var(--everline-component-tabs-hover-padding-inline);
+  border: 0; border-radius: var(--everline-component-tabs-hover-radius);
+  background: transparent; color: var(--everline-component-tabs-foreground-default);
+  font: inherit; font-size: var(--everline-font-size-body); font-weight: var(--everline-font-weight-regular);
+  cursor: pointer;
+}
+.tab:hover:not(:disabled):not([aria-selected="true"]) {
+  background-image: linear-gradient(var(--everline-hover-overlay), var(--everline-hover-overlay));
+  color: var(--everline-component-tabs-foreground-hover);
+}
+.tab[aria-selected="true"] {
+  color: var(--everline-component-tabs-foreground-selected);
+  box-shadow: inset 0 calc(-1 * var(--everline-component-tabs-indicator-width)) 0 0 var(--everline-component-tabs-indicator-color);
+}
+.tab:disabled { color: var(--everline-component-tabs-foreground-disabled); opacity: var(--everline-opacity-disabled); cursor: not-allowed; }
+.tabpanel { padding-block: var(--everline-space-2); }
+.tabpanel[hidden] { display: none; }
+
 @media (max-width: 760px) {
   .catalog { padding: var(--everline-space-2); }
   .catalog-header { flex-direction: column; }
   .candidate-badge { white-space: normal; }
   .text-input, .textarea { width: 100%; }
   .split-button-examples { flex-direction: column; }
+  .tabs { flex-wrap: wrap; }
 }
 
 /* No transition, animation or keyframe is declared anywhere in this batch — Button/Checkbox/

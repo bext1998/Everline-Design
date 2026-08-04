@@ -19,6 +19,7 @@
       "gray-700": { "$type": "color", "$value": "#4D4D4D", "$description": "Observed gray swatch." },
       "gray-600": { "$type": "color", "$value": "#666666", "$description": "Observed disabled and input surface." },
       "gray-500": { "$type": "color", "$value": "#B8B8B8", "$description": "Batch 1 candidate (added 2026-08-04, GitHub issue #35, backfilled from an existing SVG value). works/everline-components-master.svg's own stylesheet defines .alert-body { fill: #b8b8b8 } for c-inline-alert's body/description text — lighter than gray-600 (#666666) so it stays legible as body copy on the #333333 alert card, but deliberately not as bright as off-white (#F2F2F2), which the same stylesheet reserves for .alert-title. No existing base color matched this value; same 'add the literal the SVG already draws, do not force it onto an existing role' precedent as gray-850's own addition." },
+      "gray-550": { "$type": "color", "$value": "#A8A8A8", "$description": "Batch 1 candidate (added 2026-08-04, GitHub issue #38, backfilled from an existing SVG value). c-tabs's own default (unselected) tab labels use fill=\"#a8a8a8\" — the same hex the master SVG's own .note diagram-annotation class already uses, but here painted onto a real component's default text, not sheet annotation. Also corrects an existing mismatch: component.tabs.foreground-default was declared 2026-07-19 against color.base.gray-700 (#4D4D4D), which does not match this drawn value — never checked against the SVG until this round's P0 audit. Sits between gray-500 (#B8B8B8, lighter) and gray-600 (#666666, darker) in luminance, hence -550; same 'add the literal already-drawn value, do not force it onto an existing role' precedent as gray-500/gray-850." },
       "gray-850": { "$type": "color", "$value": "#262626", "$description": "Batch 2 candidate (added 2026-07-23, backfilled from an existing SVG value). Recessed container shade sitting between canvas (#1A1A1A) and gray-900/surface (#333333), used in the approved batch-2 SVG exclusively for Kanban column bodies so cards read as sitting on top of the column rather than blending into it. Never formalized into the token file when the SVG was drawn, which caused works/html/batch2/ to reuse background-surface for both the column and its cards, flattening the two into one indistinguishable color." },
       "white": { "$type": "color", "$value": "#FFFFFF", "$description": "Observed high-emphasis foreground." },
       "off-white": { "$type": "color", "$value": "#F2F2F2", "$description": "Observed switch thumb and light foreground." },
@@ -259,15 +260,19 @@
       "shortcut-foreground": { "$type": "color", "$value": "{color.base.gray-600}" }
     },
     "tabs": {
-      "$description": "Batch 1 candidate (2026-07-19).",
+      "$description": "Batch 1 candidate (2026-07-19). Corrected + gaps filled during P0 token audit (2026-08-04, issue #38) against c-tabs in works/everline-components-master.svg.",
       "indicator-width": { "$type": "dimension", "$value": "{border.width-focus}" },
       "indicator-color": { "$type": "color", "$value": "{color.semantic.action-primary}" },
       "divider": { "$type": "color", "$value": "{color.semantic.border-default}" },
+      "divider-width": { "$type": "dimension", "$value": "{border.width-default}", "$description": "Gap found 2026-08-04. The full-width divider line's stroke-width=\"1\"." },
       "foreground-selected": { "$type": "color", "$value": "{color.semantic.foreground-inverse}" },
-      "foreground-default": { "$type": "color", "$value": "{color.base.gray-700}" },
+      "foreground-default": { "$type": "color", "$value": "{color.base.gray-550}", "$description": "Corrected 2026-08-04 (issue #38 P0 audit). Was declared against color.base.gray-700 (#4D4D4D) since 2026-07-19 but never checked against the SVG — c-tabs actually draws its default (unselected) tab labels with fill=\"#a8a8a8\", which is color.base.gray-550 (newly backfilled this round, see its own $description), not gray-700. A real value correction, not an additive gap." },
       "foreground-disabled": { "$type": "color", "$value": "{color.semantic.foreground-disabled}" },
       "foreground-hover": { "$type": "color", "$value": "{color.semantic.foreground-primary}" },
-      "hover-background": { "$type": "color", "$value": "#ffffff", "$description": "Combine with opacity.hover-overlay via fill-opacity." }
+      "hover-background": { "$type": "color", "$value": "#ffffff", "$description": "Combine with opacity.hover-overlay via fill-opacity." },
+      "hover-padding-inline": { "$type": "dimension", "$value": "{space.1}", "$description": "Gap found 2026-08-04. The hover example's background rect (x=\"312\" width=\"56\") sits 8px in from its own label text (x=\"320\") on each side." },
+      "hover-height": { "$type": "dimension", "$value": { "value": 28, "unit": "px" }, "$description": "Gap found 2026-08-04. The hover background rect's own height=\"28\" — not on the component-heights scale (32/40/48/56/64), a one-off value for this specific hover treatment." },
+      "hover-radius": { "$type": "dimension", "$value": { "value": 6, "unit": "px" }, "$description": "Gap found 2026-08-04. The hover background rect's own rx=\"6\" — does not match any existing radius.* step (8/12/16/24/999)." }
     },
     "tooltip": {
       "$description": "Batch 1 candidate (2026-07-19).",
