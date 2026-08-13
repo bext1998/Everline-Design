@@ -10,10 +10,10 @@
     <main class="catalog" aria-labelledby="page-title">
       <header class="catalog-header">
         <div>
-          <p class="eyebrow">Everline v0.1 · 第一批（issue #17）· 4／15 群已畢業，issues #30–#34、#40 共 6 群等待 G1</p>
+          <p class="eyebrow">Everline v0.1 · 第一批（issue #17）· 5／15 群已畢業，issues #30–#34 共 5 群等待 G1</p>
           <h1 id="page-title">Everline Design Language — Components Batch 1 HTML/CSS Candidate</h1>
           <p class="lede">Button · Icon button · Switch · Checkbox · Radio · Split button / Dropdown · Text input / Textarea · Badge / Tag · Inline alert · Modal / Dialog</p>
-          <p class="trace">驗證：<code>node works/html/batch1/verify.mjs</code>（零相依，只需 Node 22+ 與 Chrome）· Button／Checkbox／Text input／Textarea（c-button／c-checkbox／c-text-input／c-textarea 共 4 個 SVG 群組）2026-07-30 人類 G1 審查通過後已標記群組級 <code>superseded-by</code>；Inline alert（issue #35，<code>c-inline-alert</code>）2026-08-04 人類 G1 審查通過後同樣已標記 <code>superseded-by</code>——合計 5 個 SVG 群組目前皆以本檔案為候選規格來源。Icon button（issue #30）／Switch（issue #31）／Radio（issue #32）／Split button（issue #33）／Badge Tag（issue #34）／Modal（issue #40）此輪仍是 <strong>candidate ready for G1，尚未通過人類審查，master.svg 對應的 c-icon-button／c-switch／c-radio／c-split-button／c-badge-tag／c-modal 群組尚未標記 <code>superseded-by</code></strong>，master SVG 仍是這 6 群目前的權威來源。master.svg 除 c-color-swatch 外共 16 個產品元件群組，此輪畢業＋等待 G1 合計 11 個，其餘 5 個 SVG 群組（Select／Menu／Tabs／Tooltip／Toast）不受影響；issue #17 15 群清單中，已畢業 4 群＋等待 G1 的 6 群共 10 群，仍有 5 群未動工。整份仍是 candidate，未宣告 stable。</p>
+          <p class="trace">驗證：<code>node works/html/batch1/verify.mjs</code>（零相依，只需 Node 22+ 與 Chrome）· Button／Checkbox／Text input／Textarea／Inline alert／Modal（c-button／c-checkbox／c-text-input／c-textarea／c-inline-alert／c-modal 共 6 個 SVG 群組）已通過人類 G1 審查並標記群組級 <code>superseded-by</code>；本檔案是這些群組目前的 candidate 規格來源，尚未宣告 stable。Icon button（issue #30）／Switch（issue #31）／Radio（issue #32）／Split button（issue #33）／Badge Tag（issue #34）仍是 <strong>candidate ready for G1，尚未通過人類審查；master.svg 對應的 c-icon-button／c-switch／c-radio／c-split-button／c-badge-tag 群組仍是權威來源</strong>。master.svg 除 c-color-swatch 外共 16 個產品元件群組：6 個已畢業、10 個仍為 active candidate source；issue #17 15 群清單中，已畢業 5 群＋等待 G1 的 5 群共 10 群，仍有 5 群未動工。整份仍是 candidate，未宣告 stable。</p>
         </div>
         <p class="candidate-badge"><span aria-hidden="true"></span> CANDIDATE · MIXED G1 STATUS, SEE TRACE</p>
       </header>
@@ -104,8 +104,8 @@
       </aside>
 
       <aside class="scope-note" aria-labelledby="scope-title-5">
-        <h2 id="scope-title-5">本輪新增（issue #40）：Modal / Dialog token 缺口與 G1 決策清單 — candidate ready for G1，尚未通過人類視覺審查</h2>
-        <p>本輪新增 Modal / Dialog（issue #40，issue #17 15 群清單第 14 項），對應 <code>works/everline-components-master.svg</code> 的 <code>c-modal</code> 群組（default／danger／loading 三個範例）。<strong>本群完成 P0–P2，尚未通過 G1 人類視覺審查</strong>，master.svg 對應區塊未標記 <code>superseded-by</code>，<code>docs/STATUS.md</code>／<code>docs/design-system-v0.1-draft.md</code> 只記錄「等待 G1」事實，未宣稱已畢業或 stable，issue #40 亦未打勾關閉，且不使用 <code>Closes #17</code>。</p>
+        <h2 id="scope-title-5">Modal / Dialog（issue #40）：G1 已通過，HTML/CSS candidate 已畢業</h2>
+        <p>Modal / Dialog（issue #40，issue #17 15 群清單第 14 項）已於 2026-08-14 通過人類 G1 視覺審查。<code>works/everline-components-master.svg</code> 的 <code>c-modal</code> 群組（default／danger／loading 三個範例）已標記群組級 <code>superseded-by</code>；本 HTML/CSS candidate 是目前權威來源，<strong>仍未宣告 stable</strong>，issue #40 亦未關閉。</p>
         <p><strong>實作方式</strong>：使用原生 <code>&lt;dialog&gt;</code>／<code>.showModal()</code>，取代 <code>docs/design-system-v0.1-draft.md</code> 舊草稿「focus trap、開啟／關閉動畫等屬於行為規格，無法由靜態向量表達，仍待前端實作時定義」的擱置狀態——瀏覽器原生就會鎖定焦點在對話框內、並以 top layer 呈現於最上層，本輪不需另外實作或驗證這件事。</p>
         <p><strong>P0 token 完整性核對</strong>：<code>component.modal.*</code> 早在 2026-07-19 就先行宣告了 8 個欄位，但從未對照 <code>c-modal</code> 實際核實過。本輪核對後補上 9 個缺口，皆為純新增：<code>border-width</code>（1px）、<code>width-reference</code>（380px，比照 <code>component.button.width-reference</code> 既有慣例）、<code>title-size</code>（17px）／<code>foreground-title</code>／<code>body-size</code>／<code>foreground-body</code>（皆重用 <code>.alert-title</code>／<code>.alert-body</code> 樣式類別，與 <code>component.inline-alert</code> 已核實的相同數值——說明文字色是 <code>color.base.gray-500</code>，不是 <code>foreground-primary</code>）、<code>title-body-gap</code>（同 Inline alert 的 <code>space.1</code>）、<code>action-gap</code>（12px，兩顆操作按鈕之間的間距，不落在既有 8px 級距上）。另外依規格文字「動作使用 compact 40 px 按鈕」，在<strong>既有已 G1 通過的 <code>component.button</code></strong> 底下新增 <code>height-compact</code>（40px）／<code>radius-compact</code>（20px）兩個純新增欄位——這是 Button 元件本身的尺寸變體，不是另立新元件，且未改動 Button 既有任何已審查的解析值。</p>
         <p><strong>刻意未實作、留給 G1 決定的項目</strong>（依 <code>AGENTS.md</code>：SVG 未畫出的視覺不得自行發明）：</p>
