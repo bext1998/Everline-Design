@@ -3,17 +3,17 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Everline v0.1 — 第一批 HTML/CSS 候選元件（issue #17，Button/Checkbox/Text input/Textarea/Inline alert 已畢業，Icon button/Switch/Radio/Split button/Badge/Tag/Tooltip 等待 G1）</title>
+    <title>Everline v0.1 — 第一批 HTML/CSS 候選元件（issue #17，Button/Checkbox/Text input/Textarea/Inline alert/Tooltip 已畢業，Icon button/Switch/Radio/Split button/Badge/Tag 等待 G1）</title>
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <main class="catalog" aria-labelledby="page-title">
       <header class="catalog-header">
         <div>
-          <p class="eyebrow">Everline v0.1 · 第一批（issue #17）· 4／15 群已畢業，issues #30–#34、#39 共 6 群等待 G1</p>
+          <p class="eyebrow">Everline v0.1 · 第一批（issue #17）· 5／15 群已畢業，issues #30–#34 共 5 群等待 G1</p>
           <h1 id="page-title">Everline Design Language — Components Batch 1 HTML/CSS Candidate</h1>
           <p class="lede">Button · Icon button · Switch · Checkbox · Radio · Split button / Dropdown · Text input / Textarea · Badge / Tag · Inline alert · Tooltip</p>
-          <p class="trace">驗證：<code>node works/html/batch1/verify.mjs</code>（零相依，只需 Node 22+ 與 Chrome）· Button／Checkbox／Text input／Textarea（c-button／c-checkbox／c-text-input／c-textarea 共 4 個 SVG 群組）2026-07-30 人類 G1 審查通過後已標記群組級 <code>superseded-by</code>；Inline alert（issue #35，<code>c-inline-alert</code>）2026-08-04 人類 G1 審查通過後同樣已標記 <code>superseded-by</code>——合計 5 個 SVG 群組目前皆以本檔案為候選規格來源。Icon button（issue #30）／Switch（issue #31）／Radio（issue #32）／Split button（issue #33）／Badge Tag（issue #34）／Tooltip（issue #39）此輪仍是 <strong>candidate ready for G1，尚未通過人類審查，master.svg 對應的 c-icon-button／c-switch／c-radio／c-split-button／c-badge-tag／c-tooltip 群組尚未標記 <code>superseded-by</code></strong>，master SVG 仍是這 6 群目前的權威來源。master.svg 除 c-color-swatch 外共 16 個產品元件群組，此輪畢業＋等待 G1 合計 11 個，其餘 5 個 SVG 群組（Select／Menu／Tabs／Modal／Toast）不受影響；issue #17 15 群清單中，已畢業 4 群＋等待 G1 的 6 群共 10 群，仍有 5 群未動工。整份仍是 candidate，未宣告 stable。</p>
+          <p class="trace">驗證：<code>node works/html/batch1/verify.mjs</code>（零相依，只需 Node 22+ 與 Chrome）· Button／Checkbox／Text input／Textarea、Inline alert 與 Tooltip（c-button／c-checkbox／c-text-input／c-textarea／c-inline-alert／c-tooltip 共 6 個 SVG 群組）已通過人類 G1，並各自標記群組級 <code>superseded-by</code>；本檔案是其候選規格來源，均未宣告 stable。Icon button（issue #30）／Switch（issue #31）／Radio（issue #32）／Split button（issue #33）／Badge Tag（issue #34）仍等待 G1，master SVG 對應群組仍是權威來源。master.svg 除 c-color-swatch 外共 16 個產品元件群組，目前 6 個 SVG 歷史快照、10 個仍為 active candidate。issue #17 15 群清單中，已畢業 5 群＋等待 G1 的 5 群共 10 群，尚有 5 群未動工。整份仍是 candidate，未宣告 stable。</p>
         </div>
         <p class="candidate-badge"><span aria-hidden="true"></span> CANDIDATE · MIXED G1 STATUS, SEE TRACE</p>
       </header>
@@ -104,8 +104,8 @@
       </aside>
 
       <aside class="scope-note" aria-labelledby="scope-title-5">
-        <h2 id="scope-title-5">本輪新增（issue #39）：Tooltip token 缺口與 G1 決策清單 — candidate ready for G1，尚未通過人類視覺審查</h2>
-        <p>本輪新增 Tooltip（issue #39，issue #17 15 群清單第 13 項），對應 <code>works/everline-components-master.svg</code> 的 <code>c-tooltip</code> 群組（beside／below 兩種 placement 範例）。<strong>本群完成 P0–P2，尚未通過 G1 人類視覺審查</strong>，master.svg 對應區塊未標記 <code>superseded-by</code>，<code>docs/STATUS.md</code>／<code>docs/design-system-v0.1-draft.md</code> 只記錄「等待 G1」事實，未宣稱已畢業或 stable，issue #39 亦未打勾關閉，且不使用 <code>Closes #17</code>。</p>
+        <h2 id="scope-title-5">本輪新增（issue #39）：Tooltip token 缺口與 G1 決策清單 — 人類 G1 通過，已畢業</h2>
+        <p>本輪新增 Tooltip（issue #39，issue #17 15 群清單第 13 項），對應 <code>works/everline-components-master.svg</code> 的 <code>c-tooltip</code> 群組（beside／below 兩種 placement 範例）。<strong>2026-08-14 人類 G1 視覺審查通過，HTML/CSS 已畢業且是候選規格權威來源</strong>；master.svg 對應區塊已標記 <code>superseded-by</code>。此結論不代表 stable，issue #39 仍未打勾關閉，且不使用 <code>Closes #17</code>。</p>
         <p><strong>P0 token 完整性核對</strong>：<code>component.tooltip.*</code> 早在 2026-07-19 就先行宣告了 4 個欄位（radius、max-width、background、foreground），但從未對照 <code>c-tooltip</code> 實際核實過。本輪核對後補上 5 個缺口，皆為純新增：<code>height</code>（36px，兩個範例的泡泡矩形皆為 <code>height="36"</code>）、<code>font-size</code>（13px，文字有明確 <code>font-size="13"</code> 覆寫，不落在既有字級任何一階）、<code>arrow-base</code>（12px）／<code>arrow-size</code>（8px，逐一量測兩種 placement 各自的箭頭三角形路徑）、<code>padding-inline</code>（<strong>非 SVG 可量測值</strong>——兩個範例文字皆用 <code>text-anchor="middle"</code> 置中，無法反推左右內距，本輪重用 <code>component.tag.padding-inline</code>（16px，同樣是小型膠囊標籤的既有內距），而非另編一個無量測依據的數字，屬延伸決定，尚待 G1 確認，理由同 Badge/Tag 的 <code>hit-area-size</code>）。</p>
         <p><strong>刻意未實作、留給 G1 決定的項目</strong>（依 <code>AGENTS.md</code>：SVG 未畫出的視覺不得自行發明）：</p>
         <ul>
