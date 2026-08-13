@@ -210,6 +210,8 @@ function verifyTokens() {
   check('component.toast.icon-inset resolves to 10px (leading icon sits closer to the edge than text)', px(resolved.get('component.toast.icon-inset')) === '10px', resolved.get('component.toast.icon-inset'));
   check('component.toast.danger-icon-stroke-width resolves to 2.2 (distinct from the shared icon.stroke-width 2)', resolved.get('component.toast.danger-icon-stroke-width') === 2.2, resolved.get('component.toast.danger-icon-stroke-width'));
   check('component.toast.icon-text-gap re-verified at 14px (re-measured against the danger icon\'s circle, unchanged)', px(resolved.get('component.toast.icon-text-gap')) === '14px', resolved.get('component.toast.icon-text-gap'));
+  check('component.toast.width resolves to the SVG main rect width 280px', px(resolved.get('component.toast.width')) === '280px', resolved.get('component.toast.width'));
+  check('component.toast.action-end-inset resolves to 32px from the measured x=220 action labels', px(resolved.get('component.toast.action-end-inset')) === '32px', resolved.get('component.toast.action-end-inset'));
   // Pre-existing toast fields this round must NOT have touched.
   check('component.toast.height is still 56px (unchanged)', px(resolved.get('component.toast.height')) === '56px');
   check('component.toast.danger-icon-size is still 24px (unchanged)', px(resolved.get('component.toast.danger-icon-size')) === '24px');
@@ -974,6 +976,30 @@ async function main() {
     check('the action is a real <button> (keyboard-operable)', toastBefore.actionRole === 'BUTTON', toastBefore.actionRole);
     check('danger icon background renders as action-danger red rgb(193, 39, 45)', toastBefore.dangerIconBg === 'rgb(193, 39, 45)', toastBefore.dangerIconBg);
     check('queued example ships with no distinct stacking visual (documented SVG/spec conflict, not guessed)', toastBefore.queuedHasDistinctVisual, toastBefore.queuedHasDistinctVisual);
+
+    const toastGeometry = await c.js(`(()=>{
+      const rel=(rect, toastRect)=>({ left: rect.left - toastRect.left, centerY: rect.top - toastRect.top + rect.height / 2, width: rect.width, height: rect.height });
+      return [...document.querySelectorAll('.toast-examples > .toast')].map((toast) => {
+        const toastRect=toast.getBoundingClientRect();
+        const icon=toast.querySelector('.toast__icon'), message=toast.querySelector('.toast__message'), action=toast.querySelector('.toast__action');
+        return {
+          width: toastRect.width, height: toastRect.height, centerY: toastRect.height / 2,
+          icon: icon && rel(icon.getBoundingClientRect(), toastRect),
+          message: rel(message.getBoundingClientRect(), toastRect),
+          action: action && { ...rel(action.getBoundingClientRect(), toastRect), fontSize: getComputedStyle(action).fontSize }
+        };
+      });
+    })()`);
+    const [shownGeometry, actionGeometry, queuedGeometry, dangerGeometry] = toastGeometry;
+    const verticallyCentered = toastGeometry.every((toast) => [toast.icon, toast.message, toast.action]
+      .filter(Boolean).every((part) => Math.abs(part.centerY - toast.centerY) < 0.01));
+    check('all Toast variants use the SVG 280px card width and a common vertical content center line',
+      toastGeometry.every((toast) => toast.width === 280 && toast.height === 56) && verticallyCentered, toastGeometry);
+    check('Toast preserves the SVG leading and action-text geometry across default, action, queued, and danger variants',
+      shownGeometry.icon.left === 10 && shownGeometry.message.left === 48 &&
+      actionGeometry.message.left === 20 && actionGeometry.action.left === 220 && actionGeometry.action.fontSize === '14px' &&
+      queuedGeometry.message.left === 20 &&
+      dangerGeometry.icon.left === 10 && dangerGeometry.message.left === 48 && dangerGeometry.action.left === 220 && dangerGeometry.action.fontSize === '14px', toastGeometry);
 
     // Real click test: clicking an action button removes exactly its own toast, and — since two
     // toasts have an action button in this batch — moves focus to the next remaining action

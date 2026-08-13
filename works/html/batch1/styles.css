@@ -189,6 +189,7 @@
 
   /* component.toast.* */
   --everline-component-toast-height: 56px;
+  --everline-component-toast-width: 280px;
   --everline-component-toast-radius: var(--everline-radius-lg);
   --everline-component-toast-background: var(--everline-color-semantic-background-surface);
   --everline-component-toast-action-foreground: var(--everline-color-semantic-action-primary);
@@ -198,6 +199,7 @@
   --everline-component-toast-danger-icon-stroke-width: 2.2;
   --everline-component-toast-icon-text-gap: 14px;
   --everline-component-toast-padding-inline: 20px;
+  --everline-component-toast-action-end-inset: 32px;
   --everline-component-toast-icon-inset: 10px;
 }
 
@@ -754,7 +756,7 @@ fieldset.radio-group legend { font-size: var(--everline-font-size-label); font-w
 .toast-examples { display: flex; flex-direction: column; gap: var(--everline-space-2); }
 .toast {
   display: inline-flex; align-items: center; gap: var(--everline-component-toast-icon-text-gap);
-  width: max-content; max-width: 100%;
+  width: var(--everline-component-toast-width); max-width: 100%;
   height: var(--everline-component-toast-height);
   padding-inline: var(--everline-component-toast-padding-inline);
   border-radius: var(--everline-component-toast-radius);
@@ -770,8 +772,9 @@ fieldset.radio-group legend { font-size: var(--everline-font-size-label); font-w
 .toast__message { margin: 0; font-size: var(--everline-font-size-label); font-weight: var(--everline-font-weight-semibold); flex: 1 1 auto; min-width: 0; }
 .toast__action {
   flex: 0 0 auto; margin-inline-start: auto;
+  margin-inline-end: calc(var(--everline-component-toast-action-end-inset) - var(--everline-component-toast-padding-inline));
   border: 0; background: transparent; padding: 0;
-  color: var(--everline-component-toast-action-foreground); font: inherit; font-weight: var(--everline-font-weight-semibold);
+  color: var(--everline-component-toast-action-foreground); font: inherit; font-size: var(--everline-font-size-label); font-weight: var(--everline-font-weight-semibold);
   cursor: pointer;
 }
 .toast--danger .toast__icon {

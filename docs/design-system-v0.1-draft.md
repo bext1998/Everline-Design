@@ -510,7 +510,7 @@ Text input 用於單行短文字；Textarea 用於描述、備註與多行內容
 
 ## Toast / Snackbar
 
-狀態：`candidate`（2026-08-05，issue #41：HTML/CSS candidate ready for G1，見 `works/html/batch1/`，尚未通過人類視覺審查，未畢業）
+狀態：`candidate`（2026-08-14，issue #41：人類 G1 指出內容對齊問題；HTML/CSS 已依 SVG 280px 卡片與 14px action 字級修正，等待重新審查，未畢業）
 
 ### 用途與邊界
 
@@ -518,7 +518,7 @@ Text input 用於單行短文字；Textarea 用於描述、備註與多行內容
 
 ### 結構與變體
 
-- 16 px 圓角膠囊型容器，高度 56 px；可選尾端文字動作（例如「復原」）。
+- 16 px 圓角膠囊型容器，280×56 px；可選尾端 14px 文字動作（例如「復原」），兩個 SVG 範例的文字起點皆為 x=220。
 - 多筆同時觸發時以背後可見的堆疊卡片暗示佇列。
 
 ### 狀態、互動與內容
