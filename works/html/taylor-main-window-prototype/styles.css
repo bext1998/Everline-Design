@@ -1,0 +1,78 @@
+/* This prototype links ../batch2/styles.css directly for Sidebar/Toolbar/Kanban column/Task
+   card — reusing the already-approved component styles rather than redrawing them. Everything
+   below is new: the window-chrome shell (title bar, app-shell layout) has no existing Everline
+   component, plus a few narrow layout overrides where a "demo gallery" style doesn't fit a real
+   docked panel (e.g. the sidebar's demo min-height/corner-radius). */
+
+html, body { height: 100%; }
+body { overflow: hidden; }
+/* Known recurring bug in this repo's prototypes: a class that sets display:flex/grid
+   unconditionally overrides the browser's default [hidden]{display:none} at equal specificity
+   (caught twice already — works/html/batch3/styles.css via PR review, and again in
+   works/html/taylor-agent-handoff-prototype/). Applying the blanket fix up front this time
+   instead of waiting to rediscover it — .task-card__pending below sets display:flex and would
+   otherwise show every pending badge before the demo trigger is even clicked. */
+[hidden] { display: none !important; }
+
+/* The real window frame corner radius is OS-level chrome Wails v2 applies at runtime, not
+   something this HTML prototype simulates — fills the full browser viewport instead. */
+.app-shell { display: flex; flex-direction: column; height: 100vh; width: 100vw; }
+
+/* ---- Title bar (new — Wails custom window chrome, no existing Everline component) ---- */
+.win-titlebar { align-items: center; background: var(--everline-color-semantic-background-surface); border-bottom: var(--everline-border-width-default) solid var(--everline-color-semantic-border-default); display: flex; flex: 0 0 auto; height: 40px; justify-content: space-between; padding: 0 4px 0 12px; }
+.win-titlebar__brand { align-items: center; display: flex; gap: var(--everline-space-1); }
+.win-titlebar__logo { align-items: center; background: var(--everline-color-semantic-action-primary); border-radius: 6px; color: var(--everline-color-semantic-foreground-inverse); display: flex; font-size: 12px; font-weight: 700; height: 20px; justify-content: center; width: 20px; }
+.win-titlebar__title { color: var(--everline-color-semantic-foreground-disabled); font-size: 13px; }
+.win-titlebar__center { align-items: center; display: flex; flex: 1 1 auto; gap: var(--everline-space-1); justify-content: center; }
+.win-titlebar__controls { align-items: center; display: flex; }
+.win-btn { align-items: center; background: transparent; border: 0; color: var(--everline-color-semantic-foreground-primary); display: flex; height: 40px; justify-content: center; width: 40px; }
+.win-btn:hover { background: color-mix(in srgb, var(--everline-color-semantic-foreground-inverse) 8%, transparent); }
+.win-btn--close:hover { background: var(--everline-color-semantic-action-danger); }
+.win-btn[data-demo-trigger] { border: var(--everline-border-width-default) dashed var(--everline-color-semantic-action-primary); border-radius: var(--everline-radius-pill); color: var(--everline-color-semantic-action-primary); font-size: 12px; height: 28px; margin-right: var(--everline-space-1); padding: 0 var(--everline-space-2); width: auto; }
+
+/* ---- Body layout: sidebar + board area, filling the remaining height under the title bar ---- */
+.variant-mount { display: flex; flex: 1 1 auto; min-height: 0; }
+.app-body { display: flex; flex: 1 1 auto; min-height: 0; width: 100%; }
+.app-body .sidebar { border-radius: 0; display: flex; flex-direction: column; height: 100%; min-height: 0; }
+.board-area { display: flex; flex: 1 1 auto; flex-direction: column; min-width: 0; }
+
+/* Board columns fill the available width evenly instead of a fixed narrow demo width — a real
+   board window has room the batch2 gallery swatch (288px, sized for showing 3 columns side by
+   side in a catalog) didn't need to account for. Still wraps to horizontal scroll below the
+   min-width floor if the window itself gets genuinely narrow. */
+.kanban-board { align-items: flex-start; display: flex; flex: 1 1 auto; gap: var(--everline-space-3); overflow-x: auto; padding: var(--everline-space-3); }
+.kanban-board .kanban-column { flex: 1 1 0; height: 100%; min-width: 320px; }
+.kanban-column__add { align-items: center; background: transparent; border: 0; border-radius: 50%; color: var(--everline-color-semantic-foreground-subdued); display: flex; height: 24px; justify-content: center; width: 24px; }
+.kanban-column__add:hover { background: color-mix(in srgb, var(--everline-color-semantic-foreground-inverse) 10%, transparent); color: var(--everline-color-semantic-foreground-primary); }
+.kanban-column__empty { color: var(--everline-color-semantic-action-primary); font-size: 14px; opacity: var(--everline-opacity-disabled); padding: 0 var(--everline-space-2); }
+
+/* ---- Sidebar: "專案" label + inline "+" + flat project list — 2026-07-27, corrected back to
+   match works/TaylorConceptMockup1.svg's actual sidebar structure exactly (a prior revision
+   incorrectly blended in a separate "任務/自動化" feature-nav concept from an unrelated
+   reference image; that nav paradigm isn't part of this reference and was removed). ---- */
+.sidebar__header { align-items: center; display: flex; justify-content: space-between; padding: var(--everline-space-1); }
+.sidebar__add { background: transparent; border: 0; color: var(--everline-color-semantic-foreground-subdued); font-size: 16px; height: 24px; width: 24px; }
+.sidebar__add:hover { color: var(--everline-color-semantic-foreground-primary); }
+.sidebar--collapsed .sidebar__header { justify-content: center; padding: var(--everline-space-1) 0; }
+
+/* ---- Variant C only: attention-aware indicators (extends the per-task hand-off idea from
+   works/html/taylor-agent-handoff-prototype/ up to whole-app-shell scope) ---- */
+.task-card { position: relative; }
+.task-card__pending { align-items: center; background: var(--everline-color-semantic-action-primary); border-radius: 50%; color: var(--everline-color-semantic-foreground-inverse); display: flex; font-size: 11px; height: 20px; justify-content: center; position: absolute; right: var(--everline-space-1); top: var(--everline-space-1); width: 20px; }
+.nav-item__pending { background: var(--everline-color-semantic-action-primary); border-radius: var(--everline-radius-pill); color: var(--everline-color-semantic-foreground-inverse); font-size: 11px; margin-left: auto; padding: 2px 7px; }
+.attention-pill { background: color-mix(in srgb, var(--everline-color-semantic-action-primary) 20%, transparent); border: var(--everline-border-width-default) solid var(--everline-color-semantic-action-primary); border-radius: var(--everline-radius-pill); color: var(--everline-color-semantic-action-primary); font-size: 12px; font-weight: 700; padding: 4px 12px; }
+.board-with-rail { display: flex; flex: 1 1 auto; min-height: 0; }
+.board-with-rail .kanban-board { flex: 1 1 auto; }
+.attention-rail { background: var(--everline-color-semantic-background-surface); border-left: var(--everline-border-width-default) solid var(--everline-color-semantic-border-default); flex: 0 0 240px; overflow-y: auto; padding: var(--everline-space-2); }
+.attention-rail__title { color: var(--everline-color-semantic-foreground-subdued); font-size: 13px; margin: 0 0 var(--everline-space-1); }
+.attention-rail__list { list-style: none; margin: 0; padding: 0; }
+.attention-rail__item { align-items: flex-start; background: transparent; border: 0; border-radius: var(--everline-radius-sm); color: var(--everline-color-semantic-foreground-primary); display: flex; gap: var(--everline-space-1); padding: var(--everline-space-1); text-align: left; width: 100%; }
+.attention-rail__item:hover { background: color-mix(in srgb, var(--everline-color-semantic-foreground-inverse) 6%, transparent); }
+.attention-rail__dot { background: var(--everline-color-semantic-action-primary); border-radius: 50%; flex: 0 0 8px; height: 8px; margin-top: 6px; width: 8px; }
+.attention-rail__empty { color: var(--everline-color-semantic-foreground-subdued); font-size: 13px; }
+
+/* ---- Floating variant switcher — visually distinct from the design being evaluated ---- */
+.proto-switcher { align-items: center; background: #000; border: var(--everline-border-width-default) solid var(--everline-color-semantic-action-primary); border-radius: var(--everline-radius-pill); bottom: var(--everline-space-2); box-shadow: 0 4px 16px rgba(0, 0, 0, .5); display: flex; gap: var(--everline-space-2); padding: 6px 10px; position: fixed; right: var(--everline-space-2); z-index: 1000; }
+.proto-switcher__arrow { background: transparent; border: 0; color: var(--everline-color-semantic-foreground-inverse); font-size: 16px; padding: 4px 10px; }
+.proto-switcher__arrow:hover { background: color-mix(in srgb, var(--everline-color-semantic-foreground-inverse) 12%, transparent); border-radius: 50%; }
+.proto-switcher__label { color: var(--everline-color-semantic-action-primary); font-size: 13px; font-weight: 700; min-width: 100px; text-align: center; }

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PROTOTYPE — Taylor main window shell (throwaway)</title>
+    <link rel="stylesheet" href="../batch2/styles.css">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <!--
+      THROWAWAY PROTOTYPE — not an Everline candidate component, not Taylor production code.
+      Design question: what should Taylor's main application window (custom title bar + sidebar
+      + Kanban board) look like as a Wails desktop-app shell, using Everline's already-approved
+      Sidebar/Toolbar/Kanban column/Task card (works/html/batch2/, linked directly — not redrawn)?
+      works/TaylorConceptMockup1.svg is structural inspiration only (title bar + sidebar + columns),
+      its flat/straight-edged style is NOT reused, per this repo's own established decision.
+      Three variants, switchable via ?variant=A|B|C:
+        A — conventional: expanded sidebar + toolbar row + board.
+        B — content-maximizing: collapsed icon-rail sidebar, chrome folded into the title bar.
+        C — attention-aware shell: surfaces "which tasks Codex is waiting on you for" at the
+            whole-app level (title bar badge + per-card indicator + a jump-to rail), extending
+            the per-task hand-off idea from works/html/taylor-agent-handoff-prototype/ (gitignored,
+            separate prototype) up to the app shell.
+    -->
+    <div class="app-shell">
+      <header class="win-titlebar">
+        <div class="win-titlebar__brand">
+          <span class="win-titlebar__logo" aria-hidden="true">T</span>
+          <span class="win-titlebar__title">Taylor</span>
+        </div>
+        <div class="win-titlebar__center" data-titlebar-center></div>
+        <div class="win-titlebar__controls">
+          <button type="button" class="win-btn" data-demo-trigger title="模擬 Codex 提問（示範用）">模擬提問</button>
+          <button type="button" class="win-btn" aria-label="最小化"><svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true"><path d="M2 6h8" stroke="currentColor" stroke-width="1.4"/></svg></button>
+          <button type="button" class="win-btn" aria-label="最大化"><svg viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><rect x="1.5" y="1.5" width="9" height="9" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.4"/></svg></button>
+          <button type="button" class="win-btn win-btn--close" aria-label="關閉"><svg viewBox="0 0 12 12" width="11" height="11" aria-hidden="true"><path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></button>
+        </div>
+      </header>
+      <main id="variant-mount" class="variant-mount"></main>
+    </div>
+
+    <template id="tpl-variant-a">
+      <div class="app-body">
+        <nav class="sidebar sidebar--expanded" aria-label="工作區導覽">
+          <div class="sidebar__header"><span class="sidebar__label">專案</span><button type="button" class="sidebar__add" aria-label="新增專案">＋</button></div>
+          <a class="nav-item" href="#" aria-current="page"><span class="nav-icon" aria-hidden="true"></span><span class="nav-item__label">watt-automation-engine</span></a>
+          <a class="nav-item" href="#"><span class="nav-icon" aria-hidden="true"></span><span class="nav-item__label">everline-design</span></a>
+        </nav>
+        <div class="board-area">
+          <div class="kanban-board" data-kanban-board></div>
+        </div>
+      </div>
+    </template>
+
+    <template id="tpl-variant-b">
+      <div class="app-body">
+        <nav class="sidebar sidebar--collapsed" aria-label="工作區導覽（收合）">
+          <div class="sidebar__header"><button type="button" class="sidebar__add" aria-label="新增專案">＋</button></div>
+          <a class="nav-item" href="#" aria-current="page" aria-label="watt-automation-engine"><span class="nav-icon" aria-hidden="true"></span></a>
+          <a class="nav-item" href="#" aria-label="everline-design"><span class="nav-icon" aria-hidden="true"></span></a>
+        </nav>
+        <div class="board-area">
+          <div class="kanban-board" data-kanban-board></div>
+        </div>
+      </div>
+    </template>
+
+    <template id="tpl-variant-c">
+      <div class="app-body">
+        <nav class="sidebar sidebar--expanded" aria-label="工作區導覽">
+          <div class="sidebar__header"><span class="sidebar__label">專案</span><button type="button" class="sidebar__add" aria-label="新增專案">＋</button></div>
+          <a class="nav-item" href="#" aria-current="page">
+            <span class="nav-icon" aria-hidden="true"></span><span class="nav-item__label">watt-automation-engine</span>
+            <span class="nav-item__pending" data-nav-pending hidden aria-label="有任務等待回覆">2</span>
+          </a>
+          <a class="nav-item" href="#"><span class="nav-icon" aria-hidden="true"></span><span class="nav-item__label">everline-design</span></a>
+        </nav>
+        <div class="board-area">
+          <div class="board-with-rail">
+            <div class="kanban-board" data-kanban-board></div>
+            <aside class="attention-rail">
+              <p class="attention-rail__title">待回覆</p>
+              <ul class="attention-rail__list" data-attention-list></ul>
+              <p class="attention-rail__empty" data-attention-empty>目前沒有任務在等你回覆。</p>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <div class="proto-switcher" data-proto-switcher>
+      <button type="button" class="proto-switcher__arrow" data-proto-prev aria-label="上一個變體">←</button>
+      <span class="proto-switcher__label" data-proto-label>A</span>
+      <button type="button" class="proto-switcher__arrow" data-proto-next aria-label="下一個變體">→</button>
+    </div>
+
+    <script src="prototype.js"></script>
+  </body>
+</html>
