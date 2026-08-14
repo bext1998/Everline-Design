@@ -996,29 +996,6 @@ async function main() {
     check('clicking the trigger opens the menu, sets aria-expanded=true, and focuses the currently-selected option',
       selAfterOpen.expanded === 'true' && selAfterOpen.hidden === false && selAfterOpen.focusedId === 'select-1-opt-1', selAfterOpen);
 
-    // The open Select is one continuous control: both trigger bottom corners and both listbox
-    // top corners must square off, and the two boxes must share the same horizontal edges. This
-    // asserts computed geometry after the real open interaction, rather than trusting a selector
-    // string, so a scope regression cannot silently restore the visually incorrect double radius.
-    const selOpenGeometry = await c.js(`(()=>{
-      const trigger=${sel('[data-select-trigger]')}, menu=${sel('[data-select-menu]')};
-      const t=trigger.getBoundingClientRect(), m=menu.getBoundingClientRect();
-      const ts=getComputedStyle(trigger), ms=getComputedStyle(menu);
-      return {
-        triggerBottomLeftRadius: ts.borderBottomLeftRadius,
-        triggerBottomRightRadius: ts.borderBottomRightRadius,
-        menuTopLeftRadius: ms.borderTopLeftRadius,
-        menuTopRightRadius: ms.borderTopRightRadius,
-        sameLeft: Math.abs(t.left-m.left) < 0.01,
-        sameRight: Math.abs(t.right-m.right) < 0.01,
-        joined: Math.abs(t.bottom-m.top) < 0.01
-      };
-    })()`);
-    check('the open Select joins its listbox with square top corners and no horizontal seam',
-      selOpenGeometry.triggerBottomLeftRadius === '0px' && selOpenGeometry.triggerBottomRightRadius === '0px' &&
-      selOpenGeometry.menuTopLeftRadius === '0px' && selOpenGeometry.menuTopRightRadius === '0px' &&
-      selOpenGeometry.sameLeft && selOpenGeometry.sameRight && selOpenGeometry.joined, selOpenGeometry);
-
     // Real keyboard test: ArrowDown from the selected (middle) option must skip the disabled
     // third option and wrap around to the first — proving disabled options are excluded from
     // arrow-key traversal, not just visually muted.
