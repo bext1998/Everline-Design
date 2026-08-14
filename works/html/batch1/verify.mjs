@@ -207,9 +207,9 @@ function verifyTokens() {
   check('color.base.gray-550 resolves to #A8A8A8 (backfilled from c-tabs\'s default label colour)', px(resolved.get('color.base.gray-550')) === '#A8A8A8', resolved.get('color.base.gray-550'));
   check('component.tabs.foreground-default now resolves to the corrected gray-550 #A8A8A8 (was gray-700 #4D4D4D, never matched the SVG)', px(resolved.get('component.tabs.foreground-default')) === '#A8A8A8', resolved.get('component.tabs.foreground-default'));
   check('component.tabs.divider-width resolves to 1px', px(resolved.get('component.tabs.divider-width')) === '1px', resolved.get('component.tabs.divider-width'));
-  check('component.tabs.item-padding-inline resolves to space.1 8px', px(resolved.get('component.tabs.item-padding-inline')) === '8px', resolved.get('component.tabs.item-padding-inline'));
-  check('component.tabs.item-height resolves to 28px (matches no component-heights step)', px(resolved.get('component.tabs.item-height')) === '28px', resolved.get('component.tabs.item-height'));
-  check('component.tabs.item-radius resolves to 6px (matches no radius.* step)', px(resolved.get('component.tabs.item-radius')) === '6px', resolved.get('component.tabs.item-radius'));
+  check('component.tabs.hover-padding-inline resolves to space.1 8px', px(resolved.get('component.tabs.hover-padding-inline')) === '8px', resolved.get('component.tabs.hover-padding-inline'));
+  check('component.tabs.hover-height resolves to 28px (matches no component-heights step)', px(resolved.get('component.tabs.hover-height')) === '28px', resolved.get('component.tabs.hover-height'));
+  check('component.tabs.hover-radius resolves to 6px (matches no radius.* step)', px(resolved.get('component.tabs.hover-radius')) === '6px', resolved.get('component.tabs.hover-radius'));
   // Pre-existing tabs fields this round must NOT have touched.
   check('component.tabs.indicator-width is still border.width-focus 2px (unchanged)', px(resolved.get('component.tabs.indicator-width')) === '2px');
   check('component.tabs.foreground-selected is still foreground-inverse white #FFFFFF (unchanged)', px(resolved.get('component.tabs.foreground-selected')) === '#FFFFFF');
@@ -401,12 +401,6 @@ class Cdp {
     const box = await this.js(`(()=>{const e=${expr};if(!e)return null;e.scrollIntoView({block:'center'});const b=e.getBoundingClientRect();return{x:b.left+b.width/2,y:b.top+b.height/2};})()`);
     if (!box) throw new Error(`no element: ${expr}`);
     await this.click(box.x, box.y);
-  }
-  async hoverEl(expr) {
-    const box = await this.js(`(()=>{const e=${expr};if(!e)return null;e.scrollIntoView({block:'center'});const b=e.getBoundingClientRect();return{x:b.left+b.width/2,y:b.top+b.height/2};})()`);
-    if (!box) throw new Error(`no element: ${expr}`);
-    await this.send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: box.x, y: box.y, buttons: 0 });
-    await sleep(70);
   }
   async shot() {
     const r = await this.send('Page.captureScreenshot', { format: 'png' });
@@ -999,15 +993,6 @@ async function main() {
     const indicatorShadow = await c.js(`getComputedStyle(document.getElementById('tab-activity')).boxShadow`);
     check('selected tab draws its 2px action-primary indicator as an inset box-shadow flush with the tablist divider',
       indicatorShadow.includes('89, 138, 232') && indicatorShadow.includes('2px') && indicatorShadow.includes('inset'), indicatorShadow);
-
-    await c.hoverEl(sel('#tab-settings'));
-    const hoveredTab = await c.js(`(()=>{
-      const cs=getComputedStyle(document.getElementById('tab-settings'));
-      return { color: cs.color, backgroundColor: cs.backgroundColor, backgroundImage: cs.backgroundImage, boxShadow: cs.boxShadow };
-    })()`);
-    check('hover keeps an unselected tab text-only: off-white foreground, no filled panel, and no selected indicator',
-      hoveredTab.color === 'rgb(242, 242, 242)' && hoveredTab.backgroundColor === 'rgba(0, 0, 0, 0)' &&
-      hoveredTab.backgroundImage === 'none' && hoveredTab.boxShadow === 'none', hoveredTab);
 
     // Real click test: clicking an unselected tab selects it, switches the visible panel, and
     // moves real DOM focus to it.

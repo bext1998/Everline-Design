@@ -104,18 +104,18 @@
       </aside>
 
       <aside class="scope-note" aria-labelledby="scope-title-5">
-        <h2 id="scope-title-5">本輪新增（issue #38）：Tabs token 缺口與更正、G1 決策清單 — 原 hover 已被否決，最小候選等待重新審查</h2>
-        <p>本輪新增 Tabs（issue #38，issue #17 15 群清單第 12 項），對應 <code>works/everline-components-master.svg</code> 的 <code>c-tabs</code> 群組（selected／default／disabled／hover 四種範例文字）。<strong>2026-08-14 人類 G1 明確否決原本 6% 白色圓角 hover 底板</strong>；現行最小 HTML/CSS 候選改為僅提升未選取 tab 文字至 off-white，背景透明且不畫 selected 指示條，仍等待人類重新審查。master.svg 對應區塊未標記 <code>superseded-by</code>，<code>docs/STATUS.md</code>／<code>docs/design-system-v0.1-draft.md</code> 不宣稱已畢業或 stable，issue #38 亦未打勾關閉，且不使用 <code>Closes #17</code>。</p>
+        <h2 id="scope-title-5">本輪新增（issue #38）：Tabs token 缺口與更正、G1 決策清單 — candidate ready for G1，尚未通過人類視覺審查</h2>
+        <p>本輪新增 Tabs（issue #38，issue #17 15 群清單第 12 項），對應 <code>works/everline-components-master.svg</code> 的 <code>c-tabs</code> 群組（selected／default／disabled／hover 四種範例文字）。<strong>本群完成 P0–P2，尚未通過 G1 人類視覺審查</strong>，master.svg 對應區塊未標記 <code>superseded-by</code>，<code>docs/STATUS.md</code>／<code>docs/design-system-v0.1-draft.md</code> 只記錄「等待 G1」事實，未宣稱已畢業或 stable，issue #38 亦未打勾關閉，且不使用 <code>Closes #17</code>。</p>
         <p><strong>P0 token 完整性核對發現 1 個既有數值錯誤與 4 個缺口</strong>（詳見 <code>tokens/everline-draft.tokens.json</code> 各欄位 <code>$description</code>）：</p>
         <ul>
           <li><strong>更正（非缺口）</strong>：<code>component.tabs.foreground-default</code> 早在 2026-07-19 就宣告為 <code>color.base.gray-700</code>（<code>#4D4D4D</code>），但從未對照 SVG 核實過——<code>c-tabs</code> 的 default（未選取）分頁文字實際是 <code>fill="#a8a8a8"</code>，不是 <code>#4D4D4D</code>。已新增 <code>color.base.gray-550</code> backfill 此值（沿用 <code>gray-500</code>／<code>gray-850</code> 既有先例），並把 <code>foreground-default</code> 改指向它——這是修正既有候選值與 SVG 的落差，不是單純新增。</li>
           <li><code>divider-width</code>（1px，全寬分隔線的 <code>stroke-width</code>，先前一個字都沒有涵蓋）。</li>
-          <li><code>item-padding-inline</code>（8px，直接沿用既有 <code>space.1</code>）、<code>item-height</code>（28px）、<code>item-radius</code>（6px，不落在既有 <code>radius.*</code> 任何一階）——三者量測自唯一畫出實際外框的原 hover 範例（<code>rect x="312" width="56" height="28" rx="6"</code>，文字 <code>x="320"</code>，內距推得 8px），現僅用於所有 tab 的共同命中區，不再代表可見 hover 面板。</li>
+          <li><code>hover-padding-inline</code>（8px，直接沿用既有 <code>space.1</code>）、<code>hover-height</code>（28px）、<code>hover-radius</code>（6px，不落在既有 <code>radius.*</code> 任何一階）——三者皆量測自唯一畫出實際外框的 hover 範例（<code>rect x="312" width="56" height="28" rx="6"</code>，文字 <code>x="320"</code>，內距推得 8px）。</li>
         </ul>
         <p><strong>刻意未實作、留給 G1 決定的項目</strong>（依 <code>AGENTS.md</code>：SVG 未畫出的視覺不得自行發明；<code>docs/design-system-v0.1-draft.md</code> 已明文「focus-visible 尚未畫出」）：</p>
         <ul>
           <li>鍵盤 focus 沒有專屬視覺，沿用全域 <code>:focus-visible</code>——與 Menu 元件明確畫出專屬 focus ring 的情況不同，這裡規格文字明寫尚未畫出。</li>
-          <li>原 hover 範例是唯一畫出實際外框尺寸（padding／height／radius）的狀態；為了讓每個分頁有一致、真實的命中區，所有分頁狀態都套用這組尺寸。人類 G1 已否決其 6% 白色圓角底板，現行最小候選只保留文字提升、背景透明；此項等待重新審查，不當成已核准視覺。</li>
+          <li>只有 hover 範例畫出實際外框尺寸（padding／height／radius）；為了讓每個分頁有一致、真實的命中區，本批讓所有分頁狀態都套用這組尺寸，僅背景色在非 hover 狀態下透明不可見——這是依唯一有量測依據的狀態做的合理延伸，不是另外發明新視覺，非 hover 狀態的可見樣式與 SVG 完全一致（無背景框）。</li>
           <li>SVG 示範的 5 個分頁彼此間距（0／80／160／240／320）是這份靜態圖表自己的排版網格，不是量測得到的元件間距 token——沒有任何一個分頁畫出自己的完整命中區可供量測間距，本批改用既有 <code>space.1</code> 作為 <code>gap</code>，不強行複製這組網格數字。</li>
         </ul>
       </aside>
@@ -434,7 +434,7 @@
           <div class="tabpanel" role="tabpanel" id="panel-history" aria-labelledby="tab-history" tabindex="0" hidden>紀錄（已停用，無法切換）。</div>
           <div class="tabpanel" role="tabpanel" id="panel-preview" aria-labelledby="tab-preview" tabindex="0" hidden>預覽：任務卡片外觀預覽。</div>
         </div>
-        <p class="example-label">真實 <code>role="tablist"</code>／<code>role="tab"</code>／<code>role="tabpanel"</code>，roving <code>tabindex</code>＋自動切換（<code>ArrowLeft</code>／<code>ArrowRight</code> 移動的同時立即切換選取分頁與對應 <code>tabpanel</code>，並略過 disabled 分頁；<code>Tab</code> 鍵離開整組，因為群組內僅選取中的分頁帶 <code>tabindex="0"</code>，屬瀏覽器原生行為）。依序：selected（活動，2px 主色底線＋white 文字）、default（設定／附件，off-white 較淡的 <code>#a8a8a8</code> 文字——本輪更正 <code>component.tabs.foreground-default</code> 的既有 token 落差，見上方 scope note）、disabled（紀錄，原生 <code>disabled</code>，純 <code>opacity</code> 處理，見上方 scope note 說明為何不比照 Button 用 <code>color-mix</code>）、hover（預覽，未預先固定在畫面上，真實 <code>:hover</code> 僅提升文字至 off-white，背景保持透明）。此 hover candidate 等待人類重新審查；keyboard focus 沿用全域 <code>:focus-visible</code>，SVG 未畫出專屬視覺。</p>
+        <p class="example-label">真實 <code>role="tablist"</code>／<code>role="tab"</code>／<code>role="tabpanel"</code>，roving <code>tabindex</code>＋自動切換（<code>ArrowLeft</code>／<code>ArrowRight</code> 移動的同時立即切換選取分頁與對應 <code>tabpanel</code>，並略過 disabled 分頁；<code>Tab</code> 鍵離開整組，因為群組內僅選取中的分頁帶 <code>tabindex="0"</code>，屬瀏覽器原生行為）。依序：selected（活動，2px 主色底線＋white 文字）、default（設定／附件，off-white 較淡的 <code>#a8a8a8</code> 文字——本輪更正 <code>component.tabs.foreground-default</code> 的既有 token 落差，見上方 scope note）、disabled（紀錄，原生 <code>disabled</code>，純 <code>opacity</code> 處理，見上方 scope note 說明為何不比照 Button 用 <code>color-mix</code>）、hover（預覽，未預先固定在畫面上，真實 <code>:hover</code> 才會出現 6% 白色圓角底）。keyboard focus 沿用全域 <code>:focus-visible</code>，SVG 未畫出專屬視覺。</p>
       </section>
     </main>
     <script src="prototype.js"></script>

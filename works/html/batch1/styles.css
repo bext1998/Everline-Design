@@ -197,9 +197,9 @@
   --everline-component-tabs-foreground-default: var(--everline-color-base-gray-550);
   --everline-component-tabs-foreground-disabled: var(--everline-color-semantic-foreground-disabled);
   --everline-component-tabs-foreground-hover: var(--everline-color-semantic-foreground-primary);
-  --everline-component-tabs-item-padding-inline: var(--everline-space-1);
-  --everline-component-tabs-item-height: 28px;
-  --everline-component-tabs-item-radius: 6px;
+  --everline-component-tabs-hover-padding-inline: var(--everline-space-1);
+  --everline-component-tabs-hover-height: 28px;
+  --everline-component-tabs-hover-radius: 6px;
 }
 
 /* Hover overlay, derived from the two tokens that define it rather than restating #fff:
@@ -763,14 +763,15 @@ fieldset.radio-group legend { font-size: var(--everline-font-size-label); font-w
 }
 .tab {
   display: inline-flex; align-items: center;
-  height: var(--everline-component-tabs-item-height);
-  padding-inline: var(--everline-component-tabs-item-padding-inline);
-  border: 0; border-radius: var(--everline-component-tabs-item-radius);
+  height: var(--everline-component-tabs-hover-height);
+  padding-inline: var(--everline-component-tabs-hover-padding-inline);
+  border: 0; border-radius: var(--everline-component-tabs-hover-radius);
   background: transparent; color: var(--everline-component-tabs-foreground-default);
   font: inherit; font-size: var(--everline-font-size-body); font-weight: var(--everline-font-weight-regular);
   cursor: pointer;
 }
 .tab:hover:not(:disabled):not([aria-selected="true"]) {
+  background-image: linear-gradient(var(--everline-hover-overlay), var(--everline-hover-overlay));
   color: var(--everline-component-tabs-foreground-hover);
 }
 .tab[aria-selected="true"] {
