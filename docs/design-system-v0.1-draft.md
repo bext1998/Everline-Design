@@ -10,7 +10,7 @@
 Icon button（issue #30）／Switch（issue #31）／Radio（issue #32）／Split button／Dropdown（issue #33）（2026-07-31）：`works/html/batch1/` 已擴充這 4 群的 HTML/CSS candidate，**candidate ready for G1，尚未通過人類視覺審查，未畢業**；master.svg 對應的 c-icon-button／c-switch／c-radio／c-split-button 群組尚未標記 `superseded-by`，仍是這 4 群目前的權威來源。
 Badge / Tag（issue #34，issue #17 15 群清單第 8 項，2026-08-03）：`works/html/batch1/` 已擴充 Badge / Tag 的 HTML/CSS candidate，**candidate ready for G1，尚未通過人類視覺審查，未畢業**；master.svg 對應的 `c-badge-tag` 群組尚未標記 `superseded-by`，仍是這一群目前的權威來源。
 Inline alert（issue #35，issue #17 15 群清單第 9 項，2026-08-04）：`works/html/batch1/` 已擴充 Inline alert 的 HTML/CSS candidate，**2026-08-04 人類 G1 審查通過，已畢業，仍是 candidate，未宣告 stable**；`works/everline-components-master.svg` 對應的 `c-inline-alert` 群組已標記群組級 `superseded-by: works/html/batch1/index.html`，master.svg 檔案層級狀態不變。P0 核對發現本節下方「24 px 狀態圖示」與 SVG 實測值（`circle r="14"`，直徑 28px）不符，已一併修正；並發現 `alert-neutral` 指示條與圖示並非同一顏色、`.alert-body` 文字色（`#b8b8b8`）並非既有任何 token，詳見 `tokens/everline-draft.tokens.json` 與 `docs/STATUS.md`。
-Menu / Context menu（issue #37，issue #17 15 群清單第 11 項，2026-08-04）：`works/html/batch1/` 的 HTML/CSS candidate **2026-08-14 人類 G1 視覺審查通過，已畢業，仍是 candidate 未宣告 stable**；master.svg 對應的 `c-menu` 群組已標記 `superseded-by: works/html/batch1/index.html`，HTML/CSS 是這一群目前的候選規格權威來源。`component.menu.*` P0 核對的完整紀錄、專屬 keyboard focus ring 與互動驗證見 `tokens/everline-draft.tokens.json` 與 `docs/STATUS.md`。issue #17 15 群清單中，已畢業 5 群＋等待 G1 的 5 群共 10 群，仍有 5 群未動工。
+Menu / Context menu（issue #37，issue #17 15 群清單第 11 項，2026-08-04）：`works/html/batch1/` 已擴充 Menu / Context menu 的 HTML/CSS candidate，**candidate ready for G1，尚未通過人類視覺審查，未畢業**；master.svg 對應的 `c-menu` 群組尚未標記 `superseded-by`，仍是這一群目前的權威來源。`component.menu.*` 早在 2026-07-19 就先行宣告了 10 個欄位，但從未對照 `c-menu` 核實過；本輪 P0 核對後補上 8 個缺口（`item-padding-inline`、`border`、`border-width`、`item-focus`、`item-focus-width`、`checked-icon-inset`、`shortcut-font-size`），其中 `item-focus`／`item-focus-width` 值得注意——這是本批目前唯一一個 SVG 明確畫出專屬鍵盤 focus 視覺（而非沿用全域 `:focus-visible`）的元件，詳見 `tokens/everline-draft.tokens.json` 與 `docs/STATUS.md`。issue #17 15 群清單中，已畢業 4 群＋等待 G1 的 6 群共 10 群，仍有 5 群未動工。
 
 本文件是受控延伸用的校準稿，不是穩定版規格。已觀察到的值與本次推導值分開記錄；使用者確認前，不應將候選內容視為 Everline 的凍結決策。
 
@@ -416,7 +416,7 @@ Text input 用於單行短文字；Textarea 用於描述、備註與多行內容
 
 ## Menu / Context menu
 
-狀態：`candidate`（2026-08-14，issue #37：人類 G1 視覺審查通過，已畢業；HTML/CSS 是候選規格權威來源，未宣告 stable）
+狀態：`candidate`（2026-08-04，issue #37：HTML/CSS candidate ready for G1，見 `works/html/batch1/`，尚未通過人類視覺審查，未畢業）
 
 ### 用途與邊界
 
