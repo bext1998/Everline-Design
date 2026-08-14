@@ -20,8 +20,6 @@
 - 2026-07-27：Search field（issue #6）延伸既有 Text input 的 token 與結構（高度、radius、背景、placeholder 色、focus 邊框皆直接沿用），只新增 `component.search-field` 這一組 icon／清除按鈕的版面 token，沒有新增顏色或動效原生值。畢業到 HTML/CSS 時把 SVG 候選稿手繪的 empty／filled／focused／disabled 四張快照，換成原生 `:focus-within`（focus）與 `input` 事件驅動的清除按鈕出現／隱藏、原生 `:disabled`／`:has()`（disabled），而不是逐一手刻對應狀態的 CSS class。像素級驗證（computed style + screenshot RGB 採樣）：背景 `rgb(102,102,102)`＝`#666666`、focus 邊框 `rgb(89,138,232)`＝`#598AE8`、disabled 內容色 實測 ≈`rgb(178,178,178)` 與「off-white + opacity.disabled 0.55」的理論混色值（179,179,179）一致，全部與 token 精確吻合。
 - 待辦、規劃與跨元件擱置決策一律追蹤在 GitHub Issues（`gh issue list`），不在此文件重複列。
 
-- 2026-08-14：Toast / Snackbar（issue #41）人類 G1 指出內容水平／視覺對齊問題。量測確認根因是 HTML/CSS 把四個 SVG 都畫成 280px 的卡片錯誤地寫成 `width: max-content`（實際只剩 138／156／138.625／170px），兩個 action 又從容器繼承 16px 而訊息是 14px；不是 icon 的 intrinsic geometry。已以 SVG 主卡片寬度新增 `component.toast.width`（280px）與 action 終端 inset（32px，對應 SVG 兩個 14px action label 的 x=220），並讓 action 也消費 14px label 字級；四變體的卡片寬度、icon／訊息／action 垂直中心線、預設／danger 的 icon 與訊息左緣、兩個 action 的 x=220 與字級，皆由 computed geometry regression assertions 保護。此修正等待人類重新視覺審查，未宣稱 G1 已通過；queued 背後堆疊卡片的 SVG／規格文字衝突仍完全保留待人類決定。
-
 ## 背景事實
 
 - 專案目前以設計語言、GUI 元件參考與向量原始檔管理為主，尚未進入前端元件庫實作；本專案沒有可執行的測試、lint 或 build 流程，驗證方式是 headless Chrome 渲染＋像素核對，不是自動化測試（`docs/spec.md` 已同步移除誤導性的「Test Plan」用詞，詳見該文件 Open Questions 前一節）。
