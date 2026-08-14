@@ -10,7 +10,7 @@
 Icon button（issue #30）／Switch（issue #31）／Radio（issue #32）／Split button／Dropdown（issue #33）（2026-07-31）：`works/html/batch1/` 已擴充這 4 群的 HTML/CSS candidate，**candidate ready for G1，尚未通過人類視覺審查，未畢業**；master.svg 對應的 c-icon-button／c-switch／c-radio／c-split-button 群組尚未標記 `superseded-by`，仍是這 4 群目前的權威來源。
 Badge / Tag（issue #34，issue #17 15 群清單第 8 項，2026-08-03）：`works/html/batch1/` 已擴充 Badge / Tag 的 HTML/CSS candidate，**candidate ready for G1，尚未通過人類視覺審查，未畢業**；master.svg 對應的 `c-badge-tag` 群組尚未標記 `superseded-by`，仍是這一群目前的權威來源。
 Inline alert（issue #35，issue #17 15 群清單第 9 項，2026-08-04）：`works/html/batch1/` 已擴充 Inline alert 的 HTML/CSS candidate，**2026-08-04 人類 G1 審查通過，已畢業，仍是 candidate，未宣告 stable**；`works/everline-components-master.svg` 對應的 `c-inline-alert` 群組已標記群組級 `superseded-by: works/html/batch1/index.html`，master.svg 檔案層級狀態不變。P0 核對發現本節下方「24 px 狀態圖示」與 SVG 實測值（`circle r="14"`，直徑 28px）不符，已一併修正；並發現 `alert-neutral` 指示條與圖示並非同一顏色、`.alert-body` 文字色（`#b8b8b8`）並非既有任何 token，詳見 `tokens/everline-draft.tokens.json` 與 `docs/STATUS.md`。
-Modal / Dialog（issue #40，issue #17 15 群清單第 14 項，2026-08-05）：`works/html/batch1/` 的 HTML/CSS candidate 已於 **2026-08-14 通過人類 G1 視覺審查，已畢業，仍是 candidate，未宣告 stable**；master.svg 對應的 `c-modal` 群組已標記群組級 `superseded-by`，HTML/CSS 是目前的候選規格權威來源。原生 `&lt;dialog&gt;`／`.showModal()`、danger Escape 攔截、default/loading Escape、焦點還原、reduced-motion 與 compact Button 既有行為均未因本次狀態更新而變更。issue #40 仍未關閉。
+Modal / Dialog（issue #40，issue #17 15 群清單第 14 項，2026-08-05）：`works/html/batch1/` 已擴充 Modal / Dialog 的 HTML/CSS candidate，**candidate ready for G1，尚未通過人類視覺審查，未畢業**；master.svg 對應的 `c-modal` 群組尚未標記 `superseded-by`，仍是這一群目前的權威來源。實作改用原生 `&lt;dialog&gt;`／`.showModal()`，取代本文件下方「focus trap...無法由靜態向量表達，仍待前端實作時定義」的舊擱置狀態——瀏覽器原生即會鎖定焦點並以 top layer 呈現。P0 核對後補上 9 個缺口（多數重用 `component.inline-alert` 已核實的 title／body 樣式與數值），並依規格文字「動作使用 compact 40 px 按鈕」在既有已 G1 通過的 `component.button` 上新增 `height-compact`／`radius-compact` 兩個純新增欄位（未改動 Button 既有解析值），詳見 `tokens/everline-draft.tokens.json` 與 `docs/STATUS.md`。issue #17 15 群清單中，已畢業 4 群＋等待 G1 的 6 群共 10 群，仍有 5 群未動工。
 
 本文件是受控延伸用的校準稿，不是穩定版規格。已觀察到的值與本次推導值分開記錄；使用者確認前，不應將候選內容視為 Everline 的凍結決策。
 
@@ -485,7 +485,7 @@ Text input 用於單行短文字；Textarea 用於描述、備註與多行內容
 
 ## Modal / Dialog
 
-狀態：`candidate`（2026-08-14，issue #40：HTML/CSS candidate 已通過人類 G1 視覺審查並畢業，見 `works/html/batch1/`；仍未宣告 stable）
+狀態：`candidate`（2026-08-05，issue #40：HTML/CSS candidate ready for G1，見 `works/html/batch1/`，尚未通過人類視覺審查，未畢業）
 
 ### 用途與邊界
 
