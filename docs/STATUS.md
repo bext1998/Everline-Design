@@ -20,8 +20,6 @@
 - 2026-07-27：Search field（issue #6）延伸既有 Text input 的 token 與結構（高度、radius、背景、placeholder 色、focus 邊框皆直接沿用），只新增 `component.search-field` 這一組 icon／清除按鈕的版面 token，沒有新增顏色或動效原生值。畢業到 HTML/CSS 時把 SVG 候選稿手繪的 empty／filled／focused／disabled 四張快照，換成原生 `:focus-within`（focus）與 `input` 事件驅動的清除按鈕出現／隱藏、原生 `:disabled`／`:has()`（disabled），而不是逐一手刻對應狀態的 CSS class。像素級驗證（computed style + screenshot RGB 採樣）：背景 `rgb(102,102,102)`＝`#666666`、focus 邊框 `rgb(89,138,232)`＝`#598AE8`、disabled 內容色 實測 ≈`rgb(178,178,178)` 與「off-white + opacity.disabled 0.55」的理論混色值（179,179,179）一致，全部與 token 精確吻合。
 - 待辦、規劃與跨元件擱置決策一律追蹤在 GitHub Issues（`gh issue list`），不在此文件重複列。
 
-- 2026-08-14：Tooltip（issue #39）人類 G1 視覺審查通過，已依既有畢業流程將 master.svg 的 `c-tooltip` 標記群組級 `superseded-by: works/html/batch1/index.html`；HTML/CSS 現為候選規格權威來源，仍未宣告 stable。維持純 CSS `:hover`／`:focus-within`、ARIA 關聯與固定 beside／below placements，不引入 positioning engine。
-
 ## 背景事實
 
 - 專案目前以設計語言、GUI 元件參考與向量原始檔管理為主，尚未進入前端元件庫實作；本專案沒有可執行的測試、lint 或 build 流程，驗證方式是 headless Chrome 渲染＋像素核對，不是自動化測試（`docs/spec.md` 已同步移除誤導性的「Test Plan」用詞，詳見該文件 Open Questions 前一節）。
